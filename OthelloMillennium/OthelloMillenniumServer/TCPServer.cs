@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OthelloMillenniumServer
 {
-    class TCPServer
+    public class TCPServer
     {
         public static int Port = 65432;
 
@@ -37,10 +37,9 @@ namespace OthelloMillenniumServer
         #region Properties
         private readonly TcpListener listener = new TcpListener(IPAddress.Any, Port);
         private readonly List<Client> clients = new List<Client>();
+        public event EventHandler<ServerEvent> OnClientConnect;
+        public event EventHandler<ServerEvent> OnClientDisconnect;
         #endregion
-
-        // Thread
-        public static ManualResetEvent allDone = new ManualResetEvent(false);
 
         public bool StartListening()
         {
@@ -49,19 +48,29 @@ namespace OthelloMillenniumServer
                 // Start to listen
                 listener.Start(100);
 
+                // Start an asynchronous socket to listen for connections.  
+                Console.WriteLine("Waiting for connections...");
+
+                // Infinite loop
                 while (true)
                 {
-                    // Set the event to nonsignaled state.  
-                    allDone.Reset();
-
-                    // Start an asynchronous socket to listen for connections.  
-                    Console.WriteLine("Waiting for a connection...");
-
                     // Accept connection
-                    listener.BeginAcceptTcpClient(new AsyncCallback(AcceptCallback), listener);
+                    if(listener.Pending())
+                    {
+                        // Store the new connection inside the client list
+                        var newConnection = new Client(listener.AcceptTcpClient());
+                        clients.Add(newConnection);
 
-                    // Wait until a connection is made before continuing.  
-                    allDone.WaitOne();
+                        // Fire an event, will be used by the matchmaking
+                        OnClientConnect?.Invoke(this, new ServerEvent { Client = newConnection });
+                    }
+
+                    // Notify if any client disconnects
+                    foreach(Client client in clients)
+                    {
+                        if (!client.TcpClient.Connected)
+                            OnClientDisconnect?.Invoke(this, new ServerEvent { Client = client });
+                    }
                 }
 
             }
@@ -72,91 +81,13 @@ namespace OthelloMillenniumServer
 
             return true;
         }
+    }
 
-        public static void AcceptCallback(IAsyncResult ar)
-        {
-            // Signal the main thread to continue.  
-            allDone.Set();
+    public class ServerEvent : EventArgs
+    {
 
-            // Register client
-            TcpClient client = instance.listener.EndAcceptTcpClient(ar);
-            instance.clients.Add(Client.FromTCPClient(ref client));
-        }
+        public Client Client { get; set; }
 
-        public static void ReadCallback(IAsyncResult ar)
-        {
-            string content = string.Empty;
-
-            // Retrieve the state object and the handler socket  
-            // from the asynchronous state object.  
-            StateObject state = (StateObject)ar.AsyncState;
-            Socket handler = state.workSocket;
-
-            // Read data from the client socket.   
-            int bytesRead = handler.EndReceive(ar);
-
-            if (bytesRead > 0)
-            {
-                // There  might be more data, so store the data received so far.  
-                state.sb.Append(Encoding.ASCII.GetString(
-                    state.buffer, 0, bytesRead));
-
-                // Check for end-of-file tag. If it is not there, read   
-                // more data.  
-                content = state.sb.ToString();
-                if (content.IndexOf("<EOF>") > -1)
-                {
-                    // All the data has been read from the   
-                    // client. Display it on the console.  
-                    Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
-                        content.Length, content);
-                    // Echo the data back to the client.  
-                    Send(handler, content);
-                }
-                else
-                {
-                    // Not all data received. Get more.  
-                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                    new AsyncCallback(ReadCallback), state);
-                }
-            }
-        }
-
-        private static void Send(Socket handler, String data)
-        {
-            // Convert the string data to byte data using ASCII encoding.  
-            byte[] byteData = Encoding.ASCII.GetBytes(data);
-
-            // Begin sending the data to the remote device.  
-            handler.BeginSend(byteData, 0, byteData.Length, 0,
-                new AsyncCallback(SendCallback), handler);
-        }
-
-        private static void SendCallback(IAsyncResult ar)
-        {
-            try
-            {
-                // Retrieve the socket from the state object.  
-                Socket handler = (Socket)ar.AsyncState;
-
-                // Complete sending the data to the remote device.  
-                int bytesSent = handler.EndSend(ar);
-                Console.WriteLine("Sent {0} bytes to client.", bytesSent);
-
-                handler.Shutdown(SocketShutdown.Both);
-                handler.Close();
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-        }
-
-        public static int Main(String[] args)
-        {
-            StartListening();
-            return 0;
-        }
+        public DateTime FiredDateTime { get; private set; } = DateTime.Now;
     }
 }

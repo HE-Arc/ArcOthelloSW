@@ -11,12 +11,12 @@ namespace OthelloMillenniumServer
         public TcpClient TcpClient { get; private set; }
         #endregion
 
-        private Client(ref TcpClient tcpClient)
+        public Client(TcpClient tcpClient)
         {
             TcpClient = tcpClient;
         }
 
-        private Client(string hostname, int port)
+        public Client(string hostname, int port)
         {
             if (string.IsNullOrEmpty(hostname))
                 throw new ArgumentException("Given hostname is invalid !");
@@ -26,16 +26,6 @@ namespace OthelloMillenniumServer
 
             // Init client
             TcpClient = new TcpClient(hostname, port);
-        }
-
-        public static Client FromTCPClient(ref TcpClient tcpClient)
-        {
-            return new Client(ref tcpClient);
-        }
-
-        public static Client FromHostname(string hostname, int port)
-        {
-            return new Client(hostname, port);
         }
     }
 }
