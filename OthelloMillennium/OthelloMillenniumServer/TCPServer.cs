@@ -51,27 +51,30 @@ namespace OthelloMillenniumServer
                 // Start an asynchronous socket to listen for connections.  
                 Console.WriteLine("Waiting for connections...");
 
-                // Infinite loop
-                while (true)
+                Task t = new Task(() =>
                 {
-                    // Accept connection
-                    if(listener.Pending())
+                    // Infinite loop
+                    while (true)
                     {
-                        // Store the new connection inside the client list
-                        var newConnection = new Client(listener.AcceptTcpClient());
-                        clients.Add(newConnection);
+                        // Accept connection
+                        if (listener.Pending())
+                        {
+                            // Store the new connection inside the client list
+                            var newConnection = new Client(listener.AcceptTcpClient());
+                            clients.Add(newConnection);
 
-                        // Fire an event, will be used by the matchmaking
-                        OnClientConnect?.Invoke(this, new ServerEvent { Client = newConnection });
-                    }
+                            // Fire an event, will be used by the matchmaking
+                            OnClientConnect?.Invoke(this, new ServerEvent { Client = newConnection });
+                        }
 
-                    // Notify if any client disconnects
-                    foreach(Client client in clients)
-                    {
-                        if (!client.TcpClient.Connected)
-                            OnClientDisconnect?.Invoke(this, new ServerEvent { Client = client });
+                        // Notify if any client disconnects
+                        foreach (Client client in clients)
+                        {
+                            if (!client.TcpClient.Connected)
+                                OnClientDisconnect?.Invoke(this, new ServerEvent { Client = client });
+                        }
                     }
-                }
+                });
 
             }
             catch (Exception e)
