@@ -8,7 +8,10 @@ namespace OthelloMillenniumServer
         {
             //TEMP for validation
             var t = GameState.CreateStartState();
-            t.ApplyMove(('A', 4), CellState.BLACK);
+
+            t.ApplyMove(('A', 4), GameState.CellState.BLACK);
+
+
 
             //for (int i = 0; i < Settings.SIZE_HEIGHT; ++i)
             //{
@@ -18,6 +21,7 @@ namespace OthelloMillenniumServer
             //    }
             //    Console.WriteLine();
             //}
+
             Console.ReadKey();
         }
     }

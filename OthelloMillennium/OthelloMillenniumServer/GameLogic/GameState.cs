@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OthelloMillenniumServer
 {
-    class GameState
+    public class GameState
     {
         #region Internal Classes
         public enum CellState
@@ -30,6 +30,11 @@ namespace OthelloMillenniumServer
         };
 
         Dictionary<CellState, int> scores;
+
+        #endregion
+
+        #region Properties
+        public bool GameEnded { get; private set; }
 
         #endregion
 
@@ -86,7 +91,7 @@ namespace OthelloMillenniumServer
                 scores[cell]++;
             }
 
-            // TODO update score for special casses
+            ComputeGameEnded();
         }
 
         /// <summary>
@@ -106,7 +111,7 @@ namespace OthelloMillenniumServer
             {
                 for (int j = 0; j < Settings.SIZE_WIDTH; ++j)
                 {
-                    if(ValidMove((i, j), cellStatePlayer))
+                    if(ValidateMove((i, j), cellStatePlayer))
                     {
                         return true;
                     }
@@ -121,11 +126,11 @@ namespace OthelloMillenniumServer
         /// Check if the game is finished
         /// </summary>
         /// <returns></returns>
-        public bool IsGameEnded()
+        private void ComputeGameEnded()
         {
             // Manage all casses, when all token have been played
             // when a player as been eradicated or even when no one can move
-            return scores[CellState.WHITE] == 0 || !PlayerCanPlay(CellState.WHITE) || !PlayerCanPlay(CellState.BLACK);
+            GameEnded = scores[CellState.EMPTY] == 0 || !PlayerCanPlay(CellState.WHITE) || !PlayerCanPlay(CellState.BLACK);
         }
 
         /// <summary>
@@ -134,9 +139,9 @@ namespace OthelloMillenniumServer
         /// <param name="coord"></param>
         /// <param name="cellStatePlayer"></param>
         /// <returns></returns>
-        public bool ValidMove((char, int) coord, CellState cellStatePlayer)
+        public bool ValidateMove((char, int) coord, CellState cellStatePlayer)
         {
-            return ValidMove(CoordToInt(coord), cellStatePlayer);
+            return ValidateMove(CoordToInt(coord), cellStatePlayer);
         }
 
         /// <summary>
@@ -145,7 +150,7 @@ namespace OthelloMillenniumServer
         /// <param name="indices"></param>
         /// <param name="cellStatePlayer"></param>
         /// <returns></returns>
-        private bool ValidMove((int, int) indices, CellState cellStatePlayer)
+        private bool ValidateMove((int, int) indices, CellState cellStatePlayer)
         {
             //Check if celle at given coord is empty
             if (gameboard[indices.Item1, indices.Item2] != CellState.EMPTY)
