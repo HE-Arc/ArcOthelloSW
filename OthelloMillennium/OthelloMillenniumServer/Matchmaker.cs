@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static OthelloMillenniumServer.Client;
 
 namespace OthelloMillenniumServer
 {
@@ -42,8 +41,8 @@ namespace OthelloMillenniumServer
         #endregion
 
         #region Attributes
-        private readonly HashSet<GameManager> matches = new HashSet<GameManager>();
-        private readonly HashSet<Client> handledClients = new HashSet<Client>();
+        private readonly HashSet<GameHandler> matches = new HashSet<GameHandler>();
+        private readonly HashSet<ManagedClient> handledClients = new HashSet<ManagedClient>();
         private bool running = false;
         #endregion
 
@@ -61,7 +60,7 @@ namespace OthelloMillenniumServer
                     while(running)
                     {
                         // Start to look for any good binding if there is 2 or more player/AI waiting
-                        var waitingClients = handledClients.Where(client => client.State == ManagedState.Searching).ToHashSet();
+                        var waitingClients = handledClients.Where(client => client.State == ManagedClient.ManagedState.Searching).ToHashSet();
                         if (waitingClients.Count > 2)
                         {
                             // TODO : Insert logic (i.e. ranking, waiting time, etc)
@@ -71,10 +70,10 @@ namespace OthelloMillenniumServer
                             var client2 = waitingClients.Last();
 
                             // Bind clients
-                            client1.State = client2.State = ManagedState.Binded;
+                            ManagedClient.Bind(client1, client2);
 
                             // GameManager will now handle clients and put them as InGame
-                            matches.Add(new GameManager(client1, client2));
+                            matches.Add(new GameHandler(client1, client2));
                         }
 
                         // Sleep for 500 ms
@@ -90,50 +89,56 @@ namespace OthelloMillenniumServer
 
         private void RegisterNewClient(object sender, ServerEvent e)
         {
-            if (handledClients.TryGetValue(e.Client, out Client outputClient))
+            ManagedClient newClient = new ManagedClient(e.Client);
+
+            if (handledClients.TryGetValue(newClient, out ManagedClient outputClient))
             {
                 switch (outputClient.State)
                 {
-                    case ManagedState.Searching:
+                    case ManagedClient.ManagedState.Searching:
                         throw new Exception("Client already registred and searching for a game");
-                    case ManagedState.Binded:
+                    case ManagedClient.ManagedState.Binded:
                         throw new Exception("Client already registred and bindind with an opponent");
-                    case ManagedState.InGame:
+                    case ManagedClient.ManagedState.InGame:
+                        
                         //TODO: handle reconnection to the game
                         break;
-                    case ManagedState.Disconnected:
-                        //TODO: notify him with a message ?
-                        outputClient.Register();
+                    case ManagedClient.ManagedState.Disconnected:
+                        //GameHandler match = matches.Where(gh => gh.client1.Equals(outputClient)).First();
+                        //match.OnClientReconnected?.Invoke(this, new GameHandlerArgs() { Client = outputClient });
                         break;
                 }
             }
             else
             {
                 // Register new client
-                handledClients.Add(e.Client.Register());
+                handledClients.Add(newClient);
             }
         }
 
         private void DisconnectClient(object sender, ServerEvent e)
         {
-            if (handledClients.TryGetValue(e.Client, out Client outputClient))
+            ManagedClient newClient = new ManagedClient(e.Client);
+
+            if (handledClients.TryGetValue(newClient, out ManagedClient outputClient))
             {
                 switch (outputClient.State)
                 {
-                    case ManagedState.Disconnected:
-                    case ManagedState.Searching:
+                    case ManagedClient.ManagedState.Disconnected:
+                    case ManagedClient.ManagedState.Searching:
                         break;
 
-                    case ManagedState.Binded:
-                        // TODO : make binding client search for a new game
+                    case ManagedClient.ManagedState.Binded:
+                        // outputClient.Opponent. <---------------------------- FIXME
+                        // TODO : make binded client search for a new game
                         break;
-                    case ManagedState.InGame:
-                        // TODO : handle disconnect to the game
+                    case ManagedClient.ManagedState.InGame:
+                        // TODO : handle disconnect from the game
                         break;
                 }
 
                 // Switch user to disconnected
-                outputClient.State = ManagedState.Disconnected;
+                //outputClient.State = ManagedState.Disconnected;
 
                 // Remove client from the dictionnary
                 handledClients.Remove(outputClient);
