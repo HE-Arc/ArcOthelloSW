@@ -4,9 +4,11 @@ using System.Text;
 
 namespace OthelloMillenniumServer
 {
-    class Settings
+    public class Settings
     {
-        public const int SIZE_WIDTH = 9;
-        public const int SIZE_HEIGHT = 7;
+        public static int SIZE_WIDTH = 9;
+        public static int SIZE_HEIGHT = 7;
+
+        public const int TimePerPlayer = 120000;
     }
 }
