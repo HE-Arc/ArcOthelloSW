@@ -17,7 +17,7 @@ namespace OthelloMillenniumServer
         
         }
 
-        public void playMove()
+        public void PlayMove()
         {
 
         }

@@ -17,9 +17,9 @@ namespace OthelloMillenniumServer
             gameboard = cellState;
         }
 
-        public boolean validMove()
+        public bool ValidMove()
         {
-
+            return false;
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace OthelloMillenniumServer
         /// Create a basic 
         /// </summary>
         /// <returns></returns>
-        public static GameState createStartState()
+        public static GameState CreateStartState()
         {
             CellState[,] state = new CellState[Settings.SIZE_HEIGHT, Settings.SIZE_WIDTH];
 
