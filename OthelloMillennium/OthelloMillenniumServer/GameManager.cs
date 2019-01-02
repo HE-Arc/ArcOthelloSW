@@ -17,11 +17,6 @@ namespace OthelloMillenniumServer
         
         }
 
-        public void PlayMove()
-        {
-
-        }
-
         public class GameManagerArgs
         {
             public string Winner { get; private set;  }

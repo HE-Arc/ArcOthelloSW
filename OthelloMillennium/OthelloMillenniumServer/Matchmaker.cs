@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,7 +43,7 @@ namespace OthelloMillenniumServer
 
         #region Attributes
         private readonly HashSet<GameHandler> matches = new HashSet<GameHandler>();
-        private readonly HashSet<ManagedClient> handledClients = new HashSet<ManagedClient>();
+        private readonly HashSet<TcpClient> clients = new HashSet<TcpClient>();
         private bool running = false;
         #endregion
 
@@ -60,20 +61,24 @@ namespace OthelloMillenniumServer
                     while(running)
                     {
                         // Start to look for any good binding if there is 2 or more player/AI waiting
-                        var waitingClients = handledClients.Where(client => client.State == ManagedClient.ManagedState.Searching).ToHashSet();
-                        if (waitingClients.Count > 2)
+                        if (clients.Count > 2)
                         {
                             // TODO : Insert logic (i.e. ranking, waiting time, etc)
 
                             // For now we take the first and the last one
-                            var client1 = waitingClients.First();
-                            var client2 = waitingClients.Last();
-
-                            // Bind clients
-                            ManagedClient.Bind(client1, client2);
+                            var client1 = clients.First();
+                            var client2 = clients.Last();
 
                             // GameManager will now handle clients and put them as InGame
                             matches.Add(new GameHandler(client1, client2));
+
+                            // Informs clients that an opponent has be found
+                            TCPServer.Instance.Send(client1, Toolbox.Protocole.OpponentFound);
+                            TCPServer.Instance.Send(client2, Toolbox.Protocole.OpponentFound);
+
+                            // Remove them from the queue
+                            clients.Remove(client1);
+                            clients.Remove(client2);
                         }
 
                         // Sleep for 500 ms
@@ -89,63 +94,50 @@ namespace OthelloMillenniumServer
 
         private void RegisterNewClient(object sender, ServerEvent e)
         {
-            ManagedClient newClient = new ManagedClient(e.Client);
-
-            if (handledClients.TryGetValue(newClient, out ManagedClient outputClient))
+            if (clients.Contains(e.Client))
             {
-                switch (outputClient.State)
+                var currentMatch = matches.Where(match => match.client1 == e.Client || match.client2 == e.Client).First();
+                if (currentMatch == null)
                 {
-                    case ManagedClient.ManagedState.Searching:
-                        throw new Exception("Client already registred and searching for a game");
-                    case ManagedClient.ManagedState.Binded:
-                        throw new Exception("Client already registred and bindind with an opponent");
-                    case ManagedClient.ManagedState.InGame:
-                        
-                        //TODO: handle reconnection to the game
-                        break;
-                    case ManagedClient.ManagedState.Disconnected:
-                        //GameHandler match = matches.Where(gh => gh.client1.Equals(outputClient)).First();
-                        //match.OnClientReconnected?.Invoke(this, new GameHandlerArgs() { Client = outputClient });
-                        break;
+                    throw new Exception("Client already registred and searching for a game");
+                }
+                else
+                {
+                    // Reconnect to the game
+                    // ---------------------
+                    // Check timers
+                    // Disconnected for too long ?
                 }
             }
             else
             {
                 // Register new client
-                handledClients.Add(newClient);
+                clients.Add(e.Client);
+
+                // Informs the client that he is now known to the server
+                TCPServer.Instance.Send(e.Client, Toolbox.Protocole.RegisterSuccessful);
             }
         }
 
         private void DisconnectClient(object sender, ServerEvent e)
         {
-            ManagedClient newClient = new ManagedClient(e.Client);
-
-            if (handledClients.TryGetValue(newClient, out ManagedClient outputClient))
+            if (clients.Contains(e.Client))
             {
-                switch (outputClient.State)
+                var currentMatch = matches.Where(match => match.client1 == e.Client || match.client2 == e.Client).First();
+
+                if (currentMatch == null)
                 {
-                    case ManagedClient.ManagedState.Disconnected:
-                    case ManagedClient.ManagedState.Searching:
-                        break;
-
-                    case ManagedClient.ManagedState.Binded:
-                        // outputClient.Opponent. <---------------------------- FIXME
-                        // TODO : make binded client search for a new game
-                        break;
-                    case ManagedClient.ManagedState.InGame:
-                        // TODO : handle disconnect from the game
-                        break;
+                    clients.Remove(e.Client);
                 }
-
-                // Switch user to disconnected
-                //outputClient.State = ManagedState.Disconnected;
-
-                // Remove client from the dictionnary
-                handledClients.Remove(outputClient);
+                else
+                {
+                    // Disconnect handled in gameHandler
+                    // ---------------------
+                }
             }
             else
             {
-                throw new Exception("Client is not registred");
+                Toolbox.LogError(new Exception("Client was not registred"));
             }
         }
     }
