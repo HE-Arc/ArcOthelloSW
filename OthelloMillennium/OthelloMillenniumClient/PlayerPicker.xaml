@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="OthelloMillenniumClient.PlayerPicker"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:OthelloMillenniumClient"
+    mc:Ignorable="d" 
+    d:DesignHeight="560" d:DesignWidth="700">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Image Grid.Row="0" Grid.Column="0" Width="100px" Height="100px" x:Name="Yoda" Source="Images/Yoda.png" Stretch="Fill"/>
+        <Image Grid.Row="0" Grid.Column="1" Width="100px" Height="100px" x:Name="BB_8" Source="Images/BB-8.png" Stretch="Fill"/>
+        <Image Grid.Row="0" Grid.Column="2" Width="100px" Height="100px" x:Name="BobaFet" Source="Images/BobaFet.png" Stretch="Fill"/>
+        <Image Grid.Row="0" Grid.Column="3" Width="100px" Height="100px" x:Name="C_3PO" Source="Images/C-3PO.png" Stretch="Fill"/>
+        <Image Grid.Row="0" Grid.Column="4" Width="100px" Height="100px" x:Name="Chewbacca" Source="Images/Chewbacca.png" Stretch="Fill"/>
+        <Image Grid.Row="1" Grid.Column="0" Width="100px" Height="100px" x:Name="DarkVader" Source="Images/DarkVader.png" Stretch="Fill"/>
+        <Image Grid.Row="1" Grid.Column="1" Width="100px" Height="100px" x:Name="Finn" Source="Images/Finn.png" Stretch="Fill"/>
+        <Image Grid.Row="1" Grid.Column="2" Width="100px" Height="100px" x:Name="HanSolo" Source="Images/HanSolo.png" Stretch="Fill"/>
+        <Image Grid.Row="1" Grid.Column="3" Width="100px" Height="100px" x:Name="K_2SO" Source="Images/K-2SO.png" Stretch="Fill"/>
+        <Image Grid.Row="1" Grid.Column="4" Width="100px" Height="100px" x:Name="KyloRen" Source="Images/KyloRen.png" Stretch="Fill"/>
+        <Image Grid.Row="2" Grid.Column="0" Width="100px" Height="100px" x:Name="Leia" Source="Images/Leia.png" Stretch="Fill"/>
+        <Image Grid.Row="2" Grid.Column="1" Width="100px" Height="100px" x:Name="Luke" Source="Images/Luke.png" Stretch="Fill"/>
+        <Image Grid.Row="2" Grid.Column="2" Width="100px" Height="100px" x:Name="MazKanata" Source="Images/MazKanata.png" Stretch="Fill"/>
+        <Image Grid.Row="2" Grid.Column="3" Width="100px" Height="100px" x:Name="Obi_Wan" Source="Images/Obi-Wan.png" Stretch="Fill"/>
+        <Image Grid.Row="2" Grid.Column="4" Width="100px" Height="100px" x:Name="Prog" Source="Images/Prog.png" Stretch="Fill"/>
+        <Image Grid.Row="3" Grid.Column="0" Width="100px" Height="100px" x:Name="R2_D2" Source="Images/R2-D2.png" Stretch="Fill"/>
+        <Image Grid.Row="3" Grid.Column="1" Width="100px" Height="100px" x:Name="Rey" Source="Images/Rey.png" Stretch="Fill"/>
+        <Image Grid.Row="3" Grid.Column="2" Width="100px" Height="100px" x:Name="Snoke" Source="Images/Snoke.png" Stretch="Fill"/>
+        <Image Grid.Row="3" Grid.Column="3" Width="100px" Height="100px" x:Name="Stormtrooper" Source="Images/Stormtrooper.png" Stretch="Fill"/>
+        <Image Grid.Row="3" Grid.Column="4" Width="100px" Height="100px" x:Name="TheEmperor" Source="Images/TheEmperor.png" Stretch="Fill"/>
+        <Image Grid.Row="0" Grid.Column="0" Panel.ZIndex="-1" x:Name="SelectorPlayer1" Source="Images/SelectorTest.png" Stretch="Fill"/>
+        <Image Grid.Row="0" Grid.Column="0" Panel.ZIndex="-1" x:Name="SelectorPlayer2" Source="Images/SelectorTest.png" Stretch="Fill"/>
+    </Grid>
+</UserControl>

@@ -1,0 +1,20 @@
+﻿<Window x:Class="OthelloMillenniumClient.Lobby"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OthelloMillenniumClient"
+        mc:Ignorable="d"
+        Title="Saloon" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!-- TODO Change fix values and add min and percentages -> fixed for speed dev visualisation purposes -->
+            <ColumnDefinition Width="150px"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="150px"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <local:PlayerPicker Grid.Column="1" x:Name="PlayerPicker"></local:PlayerPicker>
+        <local:PlayerVisualiser Grid.Column="0" ImagePlayer="{ Binding ElementName=PlayerPicker, Path=ImagePlayerOne }"></local:PlayerVisualiser>
+        <local:PlayerVisualiser Grid.Column="2" ImagePlayer="{ Binding ElementName=PlayerPicker, Path=ImagePlayerTwo }"></local:PlayerVisualiser>
+    </Grid>
+</Window>

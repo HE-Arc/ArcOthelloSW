@@ -37,6 +37,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -55,7 +58,33 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
+    <Compile Include="Gamboard.xaml.cs">
+      <DependentUpon>Gamboard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Game.xaml.cs">
+      <DependentUpon>Game.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerPicker.xaml.cs">
+      <DependentUpon>PlayerPicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerVisualiser.xaml.cs">
+      <DependentUpon>PlayerVisualiser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Lobby.xaml.cs">
+      <DependentUpon>Lobby.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl1.xaml.cs">
+      <DependentUpon>UserControl1.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Gamboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Game.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Home.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -63,10 +92,26 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Home.xaml.cs">
+      <DependentUpon>Home.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PlayerPicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PlayerVisualiser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Lobby.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -86,6 +131,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -93,6 +139,72 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Yoda.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\BB-8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\BobaFet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\C-3PO.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Chewbacca.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\DarkVader.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Finn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\HanSolo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\K-2SO.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\KyloRen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Leia.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Luke.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MazKanata.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Obi-Wan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Prog.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\R2-D2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Rey.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Snoke.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Stormtrooper.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\TheEmperor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SelectorTest.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\None.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
