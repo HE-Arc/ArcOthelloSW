@@ -22,7 +22,6 @@ namespace OthelloMillenniumServer
             MultiPlayer = 1
         }
 
-
         public enum Player
         {
             BlackPlayer = 0,
@@ -38,13 +37,13 @@ namespace OthelloMillenniumServer
 
         #region Properties
         public bool GameEnded { get; private set; }
+        public GameType Type { get; private set; }
 
         #endregion
 
         #region Attributes
         private Player CurrentPlayerTurn;
         private int indexState;
-        private GameType gameType;
         private List<GameState> listGameState;
         private Dictionary<Player, StoppableTimer> timeCounter;
 
@@ -57,18 +56,23 @@ namespace OthelloMillenniumServer
 
         public GameManager(GameType gameType)
         {
+            Type = gameType;
+
             //Init GameState
             indexState = 0;
             listGameState = new List<GameState>();
             listGameState.Add(GameState.CreateStartState());
-            timeCounter = new Dictionary<Player, StoppableTimer>()
-            {
-                { Player.BlackPlayer, new StoppableTimer(Settings.TimePerPlayer) },
-                { Player.WhitePlayer, new StoppableTimer(Settings.TimePerPlayer) }
-            };
 
+            if (Type == GameType.MultiPlayer)
+            {
+                timeCounter = new Dictionary<Player, StoppableTimer>()
+                {
+                    { Player.BlackPlayer, new StoppableTimer(Settings.TimePerPlayer) },
+                    { Player.WhitePlayer, new StoppableTimer(Settings.TimePerPlayer) }
+                };
+            }
+            
             CurrentPlayerTurn = Player.BlackPlayer;
-            this.gameType = gameType;
         }
 
         /// <summary>
@@ -77,7 +81,7 @@ namespace OthelloMillenniumServer
         public void Start()
         {
             //We start the counter
-            if(gameType == GameType.MultiPlayer)
+            if(Type == GameType.MultiPlayer)
             {
                 timeCounter[Player.BlackPlayer].Start();
             }
@@ -95,9 +99,12 @@ namespace OthelloMillenniumServer
                 throw new Exception("Invalid player turn");
             }
 
-            timeCounter[CurrentPlayerTurn].Stop();
-            GameState.CellState cellStatePlayer = PlayerToCellState(CurrentPlayerTurn);
+            if (Type == GameType.MultiPlayer)
+            {
+                timeCounter[CurrentPlayerTurn].Stop();
+            }
 
+            GameState.CellState cellStatePlayer = PlayerToCellState(CurrentPlayerTurn);
             listGameState[indexState].ValidateMove(coord, cellStatePlayer);
 
             //Manage the case when we have made a moveback
@@ -110,7 +117,10 @@ namespace OthelloMillenniumServer
             ++indexState;
 
             SwitchPlayer();
-            timeCounter[CurrentPlayerTurn].Start();
+            if (Type == GameType.MultiPlayer)
+            {
+                timeCounter[CurrentPlayerTurn].Start();
+            }
 
             //Manage end of the game
             if (listGameState[indexState].GameEnded)
@@ -133,7 +143,7 @@ namespace OthelloMillenniumServer
         /// </summary>
         public void MoveBack()
         {
-            if(gameType == GameType.MultiPlayer)
+            if(Type == GameType.MultiPlayer)
             {
                 throw new Exception("Action not allowed in Multiplayer game type");
             }
@@ -151,7 +161,7 @@ namespace OthelloMillenniumServer
         /// </summary>
         public void MoveForward()
         {
-            if (gameType == GameType.MultiPlayer)
+            if (Type == GameType.MultiPlayer)
             {
                 throw new Exception("Action not allowed in Multiplayer game type");
             }
@@ -165,13 +175,12 @@ namespace OthelloMillenniumServer
         }
 
         /// <summary>
-        /// 
+        /// Event called when the game is over
         /// </summary>
         /// <param name="source"></param>
         /// <param name="e"></param>
         private void OnTimeout(Object source, EventArgs e)
         {
-            //TODO Manage timeout of a player
             EndGame();
         }
 
@@ -191,6 +200,8 @@ namespace OthelloMillenniumServer
             GameEnded = true;
             EventHandler<GameManagerArgs> handler = OnGameFinished;
             GameManagerArgs gameManagerArgs = new GameManagerArgs();
+
+            timeCounter[CurrentPlayerTurn].Stop();
 
             //TODO Complete event values
             //TODO Choose if we can go back in singleplayer mode
