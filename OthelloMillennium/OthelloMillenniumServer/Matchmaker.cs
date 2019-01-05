@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,38 +11,7 @@ namespace OthelloMillenniumServer
     public class Matchmaker
     {
         #region Internal Classes
-        public enum State
-        {
-            Searching,
-            Binded,
-            InGame,
-            Disconnected
-        }
-
-        public class ClientInformation
-        {
-            public ClientInformation(DateTime registerTime)
-            {
-                State = State.Searching;
-                RegisterDateTime = registerTime;
-            }
-
-            public State State { get; set; }
-            public DateTime RegisterDateTime { get; private set; }
-            public DateTime LastValidPingDateTime { get; set; }
-        }
-
-        public class WrappedClient
-        {
-            public WrappedClient(Client client, ClientInformation informations)
-            {
-                Client = client;
-                Informations = informations;
-            }
-
-            public Client Client { get; private set; }
-            public ClientInformation Informations { get; private set; }
-        }
+        
 
         #endregion
 
@@ -72,8 +42,8 @@ namespace OthelloMillenniumServer
         #endregion
 
         #region Attributes
-        private readonly HashSet<object> matches = new HashSet<object>(); //FIXME : should be GameManager and not an object
-        private readonly Dictionary<Client, ClientInformation> handledClients = new Dictionary<Client, ClientInformation>();
+        private readonly HashSet<GameHandler> matches = new HashSet<GameHandler>();
+        private readonly HashSet<TcpClient> clients = new HashSet<TcpClient>();
         private bool running = false;
         #endregion
 
@@ -91,28 +61,24 @@ namespace OthelloMillenniumServer
                     while(running)
                     {
                         // Start to look for any good binding if there is 2 or more player/AI waiting
-                        var waitingClients = handledClients.Where(kv => kv.Value.State == State.Searching).ToDictionary(kv => kv.Key, kv => kv.Value);
-                        if (waitingClients.Count > 2)
+                        if (clients.Count > 2)
                         {
                             // TODO : Insert logic (i.e. ranking, waiting time, etc)
 
                             // For now we take the first and the last one
-                            var client1KV = waitingClients.First();
-                            var client2KV = waitingClients.Last();
-
-                            // Extract data
-                            Client client1 = client1KV.Key;
-                            Client client2 = client2KV.Key;
-
-                            ClientInformation client1Informations = client1KV.Value;
-                            ClientInformation client2Informations = client2KV.Value;
-
-                            // Bind clients
-                            client1Informations.State = client2Informations.State = State.Binded;
+                            var client1 = clients.First();
+                            var client2 = clients.Last();
 
                             // GameManager will now handle clients and put them as InGame
-                            // client1Informations.State = client2Informations.State = State.InGame;
-                            matches.Add(StartMatch(new WrappedClient(client1, client1Informations), new WrappedClient(client2, client2Informations)));
+                            matches.Add(new GameHandler(client1, client2));
+
+                            // Informs clients that an opponent has be found
+                            TCPServer.Instance.Send(client1, Toolbox.Protocole.OpponentFound);
+                            TCPServer.Instance.Send(client2, Toolbox.Protocole.OpponentFound);
+
+                            // Remove them from the queue
+                            clients.Remove(client1);
+                            clients.Remove(client2);
                         }
 
                         // Sleep for 500 ms
@@ -126,68 +92,52 @@ namespace OthelloMillenniumServer
             }
         }
 
-        /// <summary>
-        /// TODO: change return type to gameManager
-        /// </summary>
-        private object StartMatch(WrappedClient wrappedClient1, WrappedClient wrappedClient2)
-        {
-            // Must subscribe to OnGameFinished of GameManager
-            return null;
-        }
-
         private void RegisterNewClient(object sender, ServerEvent e)
         {
-            if (handledClients.TryGetValue(e.Client, out ClientInformation clientInformation))
+            if (clients.Contains(e.Client))
             {
-                switch (clientInformation.State)
+                var currentMatch = matches.Where(match => match.client1 == e.Client || match.client2 == e.Client).First();
+                if (currentMatch == null)
                 {
-                    case State.Searching:
-                        throw new Exception("Client already registred and searching for a game");
-                    case State.Binded:
-                        throw new Exception("Client already registred and bindind with an opponent");
-                    case State.InGame:
-                        //TODO: handle reconnection to the game
-                        break;
-                    case State.Disconnected:
-                        //TODO: notify him with a message ?
-                        handledClients.Add(e.Client, new ClientInformation(e.FiredDateTime));
-                        break;
+                    throw new Exception("Client already registred and searching for a game");
+                }
+                else
+                {
+                    // Reconnect to the game
+                    // ---------------------
+                    // Check timers
+                    // Disconnected for too long ?
                 }
             }
             else
             {
                 // Register new client
-                handledClients.Add(e.Client, new ClientInformation(e.FiredDateTime));
+                clients.Add(e.Client);
+
+                // Informs the client that he is now known to the server
+                TCPServer.Instance.Send(e.Client, Toolbox.Protocole.RegisterSuccessful);
             }
         }
 
         private void DisconnectClient(object sender, ServerEvent e)
         {
-            if (handledClients.TryGetValue(e.Client, out ClientInformation clientInformation))
+            if (clients.Contains(e.Client))
             {
-                switch (clientInformation.State)
+                var currentMatch = matches.Where(match => match.client1 == e.Client || match.client2 == e.Client).First();
+
+                if (currentMatch == null)
                 {
-                    case State.Disconnected:
-                    case State.Searching:
-                        break;
-
-                    case State.Binded:
-                        // TODO : make binding client search for a new game
-                        break;
-                    case State.InGame:
-                        // TODO : handle disconnect to the game
-                        break;
+                    clients.Remove(e.Client);
                 }
-
-                // Switch user to disconnected
-                clientInformation.State = State.Disconnected;
-
-                // Remove client from the dictionnary
-                handledClients.Remove(e.Client);
+                else
+                {
+                    // Disconnect handled in gameHandler
+                    // ---------------------
+                }
             }
             else
             {
-                throw new Exception("Client is not registred");
+                Toolbox.LogError(new Exception("Client was not registred"));
             }
         }
     }

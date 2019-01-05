@@ -7,14 +7,20 @@
         mc:Ignorable="d"
         Title="Saloon" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <!-- TODO Change fix values and add min and percentages -> fixed for speed dev visualisation purposes -->
             <ColumnDefinition Width="150px"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition Width="150px"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <local:PlayerPicker Grid.Column="1" x:Name="PlayerPicker"></local:PlayerPicker>
-        <local:PlayerVisualiser Grid.Column="0" ImagePlayer="{ Binding ElementName=PlayerPicker, Path=ImagePlayerOne }"></local:PlayerVisualiser>
-        <local:PlayerVisualiser Grid.Column="2" ImagePlayer="{ Binding ElementName=PlayerPicker, Path=ImagePlayerTwo }"></local:PlayerVisualiser>
+        <local:PlayerPicker Grid.Column="1" Grid.Row="1" x:Name="PlayerPicker"></local:PlayerPicker>
+        <local:PlayerVisualiser Grid.Column="0" Grid.Row="1" ImagePlayer="{ Binding ElementName=PlayerPicker, Path=ImagePlayerOne }"></local:PlayerVisualiser>
+        <local:PlayerVisualiser Grid.Column="2" Grid.Row="1" ImagePlayer="{ Binding ElementName=PlayerPicker, Path=ImagePlayerTwo }"></local:PlayerVisualiser>
+        <Button Grid.Column="0" Grid.Row="0">Start game</Button>
     </Grid>
 </Window>
