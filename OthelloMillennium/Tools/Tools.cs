@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace OthelloMillenniumServer
@@ -37,7 +36,7 @@ namespace OthelloMillenniumServer
             /// <para/>Must be followed by ET to end the turn
             /// </summary>
             public readonly static string StartOfTurn = "ST";
-            
+
 
             public readonly static string X1 = "X1";
             public readonly static string X2 = "X2";
