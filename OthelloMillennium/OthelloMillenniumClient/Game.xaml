@@ -7,6 +7,20 @@
         mc:Ignorable="d"
         Title="Game" Height="450" Width="800">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20*"></ColumnDefinition>
+            <ColumnDefinition Width="60*"></ColumnDefinition>
+            <ColumnDefinition Width="20*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Image Grid.Column="0" Grid.ColumnSpan="3" x:Name="Background" Source="Images/Background.png" Stretch="Fill"/>
+        <!-- TODO Add gameboard grid -->
+        <Image Grid.Column="0" x:Name="tes" Source="Images/Finn.png" Width="100"/>
+        <Image Grid.Column="2" x:Name="_as" Source="Images/Leia.png" Width="100"/>
+        <Label Grid.Column="0" x:Name="label_Copy1" Content="Mearing" HorizontalAlignment="Left" VerticalAlignment="Top" Width="180" HorizontalContentAlignment="Center" FontSize="24"/>
+        <Label Grid.Column="0" x:Name="label" Content="12" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="158" HorizontalContentAlignment="Center" FontSize="18"/>
+        <Label Grid.Column="2" x:Name="label_Copy2" Content="Ph0tonic" HorizontalAlignment="Left" VerticalAlignment="Top" Width="180" HorizontalContentAlignment="Center" FontSize="24"/>
+        <Label Grid.Column="2" x:Name="label_Copy" Content="12" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="159" HorizontalContentAlignment="Center" FontSize="18"/>
+
+        <local:Gamboard Grid.Column="1" Margin="0 50 0 50"></local:Gamboard>
     </Grid>
 </Window>

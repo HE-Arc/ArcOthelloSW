@@ -212,6 +212,9 @@
       <Project>{d1a41933-b18c-4f63-9435-1a9d3a10237d}</Project>
       <Name>Tools</Name>
     </ProjectReference>
+</ItemGroup>
+<ItemGroup>
+    <Resource Include="Images\Background.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

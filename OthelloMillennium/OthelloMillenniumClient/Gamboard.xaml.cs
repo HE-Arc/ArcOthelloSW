@@ -18,7 +18,7 @@ namespace OthelloMillenniumClient
     /// <summary>
     /// Logique d'interaction pour Gamboard.xaml
     /// </summary>
-    public partial class Gamboard : Page
+    public partial class Gamboard : UserControl
     {
         public Gamboard()
         {
