@@ -28,7 +28,7 @@ namespace OthelloMillenniumServer
             TCPServer.Instance.OnClientDisconnect += Instance_OnClientDisconnect;
 
             // Init a gameManager
-            this.gameManager = new GameManager();
+            this.gameManager = new GameManager(GameManager.GameType.MultiPlayer);//TODO: Client send the type of game they would like to play
         }
 
         private void Instance_OnClientDisconnect(object sender, ServerEvent e)

@@ -8,6 +8,9 @@ namespace OthelloMillenniumServer
         {
             TCPServer serveur = TCPServer.Instance;
             serveur.StartListening();
+
+            //Should be turned to deamon
+            Console.ReadLine();
         }
     }
 }
