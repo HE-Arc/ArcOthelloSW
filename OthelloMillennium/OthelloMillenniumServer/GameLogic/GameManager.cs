@@ -9,15 +9,6 @@ namespace OthelloMillenniumServer
     public class GameManager
     {
         #region Internal Classes
-        public class GameManagerArgs
-        {
-            public string Winner { get; private set; }
-
-            public (long, long) TotalTime { get; private set; }
-
-            public (int, int) Score { get; private set; }
-        }
-
         public enum GameType
         {
             SinglePlayer = 0,
@@ -30,9 +21,9 @@ namespace OthelloMillenniumServer
             WhitePlayer = 2
         }
 
-        private static GameState.CellState PlayerToCellState(Player player)
+        private static GameBoard.CellState PlayerToCellState(Player player)
         {
-            return player == Player.BlackPlayer ? GameState.CellState.BLACK : GameState.CellState.WHITE;
+            return player == Player.BlackPlayer ? GameBoard.CellState.BLACK : GameBoard.CellState.WHITE;
         }
 
         #endregion
@@ -46,14 +37,15 @@ namespace OthelloMillenniumServer
         #region Attributes
         private Player CurrentPlayerTurn;
         private int indexState;
-        private List<GameState> listGameState;
+        private List<GameBoard> listGameState;
         private Dictionary<Player, StoppableTimer> timeCounter;
         private (int, int) scores;
+        private Player winner;
 
         #endregion
 
         #region Events
-        public event EventHandler<GameManagerArgs> OnGameFinished;
+        public event EventHandler<GameState> OnGameFinished;
 
         #endregion
 
@@ -63,8 +55,8 @@ namespace OthelloMillenniumServer
 
             //Init GameState
             indexState = 0;
-            listGameState = new List<GameState>();
-            listGameState.Add(GameState.CreateStartState());
+            listGameState = new List<GameBoard>();
+            listGameState.Add(GameBoard.CreateStartState());
             Assert.False(listGameState[indexState].GameEnded);
 
             if (Type == GameType.MultiPlayer)
@@ -120,7 +112,7 @@ namespace OthelloMillenniumServer
                 timeCounter[CurrentPlayerTurn].Stop();
             }
 
-            GameState.CellState cellStatePlayer = PlayerToCellState(CurrentPlayerTurn);
+            GameBoard.CellState cellStatePlayer = PlayerToCellState(CurrentPlayerTurn);
             listGameState[indexState].ValidateMove(coord, cellStatePlayer);
 
             //Manage the case when we have made a moveback
@@ -225,20 +217,19 @@ namespace OthelloMillenniumServer
         private void EndGame()
         {
             GameEnded = true;
-            EventHandler<GameManagerArgs> handler = OnGameFinished;
-            GameManagerArgs gameManagerArgs = new GameManagerArgs();
-
+            
             timeCounter[CurrentPlayerTurn].Stop();
             ComputeScore();
+            winner = scores.Item1 > scores.Item2 ? Player.BlackPlayer : Player.WhitePlayer;
 
-            //TODO Complete event values
-            handler(this, gameManagerArgs);
+            EventHandler<GameState> handler = OnGameFinished;
+            handler(this, Export());
         }
 
         private void ComputeScore()
         {
-            GameState gameState = listGameState[indexState];
-            int maxScore = gameState.Gameboard.GetLength(0) * gameState.Gameboard.GetLength(1);
+            GameBoard gameState = listGameState[indexState];
+            int maxScore = gameState.Board.GetLength(0) * gameState.Board.GetLength(1);
             
             if (timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 || timeCounter[Player.WhitePlayer].GetRemainingTime() == 0)
             {
@@ -248,9 +239,9 @@ namespace OthelloMillenniumServer
             else
             {
                 // Get nb token per player
-                (int black, int white) = (gameState.getNbToken(GameState.CellState.BLACK), gameState.getNbToken(GameState.CellState.WHITE));
+                (int black, int white) = (gameState.getNbToken(GameBoard.CellState.BLACK), gameState.getNbToken(GameBoard.CellState.WHITE));
 
-                if (!GameEnded || gameState.getNbToken(GameState.CellState.EMPTY) == 0)
+                if (!GameEnded || gameState.getNbToken(GameBoard.CellState.EMPTY) == 0)
                 {
                     // Default Count number of token for each player
                     scores = (black, white);
@@ -268,9 +259,13 @@ namespace OthelloMillenniumServer
             }
         }
 
-        private GameStateExport Export()
+        /// <summary>
+        /// Allow to export data
+        /// </summary>
+        /// <returns>The game state</returns>
+        public GameState Export()
         {
-            GameState.CellState[,] gameboard = listGameState[indexState].Gameboard;
+            GameBoard.CellState[,] gameboard = listGameState[indexState].Board;
             int[,] board = new int[gameboard.GetLength(0), gameboard.GetLength(1)];
 
             for (int i=0; i< gameboard.GetLength(0); ++i)
@@ -284,7 +279,7 @@ namespace OthelloMillenniumServer
             List<(int, int)> possiblesMoves = listGameState[indexState].PossibleMoves(PlayerToCellState(CurrentPlayerTurn));
             (long, long) remainingTimes = (timeCounter[Player.BlackPlayer].GetRemainingTime(), timeCounter[Player.WhitePlayer].GetRemainingTime());
             
-            return new GameStateExport(GameEnded, (int)CurrentPlayerTurn, scores, board, possiblesMoves, remainingTimes);
+            return new GameState(GameEnded, (int)CurrentPlayerTurn, scores, board, possiblesMoves, remainingTimes, (int)winner);
         }
     }
 }

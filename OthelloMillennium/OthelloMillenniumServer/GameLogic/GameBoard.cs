@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OthelloMillenniumServer
 {
-    public class GameState
+    public class GameBoard
     {
         #region Internal Classes
         public enum CellState
@@ -19,7 +19,7 @@ namespace OthelloMillenniumServer
         #endregion
 
         #region Attributs
-        public CellState[,] Gameboard { get; private set; }
+        public CellState[,] Board { get; private set; }
 
         //Directions to explore
         private static readonly (int, int)[] directions =
@@ -46,7 +46,7 @@ namespace OthelloMillenniumServer
         /// Create a basic 
         /// </summary>
         /// <returns></returns>
-        public static GameState CreateStartState()
+        public static GameBoard CreateStartState()
         {
             CellState[,] state = new CellState[Settings.SIZE_WIDTH, Settings.SIZE_HEIGHT];
 
@@ -55,7 +55,7 @@ namespace OthelloMillenniumServer
             state[4, 4] = CellState.WHITE;
             state[4, 3] = CellState.BLACK;
 
-            return new GameState(state);
+            return new GameBoard(state);
         }
 
         /// <summary>
@@ -77,9 +77,9 @@ namespace OthelloMillenniumServer
         /// Constructor to create a new GameState
         /// </summary>
         /// <param name="cellState"></param>
-        public GameState(CellState[,] cellState, CellState cellStatePlayer = CellState.EMPTY)
+        public GameBoard(CellState[,] cellState, CellState cellStatePlayer = CellState.EMPTY)
         {
-            Gameboard = cellState;
+            Board = cellState;
             cellStateCount = new Dictionary<CellState, int>();
 
             // Init scores
@@ -88,7 +88,7 @@ namespace OthelloMillenniumServer
             cellStateCount.Add(CellState.EMPTY, 0);
 
             // Calculate scores, counting the empty allow to know how many cells are empty
-            foreach (CellState cell in Gameboard)
+            foreach (CellState cell in Board)
             {
                 cellStateCount[cell]++;
             }
@@ -153,11 +153,11 @@ namespace OthelloMillenniumServer
         /// <param name="point"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        public GameState ApplyMove((char, int) coord, CellState cellStatePlayer)
+        public GameBoard ApplyMove((char, int) coord, CellState cellStatePlayer)
         {
             (int, int) indices = CoordToInt(coord);
 
-            CellState[,] newCellState = (CellState[,])Gameboard.Clone();
+            CellState[,] newCellState = (CellState[,])Board.Clone();
             newCellState[indices.Item1, indices.Item2] = cellStatePlayer;
 
             List<(int, int)> tokenToReturn = new List<(int, int)>();
@@ -173,7 +173,7 @@ namespace OthelloMillenniumServer
                 {
                     // Compute cell
                     (i, j) = (i + direction.Item1, j + direction.Item2);
-                    CellState cellState = Gameboard[i, j];
+                    CellState cellState = Board[i, j];
 
                     if (cellState == cellStatePlayer) // Token of the player
                     {
@@ -198,7 +198,7 @@ namespace OthelloMillenniumServer
             }
 
             // Return the new state
-            return new GameState(newCellState, cellStatePlayer);
+            return new GameBoard(newCellState, cellStatePlayer);
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace OthelloMillenniumServer
         private bool ValidateMove((int, int) indices, CellState cellStatePlayer)
         {
             //Check if celle at given coord is empty
-            if (Gameboard[indices.Item1, indices.Item2] != CellState.EMPTY)
+            if (Board[indices.Item1, indices.Item2] != CellState.EMPTY)
             {
                 return false;
             }
@@ -246,7 +246,7 @@ namespace OthelloMillenniumServer
                 while (i > 0 && i < Settings.SIZE_WIDTH && j > 0 && j < Settings.SIZE_HEIGHT && !end)
                 {
                     (i, j) = (i + direction.Item1, j + direction.Item2);
-                    CellState cellState = Gameboard[i, j];
+                    CellState cellState = Board[i, j];
                     if (cellState == cellStatePlayer)
                     {
                         end = true;

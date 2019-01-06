@@ -24,7 +24,7 @@ namespace OthelloMillenniumServer.Tests.GameLogic
                 playerOne = !playerOne;
             }
 
-            GameState gameState = gameManager.GetGameState();
+            GameBoard gameState = gameManager.GetGameState();
 
             Assert.IsTrue(gameState.IsGameEnded(), "Sequence 1 OK");
         }
