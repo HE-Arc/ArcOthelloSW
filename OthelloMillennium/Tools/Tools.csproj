@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameStateExport.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Toolbox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
