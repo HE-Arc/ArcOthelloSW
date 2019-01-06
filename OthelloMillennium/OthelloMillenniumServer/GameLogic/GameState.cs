@@ -19,7 +19,7 @@ namespace OthelloMillenniumServer
         #endregion
 
         #region Attributs
-        private CellState[,] gameboard;
+        public CellState[,] Gameboard { get; private set; }
 
         //Directions to explore
         private static readonly (int, int)[] directions =
@@ -29,12 +29,15 @@ namespace OthelloMillenniumServer
             (-1,  1), (0,  1), (1,  1),
         };
 
-        Dictionary<CellState, int> scores;
+        private Dictionary<CellState, int> cellStateCount;
 
         #endregion
 
         #region Properties
         public bool GameEnded { get; private set; }
+
+        // Neccessary when we want to manage move back and a player can't move
+        private CellState LastPlayer { get; }
 
         #endregion
 
@@ -47,7 +50,6 @@ namespace OthelloMillenniumServer
         {
             CellState[,] state = new CellState[Settings.SIZE_WIDTH, Settings.SIZE_HEIGHT];
 
-            //TODO: Potential to improve this part
             state[3, 3] = CellState.WHITE;
             state[3, 4] = CellState.BLACK;
             state[4, 4] = CellState.WHITE;
@@ -75,23 +77,46 @@ namespace OthelloMillenniumServer
         /// Constructor to create a new GameState
         /// </summary>
         /// <param name="cellState"></param>
-        public GameState(CellState[,] cellState)
+        public GameState(CellState[,] cellState, CellState cellStatePlayer = CellState.EMPTY)
         {
-            gameboard = cellState;
-            scores = new Dictionary<CellState, int>();
+            Gameboard = cellState;
+            cellStateCount = new Dictionary<CellState, int>();
 
             // Init scores
-            scores.Add(CellState.BLACK, 0);
-            scores.Add(CellState.WHITE, 0);
-            scores.Add(CellState.EMPTY, 0);
+            cellStateCount.Add(CellState.BLACK, 0);
+            cellStateCount.Add(CellState.WHITE, 0);
+            cellStateCount.Add(CellState.EMPTY, 0);
 
             // Calculate scores, counting the empty allow to know how many cells are empty
-            foreach (CellState cell in gameboard)
+            foreach (CellState cell in Gameboard)
             {
-                scores[cell]++;
+                cellStateCount[cell]++;
             }
 
             ComputeGameEnded();
+        }
+
+        /// <summary>
+        /// Compute the valid move for one player
+        /// </summary>
+        /// <param name="cellStatePlayer"></param>
+        /// <returns></returns>
+        public List<(int, int)> PossibleMoves(CellState cellStatePlayer)
+        {
+            List<(int, int)> validMoves = new List<(int, int)>();
+            // Check if the user can make a move
+            for (int i = 0; i < Settings.SIZE_WIDTH; ++i)
+            {
+                for (int j = 0; j < Settings.SIZE_WIDTH; ++j)
+                {
+                    if (ValidateMove((i, j), cellStatePlayer))
+                    {
+                        validMoves.Add((i, j));
+                    }
+                }
+            }
+
+            return validMoves;
         }
 
         /// <summary>
@@ -101,7 +126,7 @@ namespace OthelloMillenniumServer
         public bool PlayerCanPlay(CellState cellStatePlayer)
         {
             // Check if the user has been eradicated
-            if(scores[cellStatePlayer] == 0)
+            if(cellStateCount[cellStatePlayer] == 0)
             {
                 return false;
             }
@@ -123,14 +148,67 @@ namespace OthelloMillenniumServer
         }
 
         /// <summary>
-        /// Check if the game is finished
+        /// Apply a move and return the new GameState
         /// </summary>
+        /// <param name="point"></param>
+        /// <param name="state"></param>
         /// <returns></returns>
-        private void ComputeGameEnded()
+        public GameState ApplyMove((char, int) coord, CellState cellStatePlayer)
         {
-            // Manage all casses, when all token have been played
-            // when a player as been eradicated or even when no one can move
-            GameEnded = scores[CellState.EMPTY] == 0 || !PlayerCanPlay(CellState.WHITE) || !PlayerCanPlay(CellState.BLACK);
+            (int, int) indices = CoordToInt(coord);
+
+            CellState[,] newCellState = (CellState[,])Gameboard.Clone();
+            newCellState[indices.Item1, indices.Item2] = cellStatePlayer;
+
+            List<(int, int)> tokenToReturn = new List<(int, int)>();
+            List<(int, int)> tokenToReturnPotential = new List<(int, int)>();
+
+            // Check in all 8 directions that there is at least one cellState of our own
+            foreach ((int, int) direction in directions)
+            {
+                tokenToReturnPotential.Clear();
+                bool end = false;
+                (int i, int j) = indices;
+                while (i > 0 && i < Settings.SIZE_WIDTH && j > 0 && j < Settings.SIZE_HEIGHT && !end)
+                {
+                    // Compute cell
+                    (i, j) = (i + direction.Item1, j + direction.Item2);
+                    CellState cellState = Gameboard[i, j];
+
+                    if (cellState == cellStatePlayer) // Token of the player
+                    {
+                        end = true;
+                        tokenToReturn.AddRange(tokenToReturnPotential);
+                    }
+                    else if (cellState == CellState.EMPTY) // No token
+                    {
+                        end = true;
+                    }
+                    else // Token of the opponent
+                    {
+                        tokenToReturnPotential.Add((i, j));
+                    }
+                }
+            }
+
+            // Return the tokens
+            foreach ((int i, int j) in tokenToReturn)
+            {
+                newCellState[i, j] = cellStatePlayer;
+            }
+
+            // Return the new state
+            return new GameState(newCellState, cellStatePlayer);
+        }
+
+        /// <summary>
+        /// Return the number of token of this sort
+        /// </summary>
+        /// <param name="cellStatePlayer"></param>
+        /// <returns>Nb of cell conrtaining the given cellState</returns>
+        public int getNbToken(CellState cellStatePlayer)
+        {
+            return cellStateCount[cellStatePlayer];
         }
 
         /// <summary>
@@ -153,7 +231,7 @@ namespace OthelloMillenniumServer
         private bool ValidateMove((int, int) indices, CellState cellStatePlayer)
         {
             //Check if celle at given coord is empty
-            if (gameboard[indices.Item1, indices.Item2] != CellState.EMPTY)
+            if (Gameboard[indices.Item1, indices.Item2] != CellState.EMPTY)
             {
                 return false;
             }
@@ -168,7 +246,7 @@ namespace OthelloMillenniumServer
                 while (i > 0 && i < Settings.SIZE_WIDTH && j > 0 && j < Settings.SIZE_HEIGHT && !end)
                 {
                     (i, j) = (i + direction.Item1, j + direction.Item2);
-                    CellState cellState = gameboard[i, j];
+                    CellState cellState = Gameboard[i, j];
                     if (cellState == cellStatePlayer)
                     {
                         end = true;
@@ -189,57 +267,14 @@ namespace OthelloMillenniumServer
         }
 
         /// <summary>
-        /// Apply a move and return the new GameState
+        /// Check if the game is finished
         /// </summary>
-        /// <param name="point"></param>
-        /// <param name="state"></param>
         /// <returns></returns>
-        public GameState ApplyMove((char, int) coord, CellState cellStatePlayer)
+        private void ComputeGameEnded()
         {
-            (int, int) indices = CoordToInt(coord);
-
-            CellState[,] newCellState = (CellState[,])gameboard.Clone();
-            newCellState[indices.Item1, indices.Item2] = cellStatePlayer;
-
-            List<(int, int)> tokenToReturn = new List<(int, int)>();
-            List<(int, int)> tokenToReturnPotential = new List<(int, int)>();
-
-            // Check in all 8 directions that there is at least one cellState of our own
-            foreach ((int, int) direction in directions)
-            {
-                tokenToReturnPotential.Clear();
-                bool end = false;
-                (int i, int j) = indices;
-                while (i > 0 && i < Settings.SIZE_WIDTH && j > 0 && j < Settings.SIZE_HEIGHT && !end)
-                {
-                    // Compute cell
-                    (i, j) = (i + direction.Item1, j + direction.Item2);
-                    CellState cellState = gameboard[i, j];
-
-                    if (cellState == cellStatePlayer) // Token of the player
-                    {
-                        end = true;
-                        tokenToReturn.AddRange(tokenToReturnPotential);
-                    }
-                    else if (cellState == CellState.EMPTY) // No token
-                    {
-                        end = true;
-                    }
-                    else // Token of the opponent
-                    {
-                        tokenToReturnPotential.Add((i, j));
-                    }
-                }
-            }
-
-            // Return the tokens
-            foreach((int i, int j) in tokenToReturn)
-            {
-                newCellState[i, j] = cellStatePlayer;
-            }
-
-            // Return the new state
-            return new GameState(newCellState);
+            // Manage all casses, when all token have been played
+            // when a player as been eradicated or even when no one can move
+            GameEnded = cellStateCount[CellState.EMPTY] == 0 || !PlayerCanPlay(CellState.WHITE) || !PlayerCanPlay(CellState.BLACK);
         }
     }
 }
