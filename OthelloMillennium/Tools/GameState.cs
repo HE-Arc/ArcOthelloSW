@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Tools
 {
-    public class GameStateExport
+    public class GameState
     {
         #region Properties
+        public int Winner { get; }
         public int PlayerTurn { get; }
         public bool GameEnded { get; } 
         public int[,] Gameboard { get; }
@@ -18,12 +19,13 @@ namespace Tools
 
         #endregion
 
-        public GameStateExport(bool gameEnded, int playerTurn, (int, int) scores, int[,] gameboard, List<(int, int)> possiblesMoves, (long, long) remainingTimes)
+        public GameState(bool gameEnded, int playerTurn, (int, int) scores, int[,] gameboard, List<(int, int)> possiblesMoves, (long, long) remainingTimes, int winner)
         {
-            GameEnded = gameEnded;
-            PlayerTurn = playerTurn;
             Scores = scores;
+            Winner = winner;
+            GameEnded = gameEnded;
             Gameboard = gameboard;
+            PlayerTurn = playerTurn;
             PossiblesMoves = possiblesMoves;
             RemainingTimes = remainingTimes;
         }
