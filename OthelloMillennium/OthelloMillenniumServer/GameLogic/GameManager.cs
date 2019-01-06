@@ -1,6 +1,8 @@
-﻿using OthelloMillenniumServer.GameLogic;
+﻿using NUnit.Framework;
+using OthelloMillenniumServer.GameLogic;
 using System;
 using System.Collections.Generic;
+using Tools;
 
 namespace OthelloMillenniumServer
 {
@@ -11,7 +13,7 @@ namespace OthelloMillenniumServer
         {
             public string Winner { get; private set; }
 
-            public (DateTime, DateTime) TotalTime { get; private set; }
+            public (long, long) TotalTime { get; private set; }
 
             public (int, int) Score { get; private set; }
         }
@@ -23,9 +25,9 @@ namespace OthelloMillenniumServer
         }
 
         public enum Player
-        {
-            BlackPlayer = 0,
-            WhitePlayer = 1
+        { // Values have been choosen to fit GameState.CellState
+            BlackPlayer = 1,
+            WhitePlayer = 2
         }
 
         private static GameState.CellState PlayerToCellState(Player player)
@@ -46,6 +48,7 @@ namespace OthelloMillenniumServer
         private int indexState;
         private List<GameState> listGameState;
         private Dictionary<Player, StoppableTimer> timeCounter;
+        private (int, int) scores;
 
         #endregion
 
@@ -62,6 +65,7 @@ namespace OthelloMillenniumServer
             indexState = 0;
             listGameState = new List<GameState>();
             listGameState.Add(GameState.CreateStartState());
+            Assert.False(listGameState[indexState].GameEnded);
 
             if (Type == GameType.MultiPlayer)
             {
@@ -73,6 +77,8 @@ namespace OthelloMillenniumServer
             }
             
             CurrentPlayerTurn = Player.BlackPlayer;
+
+            ComputeScore();
         }
 
         /// <summary>
@@ -80,8 +86,13 @@ namespace OthelloMillenniumServer
         /// </summary>
         public void Start()
         {
+            if (GameEnded)
+            {
+                throw new Exception("Game ended");
+            }
+
             //We start the counter
-            if(Type == GameType.MultiPlayer)
+            if (Type == GameType.MultiPlayer)
             {
                 timeCounter[Player.BlackPlayer].Start();
             }
@@ -94,6 +105,11 @@ namespace OthelloMillenniumServer
         /// <param name="isPlayerOne"></param>
         public void PlayMove((char, int) coord, Player player)
         {
+            if (GameEnded)
+            {
+                throw new Exception("Game ended");
+            }
+
             if (player != CurrentPlayerTurn)
             {
                 throw new Exception("Invalid player turn");
@@ -127,23 +143,23 @@ namespace OthelloMillenniumServer
             {
                 EndGame();
             }
+            else
+            {
+                ComputeScore();
+            }
         }
         
-        /// <summary>
-        /// TODO REMOVE for test purposes
-        /// </summary>
-        /// <returns></returns>
-        public GameState GetGameState()
-        {
-            return listGameState[indexState];
-        }
-
         /// <summary>
         /// Reverse a move
         /// </summary>
         public void MoveBack()
         {
-            if(Type == GameType.MultiPlayer)
+            if (GameEnded)
+            {
+                throw new Exception("Game ended");
+            }
+
+            if (Type == GameType.MultiPlayer)
             {
                 throw new Exception("Action not allowed in Multiplayer game type");
             }
@@ -153,7 +169,10 @@ namespace OthelloMillenniumServer
                 --indexState;
                 SwitchPlayer();
             }
-            //TODO SEGAN, Veux-tu une exception si on ne peux pas revenir plus en arrière
+            else
+            {
+                throw new Exception("Not possible to move back");
+            }
         }
         
         /// <summary>
@@ -161,6 +180,11 @@ namespace OthelloMillenniumServer
         /// </summary>
         public void MoveForward()
         {
+            if (GameEnded)
+            {
+                throw new Exception("Game ended");
+            }
+
             if (Type == GameType.MultiPlayer)
             {
                 throw new Exception("Action not allowed in Multiplayer game type");
@@ -171,7 +195,10 @@ namespace OthelloMillenniumServer
                 ++indexState;
                 SwitchPlayer();
             }
-            //TODO SEGAN, Veux-tu une exception si on est déjà au dernier état
+            else
+            {
+                throw new Exception("Not possible to move forward");
+            }
         }
 
         /// <summary>
@@ -189,7 +216,7 @@ namespace OthelloMillenniumServer
         /// </summary>
         private void SwitchPlayer()
         {
-            CurrentPlayerTurn = (Player)(((int)CurrentPlayerTurn + 1) % 2);
+            CurrentPlayerTurn = (Player)(((int)CurrentPlayerTurn) % 2) + 1;
         }
 
         /// <summary>
@@ -202,11 +229,62 @@ namespace OthelloMillenniumServer
             GameManagerArgs gameManagerArgs = new GameManagerArgs();
 
             timeCounter[CurrentPlayerTurn].Stop();
+            ComputeScore();
 
             //TODO Complete event values
-            //TODO Choose if we can go back in singleplayer mode
-
             handler(this, gameManagerArgs);
+        }
+
+        private void ComputeScore()
+        {
+            GameState gameState = listGameState[indexState];
+            int maxScore = gameState.Gameboard.GetLength(0) * gameState.Gameboard.GetLength(1);
+            
+            if (timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 || timeCounter[Player.WhitePlayer].GetRemainingTime() == 0)
+            {
+                //One player is out of time
+                scores = timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 ? (0, maxScore) : (maxScore, 0);
+            }
+            else
+            {
+                // Get nb token per player
+                (int black, int white) = (gameState.getNbToken(GameState.CellState.BLACK), gameState.getNbToken(GameState.CellState.WHITE));
+
+                if (!GameEnded || gameState.getNbToken(GameState.CellState.EMPTY) == 0)
+                {
+                    // Default Count number of token for each player
+                    scores = (black, white);
+                }
+                else if (black == 0 || white == 0)
+                {
+                    //Eradication of a player
+                    scores = black == 0 ? (0, maxScore) : (maxScore, 0);
+                }
+                else
+                {
+                    // No player can move
+                    scores = black > white ? (maxScore - white, white) : (black, maxScore - black);
+                }
+            }
+        }
+
+        private GameStateExport Export()
+        {
+            GameState.CellState[,] gameboard = listGameState[indexState].Gameboard;
+            int[,] board = new int[gameboard.GetLength(0), gameboard.GetLength(1)];
+
+            for (int i=0; i< gameboard.GetLength(0); ++i)
+            {
+                for (int j = 0; j < gameboard.GetLength(1); ++j)
+                {
+                    board[i,j] = (int)gameboard[i,j];
+                }
+            }
+            
+            List<(int, int)> possiblesMoves = listGameState[indexState].PossibleMoves(PlayerToCellState(CurrentPlayerTurn));
+            (long, long) remainingTimes = (timeCounter[Player.BlackPlayer].GetRemainingTime(), timeCounter[Player.WhitePlayer].GetRemainingTime());
+            
+            return new GameStateExport(GameEnded, (int)CurrentPlayerTurn, scores, board, possiblesMoves, remainingTimes);
         }
     }
 }
