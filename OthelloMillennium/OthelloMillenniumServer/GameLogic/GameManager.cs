@@ -58,6 +58,7 @@ namespace OthelloMillenniumServer
             listGameState = new List<GameBoard>();
             listGameState.Add(GameBoard.CreateStartState());
             Assert.False(listGameState[indexState].GameEnded);
+            Assert.True(listGameState[indexState].LastPlayer == GameBoard.CellState.WHITE);
 
             if (Type == GameType.MultiPlayer)
             {
@@ -208,7 +209,9 @@ namespace OthelloMillenniumServer
         /// </summary>
         private void SwitchPlayer()
         {
-            CurrentPlayerTurn = (Player)(((int)CurrentPlayerTurn) % 2) + 1;
+            GameBoard.CellState lastPlayer = listGameState[indexState].LastPlayer;
+            GameBoard.CellState nextPlayer = (GameBoard.CellState)((int)lastPlayer % 2 + 1);
+            CurrentPlayerTurn = (Player) (listGameState[indexState].PlayerCanPlay(nextPlayer) ? nextPlayer : lastPlayer);
         }
 
         /// <summary>

@@ -37,7 +37,7 @@ namespace OthelloMillenniumServer
         public bool GameEnded { get; private set; }
 
         // Neccessary when we want to manage move back and a player can't move
-        private CellState LastPlayer { get; }
+        public CellState LastPlayer { get; }
 
         #endregion
 
