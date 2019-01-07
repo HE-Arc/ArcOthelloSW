@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Tools
 {
-    public class GameState
+    [Serializable]
+    public class GameState : ISerializable
     {
         #region Properties
         public int Winner { get; }
@@ -28,6 +30,20 @@ namespace Tools
             PlayerTurn = playerTurn;
             PossiblesMoves = possiblesMoves;
             RemainingTimes = remainingTimes;
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+                throw new ArgumentNullException("info");
+
+            info.AddValue("Scores", Scores);
+            info.AddValue("Winner", Winner);
+            info.AddValue("GameEnded", GameEnded);
+            info.AddValue("Gameboard", Gameboard);
+            info.AddValue("PlayerTurn", PlayerTurn);
+            info.AddValue("PossiblesMoves", PossiblesMoves);
+            info.AddValue("RemainingTimes", RemainingTimes);
         }
     }
 }

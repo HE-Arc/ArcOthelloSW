@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Tools;
 
 namespace OthelloMillenniumServer
 {
@@ -113,6 +115,24 @@ namespace OthelloMillenniumServer
 
                     // Message send
                     return true;
+                }
+            }
+            return false;
+        }
+
+        public bool Send(TcpClient client, GameState gameState)
+        {
+            if (client.Connected)
+            {
+                try
+                {
+                    BinaryFormatter binaryFmt = new BinaryFormatter();
+                    binaryFmt.Serialize(client.GetStream(), gameState);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Toolbox.LogError(ex);
                 }
             }
             return false;

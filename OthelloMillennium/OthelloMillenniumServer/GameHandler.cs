@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace OthelloMillenniumServer
 {
+    /*
+     * Parse orders and send them to gamemanager
+     * keep clients informed
+     */
     class GameHandler
     {
         public TcpClient client1 { get; private set; }
