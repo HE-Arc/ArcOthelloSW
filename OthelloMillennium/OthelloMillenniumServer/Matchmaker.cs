@@ -4,16 +4,13 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Tools;
+using Tools.Classes;
 
 namespace OthelloMillenniumServer
 {
     public class Matchmaker
     {
-        #region Internal Classes
-        
-
-        #endregion
-
         #region Singleton
         private static readonly object padlock = new object();
         private static Matchmaker instance = null;
@@ -42,12 +39,13 @@ namespace OthelloMillenniumServer
 
         #region Attributes
         private readonly HashSet<GameHandler> matches = new HashSet<GameHandler>();
-        private readonly HashSet<TcpClient> clients = new HashSet<TcpClient>();
+        private readonly Dictionary<GameManager.GameType, HashSet<OthelloTCPClient>> registratedClientsPerGameTypeDict = new Dictionary<GameManager.GameType, HashSet<OthelloTCPClient>>();
         private bool running = false;
         #endregion
 
         #region Properties
-        
+        HashSet<OthelloTCPClient> LocalClients => registratedClientsPerGameTypeDict[GameManager.GameType.SinglePlayer];
+        HashSet<OthelloTCPClient> OnlineClients => registratedClientsPerGameTypeDict[GameManager.GameType.MultiPlayer];
         #endregion
 
         private void StartMatchmaking()
@@ -59,26 +57,51 @@ namespace OthelloMillenniumServer
                 {
                     while(running)
                     {
+                        #region Local
                         // Start to look for any good binding if there is 2 or more player/AI waiting
-                        if (clients.Count > 2)
+                        if (LocalClients.Count > 2)
                         {
                             // TODO : Insert logic (i.e. ranking, waiting time, etc)
 
                             // For now we take the first and the last one
-                            var client1 = clients.First();
-                            var client2 = clients.Last();
+                            var client1 = LocalClients.First();
+                            var client2 = LocalClients.Last();
 
                             // GameManager will now handle clients and put them as InGame
-                            matches.Add(new GameHandler(client1, client2));
+                            matches.Add(new GameHandler(client1, client2, GameManager.GameType.SinglePlayer));
 
                             // Informs clients that an opponent has be found
-                            TCPServer.Instance.Send(client1, Toolbox.Protocole.OpponentFound);
-                            TCPServer.Instance.Send(client2, Toolbox.Protocole.OpponentFound);
+                            TCPServer.Instance.Send(client1, OrderProvider.OpponentFound);
+                            TCPServer.Instance.Send(client2, OrderProvider.OpponentFound);
 
                             // Remove them from the queue
-                            clients.Remove(client1);
-                            clients.Remove(client2);
+                            LocalClients.Remove(client1);
+                            LocalClients.Remove(client2);
                         }
+                        #endregion
+
+                        #region Online
+                        // Start to look for any good binding if there is 2 or more player/AI waiting
+                        if (OnlineClients.Count > 2)
+                        {
+                            // TODO : Insert logic (i.e. ranking, waiting time, etc)
+
+                            // For now we take the first and the last one
+                            var client1 = OnlineClients.First();
+                            var client2 = OnlineClients.Last();
+
+                            // GameManager will now handle clients and put them as InGame
+                            matches.Add(new GameHandler(client1, client2, GameManager.GameType.MultiPlayer));
+
+                            // Informs clients that an opponent has be found
+                            TCPServer.Instance.Send(client1, OrderProvider.OpponentFound);
+                            TCPServer.Instance.Send(client2, OrderProvider.OpponentFound);
+
+                            // Remove them from the queue
+                            OnlineClients.Remove(client1);
+                            OnlineClients.Remove(client2);
+                        }
+                        #endregion
 
                         // Sleep for 500 ms
                         Thread.Sleep(500);
@@ -91,11 +114,26 @@ namespace OthelloMillenniumServer
             }
         }
 
+        /// <summary>
+        /// Retrieves the match in which the player plays
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        public GameHandler GetMatch(OthelloTCPClient client)
+        {
+            return matches.Where(match => match.Client1 == client || match.Client2 == client).FirstOrDefault();
+        }
+
+        public bool IsKnown(OthelloTCPClient client)
+        {
+            return LocalClients.Contains(client) || OnlineClients.Contains(client);
+        }
+
         private void RegisterNewClient(object sender, ServerEvent e)
         {
-            if (clients.Contains(e.Client))
+            if (IsKnown(e.Client))
             {
-                var currentMatch = matches.Where(match => match.client1 == e.Client || match.client2 == e.Client).First();
+                var currentMatch = matches.Where(match => match.Client1 == e.Client || match.Client2 == e.Client).First();
                 if (currentMatch == null)
                 {
                     throw new Exception("Client already registred and searching for a game");
@@ -110,28 +148,31 @@ namespace OthelloMillenniumServer
             }
             else
             {
-                // Register new client
-                clients.Add(e.Client);
+                // TODO: Register new client as local or online
+                //clients.Add(e.Client);
 
                 // Informs the client that he is now known to the server
-                TCPServer.Instance.Send(e.Client, Toolbox.Protocole.RegisterSuccessful);
+                TCPServer.Instance.Send(e.Client, OrderProvider.RegisterSuccessful);
             }
         }
 
         private void DisconnectClient(object sender, ServerEvent e)
         {
-            if (clients.Contains(e.Client))
+            if (IsKnown(e.Client))
             {
-                var currentMatch = matches.Where(match => match.client1 == e.Client || match.client2 == e.Client).First();
+                // Get the match 
+                var currentMatch = GetMatch(e.Client);
 
                 if (currentMatch == null)
                 {
-                    clients.Remove(e.Client);
+                    // Remove the client from the match
+                    registratedClientsPerGameTypeDict[currentMatch.GameType].Remove(e.Client);
                 }
                 else
                 {
-                    // Disconnect handled in gameHandler
-                    // ---------------------
+                    // Warn the opponent
+                    var opponent = currentMatch.Client1 == e.Client ? currentMatch.Client1 : currentMatch.Client2;
+                    TCPServer.Instance.Send(opponent, OrderProvider.OpponentDisconnected);
                 }
             }
             else

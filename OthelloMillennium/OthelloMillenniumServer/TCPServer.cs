@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tools;
+using Tools.Classes;
 
 namespace OthelloMillenniumServer
 {
@@ -23,9 +24,9 @@ namespace OthelloMillenniumServer
         {
             get
             {
-                if(instance == null)
+                if (instance == null)
                 {
-                    lock(padlock)
+                    lock (padlock)
                     {
                         instance = new TCPServer();
                     }
@@ -39,7 +40,7 @@ namespace OthelloMillenniumServer
 
         #region Properties
         private readonly TcpListener listener = new TcpListener(IPAddress.Any, Port);
-        private readonly List<TcpClient> clients = new List<TcpClient>();
+        private readonly List<OthelloTCPClient> clients = new List<OthelloTCPClient>();
         public event EventHandler<ServerEvent> OnClientConnect;
         public event EventHandler<ServerEvent> OnClientDisconnect;
         #endregion
@@ -65,10 +66,14 @@ namespace OthelloMillenniumServer
                         {
                             // Store the new connection inside the client list
                             var newConnection = listener.AcceptTcpClient();
-                            clients.Add(newConnection);
+                            var client = new OthelloTCPClient();
+                            client.Bind(newConnection);
+
+                            // Append the new client
+                            clients.Add(client);
 
                             // Fire an event, will be used by the matchmaking
-                            OnClientConnect?.Invoke(this, new ServerEvent { Client = newConnection });
+                            OnClientConnect?.Invoke(this, new ServerEvent { Client = client });
                         }
                     }
                 });
@@ -77,7 +82,7 @@ namespace OthelloMillenniumServer
                 Task pinger = new Task(() =>
                 {
                     // Notify if any client disconnects
-                    foreach (TcpClient client in clients)
+                    foreach (OthelloTCPClient client in clients)
                     {
                         if (!Ping(client))
                             OnClientDisconnect?.Invoke(this, new ServerEvent { Client = client });
@@ -96,14 +101,20 @@ namespace OthelloMillenniumServer
             return true;
         }
 
-        public bool Send(TcpClient client, string message)
+        public void Receive()
         {
-            if(client.Connected)
+            //listener.Server.Receive();
+            throw new NotImplementedException();
+        }
+
+        public bool Send(OthelloTCPClient client, IOrder order)
+        {
+            if (client.TcpClient.Connected)
             {
-                var stream = client.GetStream();
-                if(stream.CanWrite)
+                var stream = client.TcpClient.GetStream();
+                if (stream.CanWrite)
                 {
-                    byte[] vs = Encoding.ASCII.GetBytes(message);
+                    byte[] vs = Encoding.ASCII.GetBytes(order.GetAcronym());
                     try
                     {
                         stream.Write(vs, 0, vs.Length);
@@ -120,14 +131,14 @@ namespace OthelloMillenniumServer
             return false;
         }
 
-        public bool Send(TcpClient client, GameState gameState)
+        public bool Send(OthelloTCPClient client, GameState gameState)
         {
-            if (client.Connected)
+            if (client.TcpClient.Connected)
             {
                 try
                 {
                     BinaryFormatter binaryFmt = new BinaryFormatter();
-                    binaryFmt.Serialize(client.GetStream(), gameState);
+                    binaryFmt.Serialize(client.TcpClient.GetStream(), gameState);
                     return true;
                 }
                 catch (Exception ex)
@@ -141,8 +152,18 @@ namespace OthelloMillenniumServer
         /// <summary>
         /// From : https://stackoverflow.com/questions/409906/can-you-retrieve-the-hostname-and-port-from-a-system-net-sockets-tcpclient
         /// </summary>
+        /// <param name="client">An OthelloTCPClient</param>
+        /// <returns><see cref="GetHostNameAndPort(TcpClient)"/></returns>
+        public Tuple<string, int> GetHostNameAndPort(OthelloTCPClient client)
+        {
+            return GetHostNameAndPort(client.TcpClient);
+        }
+
+        /// <summary>
+        /// From : https://stackoverflow.com/questions/409906/can-you-retrieve-the-hostname-and-port-from-a-system-net-sockets-tcpclient
+        /// </summary>
         /// <param name="client"></param>
-        /// <returns></returns>
+        /// <returns>A Tuple containing Hostname as Item1 and Port as Item2</returns>
         public Tuple<string, int> GetHostNameAndPort(TcpClient client)
         {
             IPEndPoint endPoint = (IPEndPoint)client.Client.LocalEndPoint;
@@ -158,6 +179,11 @@ namespace OthelloMillenniumServer
             return new Tuple<string, int>(hostName, port);
         }
 
+        public bool Ping(OthelloTCPClient client)
+        {
+            return Ping(client.TcpClient);
+        }
+
         public bool Ping(TcpClient client)
         {
             Ping p = new Ping();
@@ -171,7 +197,7 @@ namespace OthelloMillenniumServer
     public class ServerEvent : EventArgs
     {
 
-        public TcpClient Client { get; set; }
+        public OthelloTCPClient Client { get; set; }
 
         public DateTime FiredDateTime { get; private set; } = DateTime.Now;
     }

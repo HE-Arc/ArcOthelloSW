@@ -31,11 +31,11 @@ namespace OthelloMillenniumServer
         #region Properties
         public bool GameEnded { get; private set; }
         public GameType Type { get; private set; }
+        public Player CurrentPlayerTurn { get; private set; }
 
         #endregion
 
         #region Attributes
-        private Player CurrentPlayerTurn;
         private int indexState;
         private List<GameBoard> listGameState;
         private Dictionary<Player, StoppableTimer> timeCounter;
