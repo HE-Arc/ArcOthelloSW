@@ -1,7 +1,10 @@
 ﻿using OthelloMillenniumServer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Sockets;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,22 +13,51 @@ using Tools.Classes;
 namespace Tools
 {
     public class OthelloTCPClient
-    {  
+    {
+        private Task listenerTask;
+
         // Informations
         public TcpClient TcpClient { get; private set; }
         public PlayerState State { get; private set; }
-
         public Dictionary<string, object> Properties { get; private set; } = new Dictionary<string, object>();
 
         // Events
         public event EventHandler<OthelloTCPClientArgs> OnOrderReceived;
 
+        /// <summary>
+        /// Basic constructor, start to listen for orders
+        /// </summary>
         public OthelloTCPClient()
         {
+            listenerTask = new Task(() =>
+            {
+                while (true)
+                {
+                    if (TcpClient == null)
+                    {
+                        // Wait 1 second and check TcpConnection again
+                        Thread.Sleep(1000);
+                    }
+                    else
+                    {
+                        if (TcpClient.Connected)
+                        {
+                            AOrder output = Receive() as AOrder;
+                            if (output != null && !string.IsNullOrEmpty(output.GetAcronym()))
+                                OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs() { Order = output });
+                        }
 
+                        // Wait before reading again
+                        Thread.Sleep(100);
+                    }
+                }
+            });
+
+            // Start to listen
+            listenerTask.Start();
         }
 
-        public void Connect(string serverHostname, int serverPort)
+        public void ConnectTo(string serverHostname, int serverPort)
         {
             TcpClient = new TcpClient();
             State = PlayerState.Undefined;
@@ -40,61 +72,18 @@ namespace Tools
         }
 
         /// <summary>
-        /// Please use Toolbox.Protocole in order to choose the correct message to wait for
+        /// Send a serialized object to the server
         /// </summary>
-        /// <param name="message"></param>
-        public void WaitForOrder(IOrder order)
-        {
-            // Wait for the confirmation to be registred
-            Task waitForOrder = new Task(() =>
-            {
-                var stream = TcpClient.GetStream();
-                while (true)
-                {
-                    if (stream.CanRead)
-                    {
-                        byte[] buffer = new byte[order.GetLength()];
-
-                        // Read the stream
-                        string output = this.Receive(order);
-
-                        if (!string.IsNullOrEmpty(output))
-                        {
-                            if (output == order.GetAcronym())
-                            {
-                                OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs() { Order = order });
-                            }
-                            else
-                            {
-                                Toolbox.LogError(new Exception($"Wrong message received!\r\nWaiting for {order.GetAcronym()}"));
-                            }
-                        }
-                        Thread.Sleep(100);
-                    }
-                }
-            });
-        }
-
-        /// <summary>
-        /// Send a message to the server
-        /// </summary>
-        /// <param name="message">What to transfer</param>
-        public void Send(IOrder order)
+        /// <param name="obj">What to transfer</param>
+        public void Send(ISerializable obj)
         {
             try
             {
                 var stream = TcpClient.GetStream();
                 if (stream.CanWrite)
                 {
-                    byte[] vs = Encoding.ASCII.GetBytes(order.GetAcronym());
-                    try
-                    {
-                        stream.Write(vs, 0, order.GetLength());
-                    }
-                    catch (Exception ex)
-                    {
-                        Toolbox.LogError(ex);
-                    }
+                    BinaryFormatter binaryFmt = new BinaryFormatter();
+                    binaryFmt.Serialize(stream, obj);
                 }
             }
             catch (Exception ex)
@@ -106,19 +95,18 @@ namespace Tools
         /// <summary>
         /// Translate the message waiting on the socket
         /// </summary>
-        /// <returns>string : the message received</returns>
-        private string Receive(IOrder order)
+        /// <returns>Deserialized object</returns>
+        private object Receive()
         {
             try
             {
                 var stream = TcpClient.GetStream();
+                var streamReader = new StreamReader(stream);
+
                 if (stream.CanRead)
                 {
-                    byte[] buffer = new byte[order.GetLength()];
-                    stream.Read(buffer, 0, buffer.Length);
-
-                    // Return the decode message
-                    return Encoding.UTF8.GetString(buffer);
+                    BinaryFormatter binaryFmt = new BinaryFormatter();
+                    return binaryFmt.Deserialize(stream);
                 }
             }
             catch (Exception ex)
@@ -127,12 +115,12 @@ namespace Tools
             }
 
             // Nothing could be read
-            return string.Empty;
+            return null;
         }
     }
 
     public class OthelloTCPClientArgs
     {
-        public IOrder Order { get; set; }
+        public AOrder Order { get; set; }
     }
 }

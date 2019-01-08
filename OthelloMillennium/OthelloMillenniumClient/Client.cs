@@ -12,7 +12,7 @@ namespace OthelloMillenniumServer
         public Client(string serverHostname, int serverPort)
             : base()
         {
-            this.Connect(serverHostname, serverPort);
+            this.ConnectTo(serverHostname, serverPort);
         }
     }
 }

@@ -55,6 +55,7 @@ namespace OthelloMillenniumServer
                 // Start an asynchronous socket to listen for connections.  
                 Console.WriteLine("Waiting for connections...");
 
+                #region AcceptConnection
                 // Accept any new connection
                 Task t = new Task(() =>
                 {
@@ -78,6 +79,12 @@ namespace OthelloMillenniumServer
                     }
                 });
 
+                // Start to accept new connection
+                t.Start();
+
+                #endregion
+
+                #region PING
                 // Every 5 seconds the server will ping clients
                 Task pinger = new Task(() =>
                 {
@@ -92,61 +99,17 @@ namespace OthelloMillenniumServer
                     Thread.Sleep(5000);
                 });
 
+                // Start to ping clients
+                pinger.Start();
+                #endregion
+
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.Error.WriteLine(e.ToString());
+                Toolbox.LogError(ex);
             }
 
             return true;
-        }
-
-        public void Receive()
-        {
-            //listener.Server.Receive();
-            throw new NotImplementedException();
-        }
-
-        public bool Send(OthelloTCPClient client, IOrder order)
-        {
-            if (client.TcpClient.Connected)
-            {
-                var stream = client.TcpClient.GetStream();
-                if (stream.CanWrite)
-                {
-                    byte[] vs = Encoding.ASCII.GetBytes(order.GetAcronym());
-                    try
-                    {
-                        stream.Write(vs, 0, vs.Length);
-                    }
-                    catch (Exception ex)
-                    {
-                        Toolbox.LogError(ex);
-                    }
-
-                    // Message send
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool Send(OthelloTCPClient client, GameState gameState)
-        {
-            if (client.TcpClient.Connected)
-            {
-                try
-                {
-                    BinaryFormatter binaryFmt = new BinaryFormatter();
-                    binaryFmt.Serialize(client.TcpClient.GetStream(), gameState);
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Toolbox.LogError(ex);
-                }
-            }
-            return false;
         }
 
         /// <summary>
@@ -179,11 +142,21 @@ namespace OthelloMillenniumServer
             return new Tuple<string, int>(hostName, port);
         }
 
+        /// <summary>
+        /// Ping the client
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
         public bool Ping(OthelloTCPClient client)
         {
             return Ping(client.TcpClient);
         }
 
+        /// <summary>
+        /// Ping the client
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
         public bool Ping(TcpClient client)
         {
             Ping p = new Ping();
@@ -196,9 +169,7 @@ namespace OthelloMillenniumServer
   
     public class ServerEvent : EventArgs
     {
-
         public OthelloTCPClient Client { get; set; }
-
         public DateTime FiredDateTime { get; private set; } = DateTime.Now;
     }
 }

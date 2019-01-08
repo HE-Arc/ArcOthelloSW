@@ -32,6 +32,20 @@ namespace Tools
             RemainingTimes = remainingTimes;
         }
 
+        protected GameState(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+                throw new ArgumentNullException("info");
+
+            Scores = ((int, int))info.GetValue("Scores", typeof((int, int)));
+            Winner = (int)info.GetValue("Winner", typeof(int));
+            GameEnded = (bool)info.GetValue("GameEnded", typeof(bool));
+            Gameboard = (int[,])info.GetValue("Gameboard", typeof(int[,]));
+            PlayerTurn = (int)info.GetValue("PlayerTurn", typeof(int));
+            PossiblesMoves = (List<(int, int)>)info.GetValue("PossiblesMoves", typeof(List<(int, int)>));
+            RemainingTimes = ((long, long))info.GetValue("RemainingTimes", typeof((long, long)));
+        }
+
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (info == null)

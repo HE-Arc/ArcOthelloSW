@@ -71,8 +71,8 @@ namespace OthelloMillenniumServer
                             matches.Add(new GameHandler(client1, client2, GameManager.GameType.SinglePlayer));
 
                             // Informs clients that an opponent has be found
-                            TCPServer.Instance.Send(client1, OrderProvider.OpponentFound);
-                            TCPServer.Instance.Send(client2, OrderProvider.OpponentFound);
+                            client1.Send(OrderProvider.OpponentFound);
+                            client2.Send(OrderProvider.OpponentFound);
 
                             // Remove them from the queue
                             LocalClients.Remove(client1);
@@ -94,8 +94,8 @@ namespace OthelloMillenniumServer
                             matches.Add(new GameHandler(client1, client2, GameManager.GameType.MultiPlayer));
 
                             // Informs clients that an opponent has be found
-                            TCPServer.Instance.Send(client1, OrderProvider.OpponentFound);
-                            TCPServer.Instance.Send(client2, OrderProvider.OpponentFound);
+                            client1.Send(OrderProvider.OpponentFound);
+                            client2.Send(OrderProvider.OpponentFound);
 
                             // Remove them from the queue
                             OnlineClients.Remove(client1);
@@ -152,7 +152,7 @@ namespace OthelloMillenniumServer
                 //clients.Add(e.Client);
 
                 // Informs the client that he is now known to the server
-                TCPServer.Instance.Send(e.Client, OrderProvider.RegisterSuccessful);
+                e.Client.Send(OrderProvider.RegisterSuccessful);
             }
         }
 
@@ -172,7 +172,7 @@ namespace OthelloMillenniumServer
                 {
                     // Warn the opponent
                     var opponent = currentMatch.Client1 == e.Client ? currentMatch.Client1 : currentMatch.Client2;
-                    TCPServer.Instance.Send(opponent, OrderProvider.OpponentDisconnected);
+                    opponent.Send(OrderProvider.OpponentDisconnected);
                 }
             }
             else
