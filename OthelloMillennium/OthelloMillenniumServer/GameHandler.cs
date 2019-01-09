@@ -27,40 +27,40 @@ namespace OthelloMillenniumServer
         public OthelloTCPClient Client2 { get; private set; }
 
         // GameManager
-        private readonly GameManager gameManager;
+        public GameManager GameManager { get; private set; }
 
         /// <summary>
         /// Type of game currently being played
         /// </summary>
-        public GameManager.GameType GameType => gameManager.Type;
+        public GameManager.GameType GameType => GameManager.Type;
 
         public GameHandler(OthelloTCPClient black, OthelloTCPClient white, GameManager.GameType gameType)
         {
             // Init Client
             this.Client1 = black;
             this.Client1.Properties.Add("Color", GameManager.Player.BlackPlayer);
-
+            
             this.Client2 = white;
             this.Client2.Properties.Add("Color", GameManager.Player.WhitePlayer);
+
+            this.Client1.Properties.Add("Opponent", this.Client2);
+            this.Client2.Properties.Add("Opponent", this.Client1);
 
             // Assign color
             Client1.Send(OrderProvider.BlackAssigned);
             Client2.Send(OrderProvider.WhiteAssigned);
-
-            // Hook disconnect messages
-            TCPServer.Instance.OnClientDisconnect += Instance_OnClientDisconnect;
 
             // Init gameManager
             switch(gameType)
             {
                 case GameManager.GameType.MultiPlayer:
                     // Init a gameManager
-                    this.gameManager = new GameManager(GameManager.GameType.MultiPlayer);
+                    this.GameManager = new GameManager(GameManager.GameType.MultiPlayer);
 
                     break;
                 case GameManager.GameType.SinglePlayer:
                     // Init a gameManager
-                    this.gameManager = new GameManager(GameManager.GameType.SinglePlayer);
+                    this.GameManager = new GameManager(GameManager.GameType.SinglePlayer);
 
                     //TODO : AI starts or not ?
                     break;
@@ -74,8 +74,12 @@ namespace OthelloMillenniumServer
             Client1.Send(OrderProvider.StartOfTheGame);
             Client2.Send(OrderProvider.StartOfTheGame);
 
+            // Update client state
+            Client1.State = PlayerState.InGame;
+            Client2.State = PlayerState.InGame;
+
             // Start the game
-            gameManager.Start();
+            GameManager.Start();
 
             // Black Start
             Client1.Send(OrderProvider.PlayerBegin);
@@ -84,6 +88,11 @@ namespace OthelloMillenniumServer
             // React to clients orders
             Client1.OnOrderReceived += OnOrderReceived;
             Client2.OnOrderReceived += OnOrderReceived;
+        }
+
+        private void GameManager_OnGameFinished(object sender, GameState e)
+        {
+            throw new NotImplementedException();
         }
 
         private void OnOrderReceived(object s, OthelloTCPClientArgs e)
@@ -95,7 +104,7 @@ namespace OthelloMillenniumServer
             {
                 case GetCurrentGameStateOrder order:
                     // A client asked for the gameState, send it back to him
-                    sender.Send(gameManager.Export());
+                    sender.Send(GameManager.Export());
                     break;
 
                 case NextTurnOrder order:
@@ -105,8 +114,8 @@ namespace OthelloMillenniumServer
                     break;
 
                 case PlayMoveOrder order:
-                    gameManager.PlayMove(order.Coords, (GameManager.Player)sender.Properties["Color"]);
-                    var gs = gameManager.Export();
+                    GameManager.PlayMove(order.Coords, (GameManager.Player)sender.Properties["Color"]);
+                    var gs = GameManager.Export();
 
                     // Send current gameState
                     sender.Send(gs);
@@ -117,22 +126,6 @@ namespace OthelloMillenniumServer
                     throw new Exception("Unknown order");
                 //TODO
 
-            }
-        }
-
-        private void Instance_OnClientDisconnect(object sender, ServerEvent e)
-        {
-            if(e.Client == Client1)
-            {
-                // client2 win
-            }
-            else if(e.Client == Client2)
-            {
-                // client1 win
-            }
-            else
-            {
-                // Do Nothing
             }
         }
     }

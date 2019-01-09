@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tools
 {
@@ -15,13 +12,13 @@ namespace Tools
         public int PlayerTurn { get; }
         public bool GameEnded { get; } 
         public int[,] Gameboard { get; }
-        public (int, int) Scores { get; }
-        public List<(int, int)> PossiblesMoves { get; }
-        public (long, long) RemainingTimes { get; }
+        public Tuple<int, int> Scores { get; }
+        public List<Tuple<int, int>> PossiblesMoves { get; }
+        public Tuple<long, long> RemainingTimes { get; }
 
         #endregion
 
-        public GameState(bool gameEnded, int playerTurn, (int, int) scores, int[,] gameboard, List<(int, int)> possiblesMoves, (long, long) remainingTimes, int winner)
+        public GameState(bool gameEnded, int playerTurn, Tuple<int, int> scores, int[,] gameboard, List<Tuple<int, int>> possiblesMoves, Tuple<long, long> remainingTimes, int winner)
         {
             Scores = scores;
             Winner = winner;
@@ -37,13 +34,13 @@ namespace Tools
             if (info == null)
                 throw new ArgumentNullException("info");
 
-            Scores = ((int, int))info.GetValue("Scores", typeof((int, int)));
+            Scores = (Tuple<int, int>)info.GetValue("Scores", typeof(Tuple<int, int>));
             Winner = (int)info.GetValue("Winner", typeof(int));
             GameEnded = (bool)info.GetValue("GameEnded", typeof(bool));
             Gameboard = (int[,])info.GetValue("Gameboard", typeof(int[,]));
             PlayerTurn = (int)info.GetValue("PlayerTurn", typeof(int));
-            PossiblesMoves = (List<(int, int)>)info.GetValue("PossiblesMoves", typeof(List<(int, int)>));
-            RemainingTimes = ((long, long))info.GetValue("RemainingTimes", typeof((long, long)));
+            PossiblesMoves = (List<Tuple<int, int>>)info.GetValue("PossiblesMoves", typeof(List<Tuple<int, int>>));
+            RemainingTimes = (Tuple<long, long>)info.GetValue("RemainingTimes", typeof(Tuple<long, long>));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

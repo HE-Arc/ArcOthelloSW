@@ -5,7 +5,6 @@ using System.IO;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tools.Classes;
@@ -18,7 +17,7 @@ namespace Tools
 
         // Informations
         public TcpClient TcpClient { get; private set; }
-        public PlayerState State { get; private set; }
+        public PlayerState State { get; set; }
         public Dictionary<string, object> Properties { get; private set; } = new Dictionary<string, object>();
 
         // Events
@@ -42,8 +41,7 @@ namespace Tools
                     {
                         if (TcpClient.Connected)
                         {
-                            AOrder output = Receive() as AOrder;
-                            if (output != null && !string.IsNullOrEmpty(output.GetAcronym()))
+                            if (Receive() is AOrder output && !string.IsNullOrEmpty(output.GetAcronym()))
                                 OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs() { Order = output });
                         }
 

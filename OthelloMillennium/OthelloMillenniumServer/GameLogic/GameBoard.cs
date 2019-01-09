@@ -22,11 +22,11 @@ namespace OthelloMillenniumServer
         public CellState[,] Board { get; private set; }
 
         //Directions to explore
-        private static readonly (int, int)[] directions =
+        private static readonly Tuple<int, int>[] directions =
         {
-            (-1, -1), (0, -1), (1, -1),
-            (-1,  0),          (1,  0),
-            (-1,  1), (0,  1), (1,  1),
+            new Tuple<int, int>(-1, -1), new Tuple<int, int>(0, -1), new Tuple<int, int>(1, -1),
+            new Tuple<int, int>(-1,  0),                             new Tuple<int, int>(1,  0),
+            new Tuple<int, int>(-1,  1), new Tuple<int, int>(0,  1), new Tuple<int, int>(1,  1),
         };
 
         private Dictionary<CellState, int> cellStateCount;
@@ -63,9 +63,9 @@ namespace OthelloMillenniumServer
         /// </summary>
         /// <param name="coord"></param>
         /// <returns></returns>
-        private static (int, int) CoordToInt((char, int) coord)
+        private static Tuple<int, int> CoordToInt(Tuple<char, int> coord)
         {
-            (int, int) indices = (coord.Item1 - 65, coord.Item2);
+            Tuple<int, int> indices = new Tuple<int, int>(coord.Item1 - 65, coord.Item2);
             Debug.Assert(indices.Item1 >= 0 && indices.Item1 < Settings.SIZE_WIDTH);
             Debug.Assert(indices.Item2 >= 0 && indices.Item2 < Settings.SIZE_HEIGHT);
             return indices;
@@ -101,17 +101,17 @@ namespace OthelloMillenniumServer
         /// </summary>
         /// <param name="cellStatePlayer"></param>
         /// <returns></returns>
-        public List<(int, int)> PossibleMoves(CellState cellStatePlayer)
+        public List<Tuple<int, int>> PossibleMoves(CellState cellStatePlayer)
         {
-            List<(int, int)> validMoves = new List<(int, int)>();
+            List<Tuple<int, int>> validMoves = new List<Tuple<int, int>>();
             // Check if the user can make a move
             for (int i = 0; i < Settings.SIZE_WIDTH; ++i)
             {
                 for (int j = 0; j < Settings.SIZE_WIDTH; ++j)
                 {
-                    if (ValidateMove((i, j), cellStatePlayer))
+                    if (ValidateMove(new Tuple<char, int>((char)i, j), cellStatePlayer))//TODO : FIXME : avant ici était passé int, int, probablement incorrect. Le fix ici est temporaire et ne devrait pas être validé
                     {
-                        validMoves.Add((i, j));
+                        validMoves.Add(new Tuple<int, int>(i, j));
                     }
                 }
             }
@@ -136,7 +136,7 @@ namespace OthelloMillenniumServer
             {
                 for (int j = 0; j < Settings.SIZE_WIDTH; ++j)
                 {
-                    if(ValidateMove((i, j), cellStatePlayer))
+                    if(ValidateMove(new Tuple<char, int>((char)i, j), cellStatePlayer)) //TODO : FIXME : avant ici était passé int, int, probablement incorrect. Le fix ici est temporaire et ne devrait pas être validé
                     {
                         return true;
                     }
@@ -153,9 +153,9 @@ namespace OthelloMillenniumServer
         /// <param name="point"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        public GameBoard ApplyMove((char, int) coord, CellState cellStatePlayer)
+        public GameBoard ApplyMove(Tuple<char, int> coord, CellState cellStatePlayer)
         {
-            (int, int) indices = CoordToInt(coord);
+            Tuple<int, int> indices = CoordToInt(coord);
 
             CellState[,] newCellState = (CellState[,])Board.Clone();
             newCellState[indices.Item1, indices.Item2] = cellStatePlayer;
@@ -164,7 +164,7 @@ namespace OthelloMillenniumServer
             List<(int, int)> tokenToReturnPotential = new List<(int, int)>();
 
             // Check in all 8 directions that there is at least one cellState of our own
-            foreach ((int, int) direction in directions)
+            foreach (Tuple<int, int> direction in directions)
             {
                 tokenToReturnPotential.Clear();
                 bool end = false;
@@ -172,7 +172,7 @@ namespace OthelloMillenniumServer
                 while (i > 0 && i < Settings.SIZE_WIDTH && j > 0 && j < Settings.SIZE_HEIGHT && !end)
                 {
                     // Compute cell
-                    (i, j) = (i + direction.Item1, j + direction.Item2);
+                    (i, j) = new Tuple<int, int>(i + direction.Item1, j + direction.Item2);
                     CellState cellState = Board[i, j];
 
                     if (cellState == cellStatePlayer) // Token of the player
@@ -217,7 +217,7 @@ namespace OthelloMillenniumServer
         /// <param name="coord"></param>
         /// <param name="cellStatePlayer"></param>
         /// <returns></returns>
-        public bool ValidateMove((char, int) coord, CellState cellStatePlayer)
+        public bool ValidateMove(Tuple<char, int> coord, CellState cellStatePlayer)
         {
             return ValidateMove(CoordToInt(coord), cellStatePlayer);
         }
@@ -228,7 +228,7 @@ namespace OthelloMillenniumServer
         /// <param name="indices"></param>
         /// <param name="cellStatePlayer"></param>
         /// <returns></returns>
-        private bool ValidateMove((int, int) indices, CellState cellStatePlayer)
+        private bool ValidateMove(Tuple<int, int> indices, CellState cellStatePlayer)
         {
             //Check if celle at given coord is empty
             if (Board[indices.Item1, indices.Item2] != CellState.EMPTY)
@@ -238,14 +238,14 @@ namespace OthelloMillenniumServer
 
             //Check in all 8 directions that there is at least one cellState of our own
             int i = 0, j = 0;
-            foreach ((int, int) direction in directions)
+            foreach (Tuple<int, int> direction in directions)
             {
                 bool end = false;
                 int nbTokenReturnedTemp = 0;
                 (i, j) = indices;
                 while (i > 0 && i < Settings.SIZE_WIDTH && j > 0 && j < Settings.SIZE_HEIGHT && !end)
                 {
-                    (i, j) = (i + direction.Item1, j + direction.Item2);
+                    (i, j) = new Tuple<int, int>(i + direction.Item1, j + direction.Item2);
                     CellState cellState = Board[i, j];
                     if (cellState == cellStatePlayer)
                     {

@@ -7,6 +7,17 @@ namespace Tools.Classes
     [Serializable]
     public abstract class AOrder : ISerializable
     {
+        internal AOrder() { }
+
+        public Dictionary<string, object> Properties { get; private set; } = new Dictionary<string, object>();
+
+        protected AOrder(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+                throw new ArgumentNullException("info");
+            Properties = (Dictionary<string, object>)info.GetValue("Properties", typeof(Dictionary<string, object>));
+        }
+
         public abstract string GetAcronym();
         public abstract string GetDefinition();
         public int GetLength()
@@ -16,7 +27,7 @@ namespace Tools.Classes
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            // Nothing to store
+            info.AddValue("Properties", Properties);
         }
     }
 
@@ -44,8 +55,13 @@ namespace Tools.Classes
         public readonly static AOrder PlayMove = new PlayMoveOrder();
     }
 
+    [Serializable]
     public class SearchLocalGameOrder : AOrder
     {
+        protected SearchLocalGameOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "SL";
@@ -59,8 +75,13 @@ namespace Tools.Classes
         internal SearchLocalGameOrder() { }
     }
 
+    [Serializable]
     public class SearchOnlineGameOrder : AOrder
     {
+        protected SearchOnlineGameOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "SO";
@@ -74,8 +95,13 @@ namespace Tools.Classes
         internal SearchOnlineGameOrder() { }
     }
 
+    [Serializable]
     public class RegisterSuccessfulOrder : AOrder
     {
+        protected RegisterSuccessfulOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "RS";
@@ -89,8 +115,13 @@ namespace Tools.Classes
         internal RegisterSuccessfulOrder() { }
     }
 
+    [Serializable]
     public class OpponentFoundOrder : AOrder
     {
+        protected OpponentFoundOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "OF";
@@ -104,8 +135,13 @@ namespace Tools.Classes
         internal OpponentFoundOrder() { }
     }
 
+    [Serializable]
     public class StartOfTheGameOrder : AOrder
     {
+        protected StartOfTheGameOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "SG";
@@ -119,8 +155,13 @@ namespace Tools.Classes
         internal StartOfTheGameOrder() { }
     }
 
+    [Serializable]
     public class EndOfTheGameOrder : AOrder
     {
+        protected EndOfTheGameOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "EG";
@@ -134,8 +175,13 @@ namespace Tools.Classes
         internal EndOfTheGameOrder() { }
     }
 
+    [Serializable]
     public class BlackAssignedOrder : AOrder
     {
+        protected BlackAssignedOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "BA";
@@ -149,8 +195,13 @@ namespace Tools.Classes
         internal BlackAssignedOrder() { }
     }
 
+    [Serializable]
     public class WhiteAssignedOrder : AOrder
     {
+        protected WhiteAssignedOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "WA";
@@ -164,8 +215,13 @@ namespace Tools.Classes
         internal WhiteAssignedOrder() { }
     }
 
+    [Serializable]
     public class PlayerBeginOrder : AOrder
     {
+        protected PlayerBeginOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "PB";
@@ -179,8 +235,13 @@ namespace Tools.Classes
         internal PlayerBeginOrder() { }
     }
 
+    [Serializable]
     public class PlayerAwaitOrder : AOrder
     {
+        protected PlayerAwaitOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "PA";
@@ -194,8 +255,13 @@ namespace Tools.Classes
         internal PlayerAwaitOrder() { }
     }
 
+    [Serializable]
     public class PlayerStateOrder : AOrder
     {
+        protected PlayerStateOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "PS";
@@ -209,8 +275,13 @@ namespace Tools.Classes
         internal PlayerStateOrder() { }
     }
 
+    [Serializable]
     public class OpponentDisconnectedOrder : AOrder
     {
+        protected OpponentDisconnectedOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "OD";
@@ -224,8 +295,13 @@ namespace Tools.Classes
         internal OpponentDisconnectedOrder() { }
     }
 
+    [Serializable]
     public class OpponentConnectionLostOrder : AOrder
     {
+        protected OpponentConnectionLostOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "OL";
@@ -239,8 +315,13 @@ namespace Tools.Classes
         internal OpponentConnectionLostOrder() { }
     }
 
+    [Serializable]
     public class NextTurnOrder : AOrder
     {
+        protected NextTurnOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "NT";
@@ -254,8 +335,13 @@ namespace Tools.Classes
         internal NextTurnOrder() { }
     }
 
+    [Serializable]
     public class GetCurrentGameStateOrder : AOrder
     {
+        protected GetCurrentGameStateOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "GCGS"; // ExampleOrder
@@ -269,8 +355,13 @@ namespace Tools.Classes
         internal GetCurrentGameStateOrder() { }
     }
 
+    [Serializable]
     public class GetPreviousGameStateOrder : AOrder
     {
+        protected GetPreviousGameStateOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
         public override string GetAcronym()
         {
             return "GPGS"; // ExampleOrder
@@ -284,15 +375,15 @@ namespace Tools.Classes
         internal GetPreviousGameStateOrder() { }
     }
 
+    [Serializable]
     public class PlayMoveOrder : AOrder
     {
-        public (char, int) Coords { get; set; }
+        public Tuple<char, int> Coords { get; set; }
 
         protected PlayMoveOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
-            if (info == null)
-                throw new ArgumentNullException("info");
-            Coords = ((char, int))info.GetValue("Coords", typeof((char, int)));
+            Coords = (Tuple<char, int>)info.GetValue("Coords", typeof(Tuple<char, int>));
         }
 
         public override string GetAcronym()

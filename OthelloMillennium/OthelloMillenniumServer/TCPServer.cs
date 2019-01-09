@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Tools;
 using Tools.Classes;
@@ -40,9 +35,6 @@ namespace OthelloMillenniumServer
 
         #region Properties
         private readonly TcpListener listener = new TcpListener(IPAddress.Any, Port);
-        private readonly List<OthelloTCPClient> clients = new List<OthelloTCPClient>();
-        public event EventHandler<ServerEvent> OnClientConnect;
-        public event EventHandler<ServerEvent> OnClientDisconnect;
         #endregion
 
         public bool StartListening()
@@ -70,11 +62,11 @@ namespace OthelloMillenniumServer
                             var client = new OthelloTCPClient();
                             client.Bind(newConnection);
 
-                            // Append the new client
-                            clients.Add(client);
+                            // Will be used once to listen what type of game the player is searching
+                            client.OnOrderReceived += Client_OnOrderReceived;
 
-                            // Fire an event, will be used by the matchmaking
-                            OnClientConnect?.Invoke(this, new ServerEvent { Client = client });
+                            // DEBUG
+                            Console.WriteLine("NEW CLIENT CONNECTED");
                         }
                     }
                 });
@@ -83,33 +75,28 @@ namespace OthelloMillenniumServer
                 t.Start();
 
                 #endregion
-
-                #region PING
-                // Every 5 seconds the server will ping clients
-                Task pinger = new Task(() =>
-                {
-                    // Notify if any client disconnects
-                    foreach (OthelloTCPClient client in clients)
-                    {
-                        if (!Ping(client))
-                            OnClientDisconnect?.Invoke(this, new ServerEvent { Client = client });
-                    }
-
-                    // Ping every 5 seconds
-                    Thread.Sleep(5000);
-                });
-
-                // Start to ping clients
-                pinger.Start();
-                #endregion
-
             }
             catch (Exception ex)
             {
                 Toolbox.LogError(ex);
+
+                // Restart Server
+                return StartListening();
             }
 
             return true;
+        }
+
+        private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
+        {
+            OthelloTCPClient client = sender as OthelloTCPClient;
+
+            // Register client to the Matchmaker
+            Matchmaker.Instance.RegisterNewClient(client, e.Order);
+
+            // TCPServer should only listen once per new connection
+            // It will just listen to know how to annouce the new client to the matchmaker
+            client.OnOrderReceived -= Client_OnOrderReceived; //<-- When activated it react strangely
         }
 
         /// <summary>
@@ -141,35 +128,15 @@ namespace OthelloMillenniumServer
 
             return new Tuple<string, int>(hostName, port);
         }
-
-        /// <summary>
-        /// Ping the client
-        /// </summary>
-        /// <param name="client"></param>
-        /// <returns></returns>
-        public bool Ping(OthelloTCPClient client)
-        {
-            return Ping(client.TcpClient);
-        }
-
-        /// <summary>
-        /// Ping the client
-        /// </summary>
-        /// <param name="client"></param>
-        /// <returns></returns>
-        public bool Ping(TcpClient client)
-        {
-            Ping p = new Ping();
-            var hp = GetHostNameAndPort(client);
-            var pr = p.Send(hp.Item1, Settings.TIMEOUT);
-            return pr.Status == IPStatus.Success;
-        }
     }
 
   
     public class ServerEvent : EventArgs
     {
         public OthelloTCPClient Client { get; set; }
+
+        public AOrder Order { get; set; }
+
         public DateTime FiredDateTime { get; private set; } = DateTime.Now;
     }
 }

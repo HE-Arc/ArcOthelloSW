@@ -39,7 +39,7 @@ namespace OthelloMillenniumServer
         private int indexState;
         private List<GameBoard> listGameState;
         private Dictionary<Player, StoppableTimer> timeCounter;
-        private (int, int) scores;
+        private Tuple<int, int> scores;
         private Player winner;
 
         #endregion
@@ -96,7 +96,7 @@ namespace OthelloMillenniumServer
         /// </summary>
         /// <param name="coord"></param>
         /// <param name="isPlayerOne"></param>
-        public void PlayMove((char, int) coord, Player player)
+        public void PlayMove(Tuple<char, int> coord, Player player)
         {
             if (GameEnded)
             {
@@ -237,7 +237,7 @@ namespace OthelloMillenniumServer
             if (timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 || timeCounter[Player.WhitePlayer].GetRemainingTime() == 0)
             {
                 //One player is out of time
-                scores = timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 ? (0, maxScore) : (maxScore, 0);
+                scores = timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 ? new Tuple<int, int>(0, maxScore) : new Tuple<int, int>(maxScore, 0);
             }
             else
             {
@@ -247,17 +247,17 @@ namespace OthelloMillenniumServer
                 if (!GameEnded || gameState.getNbToken(GameBoard.CellState.EMPTY) == 0)
                 {
                     // Default Count number of token for each player
-                    scores = (black, white);
+                    scores = new Tuple<int, int>(black, white);
                 }
                 else if (black == 0 || white == 0)
                 {
                     //Eradication of a player
-                    scores = black == 0 ? (0, maxScore) : (maxScore, 0);
+                    scores = black == 0 ? new Tuple<int, int>(0, maxScore) : new Tuple<int, int>(maxScore, 0);
                 }
                 else
                 {
                     // No player can move
-                    scores = black > white ? (maxScore - white, white) : (black, maxScore - black);
+                    scores = black > white ? new Tuple<int, int>(maxScore - white, white) : new Tuple<int, int>(black, maxScore - black);
                 }
             }
         }
@@ -279,8 +279,8 @@ namespace OthelloMillenniumServer
                 }
             }
             
-            List<(int, int)> possiblesMoves = listGameState[indexState].PossibleMoves(PlayerToCellState(CurrentPlayerTurn));
-            (long, long) remainingTimes = (timeCounter[Player.BlackPlayer].GetRemainingTime(), timeCounter[Player.WhitePlayer].GetRemainingTime());
+            List<Tuple<int, int>> possiblesMoves = listGameState[indexState].PossibleMoves(PlayerToCellState(CurrentPlayerTurn));
+            Tuple<long, long> remainingTimes = new Tuple<long, long>(timeCounter[Player.BlackPlayer].GetRemainingTime(), timeCounter[Player.WhitePlayer].GetRemainingTime());
             
             return new GameState(GameEnded, (int)CurrentPlayerTurn, scores, board, possiblesMoves, remainingTimes, (int)winner);
         }
