@@ -37,6 +37,9 @@ namespace OthelloMillenniumServer
 
             // Start matchmaking
             StartMatchmaking();
+
+            // Start pinging
+            StartPinging();
         }
         #endregion
 
@@ -53,6 +56,8 @@ namespace OthelloMillenniumServer
 
         private void StartPinging()
         {
+            // TODO : (FIXME : should be done inside the OthelloTCPClient)
+
             Task pinger = new Task(() =>
             {
                 foreach (var set in registratedClientsPerGameTypeDict.Values)
