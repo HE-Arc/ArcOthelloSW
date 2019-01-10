@@ -242,9 +242,9 @@ namespace OthelloMillenniumServer
             else
             {
                 // Get nb token per player
-                (int black, int white) = (gameState.getNbToken(GameBoard.CellState.BLACK), gameState.getNbToken(GameBoard.CellState.WHITE));
+                (int black, int white) = (gameState.GetNbToken(GameBoard.CellState.BLACK), gameState.GetNbToken(GameBoard.CellState.WHITE));
 
-                if (!GameEnded || gameState.getNbToken(GameBoard.CellState.EMPTY) == 0)
+                if (!GameEnded || gameState.GetNbToken(GameBoard.CellState.EMPTY) == 0)
                 {
                     // Default Count number of token for each player
                     scores = new Tuple<int, int>(black, white);

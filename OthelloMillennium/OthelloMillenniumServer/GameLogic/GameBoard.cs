@@ -107,9 +107,9 @@ namespace OthelloMillenniumServer
             // Check if the user can make a move
             for (int i = 0; i < Settings.SIZE_WIDTH; ++i)
             {
-                for (int j = 0; j < Settings.SIZE_WIDTH; ++j)
+                for (int j = 0; j < Settings.SIZE_HEIGHT; ++j)
                 {
-                    if (ValidateMove(new Tuple<char, int>((char)i, j), cellStatePlayer))//TODO : FIXME : avant ici était passé int, int, probablement incorrect. Le fix ici est temporaire et ne devrait pas être validé
+                    if (ValidateMove(new Tuple<int, int>(i, j), cellStatePlayer))
                     {
                         validMoves.Add(new Tuple<int, int>(i, j));
                     }
@@ -134,9 +134,9 @@ namespace OthelloMillenniumServer
             // Check if the user can make a move
             for (int i = 0; i < Settings.SIZE_WIDTH; ++i)
             {
-                for (int j = 0; j < Settings.SIZE_WIDTH; ++j)
+                for (int j = 0; j < Settings.SIZE_HEIGHT; ++j)
                 {
-                    if(ValidateMove(new Tuple<char, int>((char)i, j), cellStatePlayer)) //TODO : FIXME : avant ici était passé int, int, probablement incorrect. Le fix ici est temporaire et ne devrait pas être validé
+                    if(ValidateMove(new Tuple<int, int>(i, j), cellStatePlayer))
                     {
                         return true;
                     }
@@ -206,7 +206,7 @@ namespace OthelloMillenniumServer
         /// </summary>
         /// <param name="cellStatePlayer"></param>
         /// <returns>Nb of cell conrtaining the given cellState</returns>
-        public int getNbToken(CellState cellStatePlayer)
+        public int GetNbToken(CellState cellStatePlayer)
         {
             return cellStateCount[cellStatePlayer];
         }
