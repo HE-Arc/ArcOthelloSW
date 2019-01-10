@@ -13,12 +13,12 @@ namespace Tools
         public bool GameEnded { get; } 
         public int[,] Gameboard { get; }
         public Tuple<int, int> Scores { get; }
-        public List<Tuple<int, int>> PossiblesMoves { get; }
+        public List<Tuple<char, int>> PossiblesMoves { get; }
         public Tuple<long, long> RemainingTimes { get; }
 
         #endregion
 
-        public GameState(bool gameEnded, int playerTurn, Tuple<int, int> scores, int[,] gameboard, List<Tuple<int, int>> possiblesMoves, Tuple<long, long> remainingTimes, int winner)
+        public GameState(bool gameEnded, int playerTurn, Tuple<int, int> scores, int[,] gameboard, List<Tuple<char, int>> possiblesMoves, Tuple<long, long> remainingTimes, int winner)
         {
             Scores = scores;
             Winner = winner;
@@ -39,7 +39,7 @@ namespace Tools
             GameEnded = (bool)info.GetValue("GameEnded", typeof(bool));
             Gameboard = (int[,])info.GetValue("Gameboard", typeof(int[,]));
             PlayerTurn = (int)info.GetValue("PlayerTurn", typeof(int));
-            PossiblesMoves = (List<Tuple<int, int>>)info.GetValue("PossiblesMoves", typeof(List<Tuple<int, int>>));
+            PossiblesMoves = (List<Tuple<char, int>>)info.GetValue("PossiblesMoves", typeof(List<Tuple<char, int>>));
             RemainingTimes = (Tuple<long, long>)info.GetValue("RemainingTimes", typeof(Tuple<long, long>));
         }
 

@@ -234,7 +234,7 @@ namespace OthelloMillenniumServer
             GameBoard gameState = listGameState[indexState];
             int maxScore = gameState.Board.GetLength(0) * gameState.Board.GetLength(1);
             
-            if (timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 || timeCounter[Player.WhitePlayer].GetRemainingTime() == 0)
+            if (Type == GameType.MultiPlayer && (timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 || timeCounter[Player.WhitePlayer].GetRemainingTime() == 0))
             {
                 //One player is out of time
                 scores = timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 ? new Tuple<int, int>(0, maxScore) : new Tuple<int, int>(maxScore, 0);
@@ -279,7 +279,7 @@ namespace OthelloMillenniumServer
                 }
             }
             
-            List<Tuple<int, int>> possiblesMoves = listGameState[indexState].PossibleMoves(PlayerToCellState(CurrentPlayerTurn));
+            List<Tuple<char, int>> possiblesMoves = listGameState[indexState].PossibleMoves(PlayerToCellState(CurrentPlayerTurn));
             Tuple<long, long> remainingTimes = new Tuple<long, long>(timeCounter[Player.BlackPlayer].GetRemainingTime(), timeCounter[Player.WhitePlayer].GetRemainingTime());
             
             return new GameState(GameEnded, (int)CurrentPlayerTurn, scores, board, possiblesMoves, remainingTimes, (int)winner);
