@@ -55,7 +55,7 @@ namespace OthelloMillenniumServer
             state[4, 4] = CellState.WHITE;
             state[4, 3] = CellState.BLACK;
 
-            return new GameBoard(state);
+            return new GameBoard(state, CellState.WHITE);
         }
 
         /// <summary>
@@ -77,9 +77,10 @@ namespace OthelloMillenniumServer
         /// Constructor to create a new GameState
         /// </summary>
         /// <param name="cellState"></param>
-        public GameBoard(CellState[,] cellState, CellState cellStatePlayer = CellState.EMPTY)
+        public GameBoard(CellState[,] cellState, CellState cellStatePlayer = CellState.WHITE)
         {
             Board = cellState;
+            LastPlayer = cellStatePlayer;
             cellStateCount = new Dictionary<CellState, int>();
 
             // Init scores
@@ -142,7 +143,7 @@ namespace OthelloMillenniumServer
                     }
                 }
             }
-            
+
             // No move has been found
             return false;
         }
@@ -243,7 +244,7 @@ namespace OthelloMillenniumServer
                 bool end = false;
                 int nbTokenReturnedTemp = 0;
                 (i, j) = indices;
-                while (i > 0 && i < Settings.SIZE_WIDTH && j > 0 && j < Settings.SIZE_HEIGHT && !end)
+                while (i > 0 && i < Settings.SIZE_WIDTH - 1 && j > 0 && j < Settings.SIZE_HEIGHT - 1 && !end)
                 {
                     (i, j) = new Tuple<int, int>(i + direction.Item1, j + direction.Item2);
                     CellState cellState = Board[i, j];

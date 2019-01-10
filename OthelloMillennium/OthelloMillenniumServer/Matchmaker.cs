@@ -88,10 +88,6 @@ namespace OthelloMillenniumServer
                     {
                         while (running)
                         {
-                            Console.WriteLine("Currently queuing");
-                            Console.WriteLine($"Online  : {OnlineClients.Count}");
-                            Console.WriteLine($"Local  : {LocalClients.Count}");
-
                             #region Local
                             // Start to look for any good binding if there is 2 or more player/AI waiting
                             if (LocalClients.Count > 1)
@@ -140,13 +136,6 @@ namespace OthelloMillenniumServer
             var client1 = set.First();
             var client2 = set.Last();
 
-            // GameManager will now handle clients and put them as InGame
-            var match = new GameHandler(client1, client2, gameType);
-            matches.Add(match);
-
-            // Link end of game event
-            match.GameManager.OnGameFinished += GameManager_OnGameFinished;
-
             // Informs clients that an opponent has be found
             client1.Send(OrderProvider.OpponentFound);
             client2.Send(OrderProvider.OpponentFound);
@@ -154,6 +143,13 @@ namespace OthelloMillenniumServer
             // Update client state
             client1.State = PlayerState.Binded;
             client2.State = PlayerState.Binded;
+
+            // GameManager will now handle clients and put them as InGame
+            var match = new GameHandler(client1, client2, gameType);
+            matches.Add(match);
+
+            // Link end of game event
+            match.GameManager.OnGameFinished += GameManager_OnGameFinished;
 
             // Remove them from the queue
             set.Remove(client1);
