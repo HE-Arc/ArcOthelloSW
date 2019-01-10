@@ -57,6 +57,7 @@ namespace OthelloMillenniumServer
             indexState = 0;
             listGameState = new List<GameBoard>();
             listGameState.Add(GameBoard.CreateStartState());
+
             Assert.False(listGameState[indexState].GameEnded);
             Assert.True(listGameState[indexState].LastPlayer == GameBoard.CellState.WHITE);
 
@@ -68,7 +69,7 @@ namespace OthelloMillenniumServer
                     { Player.WhitePlayer, new StoppableTimer(Settings.TimePerPlayer) }
                 };
             }
-            
+
             CurrentPlayerTurn = Player.BlackPlayer;
 
             ComputeScore();

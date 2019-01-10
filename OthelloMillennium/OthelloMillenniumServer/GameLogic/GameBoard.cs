@@ -156,7 +156,7 @@ namespace OthelloMillenniumServer
                     }
                 }
             }
-            
+
             // No move has been found
             return false;
         }
@@ -244,7 +244,7 @@ namespace OthelloMillenniumServer
         /// <returns></returns>
         private bool ValidateMove(Tuple<int, int> indices, CellState cellStatePlayer)
         {
-            //Check if celle at given coord is empty
+            //Check if cell at given coord is empty
             if (Board[indices.Item1, indices.Item2] != CellState.EMPTY)
             {
                 return false;
@@ -257,6 +257,7 @@ namespace OthelloMillenniumServer
                 bool end = false;
                 int nbTokenReturnedTemp = 0;
                 (i, j) = indices;
+
                 (i, j) = new Tuple<int, int>(i + direction.Item1, j + direction.Item2);
 
                 while (i >= 0 && i < Settings.SIZE_WIDTH && j >= 0 && j < Settings.SIZE_HEIGHT && !end)
