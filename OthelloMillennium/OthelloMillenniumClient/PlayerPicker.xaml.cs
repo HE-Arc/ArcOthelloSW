@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace OthelloMillenniumClient
@@ -10,13 +11,13 @@ namespace OthelloMillenniumClient
     {
 
         #region Attributes
-        private (int, int) playerOne;
-        private (int, int) playerTwo;
+        private Tuple<int, int> playerOne;
+        private Tuple<int, int> playerTwo;
 
         #endregion
 
         #region Properties
-        public (int, int) PlayerOne
+        public Tuple<int, int> PlayerOne
         {
             get => playerOne;
             set {
@@ -26,7 +27,7 @@ namespace OthelloMillenniumClient
             }
         }
 
-        public (int, int) PlayerTwo
+        public Tuple<int, int> PlayerTwo
         {
             get => playerTwo;
             set {
@@ -59,8 +60,8 @@ namespace OthelloMillenniumClient
         public PlayerPicker()
         {
             InitializeComponent();
-            PlayerOne = (0, 0);
-            PlayerTwo = (3, 4);
+            PlayerOne = new Tuple<int, int>(0, 0);
+            PlayerTwo = new Tuple<int, int>(3, 4);
 
             DataContext = this;
         }

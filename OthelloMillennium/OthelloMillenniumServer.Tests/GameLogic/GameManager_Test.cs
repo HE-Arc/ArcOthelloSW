@@ -1,7 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace OthelloMillenniumServer.Tests.GameLogic
 {
@@ -17,16 +14,16 @@ namespace OthelloMillenniumServer.Tests.GameLogic
             GameManager gameManager = new GameManager(GameManager.GameType.SinglePlayer);
 
             string sequence1 = "D3E3F4G3F3C5H3F2C4C3E2E1B3H4H5A3";
-            bool playerOne = true;
             for(int i=0;i< sequence1.Length; i += 2)
             {
-                gameManager.PlayMove((sequence1[i], (int) char.GetNumericValue(sequence1[i+1])), playerOne);
-                playerOne = !playerOne;
+                var player = i % 2 == 0 ? GameManager.Player.BlackPlayer : GameManager.Player.WhitePlayer;
+                var coords = new System.Tuple<char, int>(sequence1[i], (int)char.GetNumericValue(sequence1[i + 1]));
+                gameManager.PlayMove(coords, player);
             }
 
-            GameBoard gameState = gameManager.GetGameState();
+            Tools.GameState gameState = gameManager.Export();
 
-            Assert.IsTrue(gameState.IsGameEnded(), "Sequence 1 OK");
+            Assert.IsTrue(gameState.GameEnded, "Sequence 1 OK");
         }
     }
 }

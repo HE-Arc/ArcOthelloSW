@@ -2,55 +2,137 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Tools;
+using Tools.Classes;
 
 namespace OthelloMillenniumServer
 {
-    class GameHandler
+    /*
+     * Parse orders and send them to gamemanager
+     * keep clients informed
+     */
+    public class GameHandler
     {
-        public TcpClient client1 { get; private set; }
-        public TcpClient client2 { get; private set; }
-        private readonly GameManager gameManager;
+        // Clients
+        /// <summary>
+        /// Socket server-side linked to a client remote
+        /// </summary>
+        public OthelloTCPClient Client1 { get; private set; }
 
-        private bool scheduler = false;
+        /// <summary>
+        /// Socket server-side linked to a client remote
+        /// </summary>
+        public OthelloTCPClient Client2 { get; private set; }
 
-        // Events
-        public event EventHandler<GameHandlerArgs> OnClientConnectionLost;
-        public event EventHandler<GameHandlerArgs> OnClientDisconnected;
-        public event EventHandler<GameHandlerArgs> OnClientReconnected;
+        // GameManager
+        public GameManager GameManager { get; private set; }
 
-        public GameHandler(TcpClient client1, TcpClient client2)
+        /// <summary>
+        /// Type of game currently being played
+        /// </summary>
+        public GameManager.GameType GameType => GameManager.Type;
+
+        public GameHandler(OthelloTCPClient black, OthelloTCPClient white, GameManager.GameType gameType)
         {
-            this.client1 = client1;
-            this.client2 = client2;
+            // Init Client
+            this.Client1 = black;
+            this.Client1.Properties.Add("Color", GameManager.Player.BlackPlayer);
+            
+            this.Client2 = white;
+            this.Client2.Properties.Add("Color", GameManager.Player.WhitePlayer);
 
-            // Hook disconnect messages
-            TCPServer.Instance.OnClientDisconnect += Instance_OnClientDisconnect;
+            this.Client1.Properties.Add("Opponent", this.Client2);
+            this.Client2.Properties.Add("Opponent", this.Client1);
 
-            // Init a gameManager
-            this.gameManager = new GameManager(GameManager.GameType.MultiPlayer);//TODO: Client send the type of game they would like to play
+            // Assign color
+            Client1.Send(OrderProvider.BlackAssigned);
+            Client2.Send(OrderProvider.WhiteAssigned);
+
+            // Init gameManager
+            switch(gameType)
+            {
+                case GameManager.GameType.MultiPlayer:
+                    // Init a gameManager
+                    this.GameManager = new GameManager(GameManager.GameType.MultiPlayer);
+
+                    break;
+                case GameManager.GameType.SinglePlayer:
+                    // Init a gameManager
+                    this.GameManager = new GameManager(GameManager.GameType.SinglePlayer);
+
+                    //TODO : AI starts or not ?
+                    break;
+                default:
+                    var ex = new Exception("Given gameType is invalid");
+                    Toolbox.LogError(ex);
+                    throw ex;
+            }
+
+            // Informs the players that the game is starting
+            Client1.Send(OrderProvider.StartOfTheGame);
+            Client2.Send(OrderProvider.StartOfTheGame);
+
+            // Update client state
+            Client1.State = PlayerState.InGame;
+            Client2.State = PlayerState.InGame;
+
+            // Start the game
+            GameManager.Start();
+
+            // Black Start
+            Client1.Send(OrderProvider.PlayerBegin);
+            Client2.Send(OrderProvider.PlayerAwait);
+
+            // React to clients orders
+            Client1.OnOrderReceived += OnOrderReceived;
+            Client2.OnOrderReceived += OnOrderReceived;
         }
 
-        private void Instance_OnClientDisconnect(object sender, ServerEvent e)
+        private void GameManager_OnGameFinished(object sender, GameState e)
         {
-            if(e.Client == client1)
+            throw new NotImplementedException();
+        }
+
+        private void OnOrderReceived(object s, OthelloTCPClientArgs e)
+        {
+            OthelloTCPClient sender = s as OthelloTCPClient;
+            OthelloTCPClient opponent = sender == Client1 ? Client2 : Client1;
+
+            switch (e.Order)
             {
-                // client2 win
-            }
-            else if(e.Client == client2)
-            {
-                // client1 win
-            }
-            else
-            {
-                // Do Nothing
+                case GetCurrentGameStateOrder order:
+                    // A client asked for the gameState, send it back to him
+                    sender.Send(GameManager.Export());
+                    break;
+
+                case NextTurnOrder order:
+                    // Inform opponent that he can start to play.
+                    sender.Send(OrderProvider.PlayerAwait);
+                    opponent.Send(OrderProvider.PlayerBegin);
+                    break;
+
+                case PlayMoveOrder order:
+                    GameManager.PlayMove(order.Coords, (GameManager.Player)sender.Properties["Color"]);
+                    var gs = GameManager.Export();
+
+                    // Send current gameState
+                    sender.Send(gs);
+                    opponent.Send(gs);
+                    break;
+
+                default:
+                    throw new Exception("Unknown order");
+                //TODO
+
             }
         }
     }
 
     public class GameHandlerArgs
     {
-        public TcpClient Client { get; set; }
+        public OthelloTCPClient Client { get; set; }
         public DateTime Time { get; private set; } = DateTime.Now;
     }
 }

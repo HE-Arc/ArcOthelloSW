@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+using Tools;
+using Tools.Classes;
 
 namespace OthelloMillenniumServer
 {
@@ -21,9 +19,9 @@ namespace OthelloMillenniumServer
         {
             get
             {
-                if(instance == null)
+                if (instance == null)
                 {
-                    lock(padlock)
+                    lock (padlock)
                     {
                         instance = new TCPServer();
                     }
@@ -37,9 +35,6 @@ namespace OthelloMillenniumServer
 
         #region Properties
         private readonly TcpListener listener = new TcpListener(IPAddress.Any, Port);
-        private readonly List<TcpClient> clients = new List<TcpClient>();
-        public event EventHandler<ServerEvent> OnClientConnect;
-        public event EventHandler<ServerEvent> OnClientDisconnect;
         #endregion
 
         public bool StartListening()
@@ -52,6 +47,7 @@ namespace OthelloMillenniumServer
                 // Start an asynchronous socket to listen for connections.  
                 Console.WriteLine("Waiting for connections...");
 
+                #region AcceptConnection
                 // Accept any new connection
                 Task t = new Task(() =>
                 {
@@ -63,66 +59,61 @@ namespace OthelloMillenniumServer
                         {
                             // Store the new connection inside the client list
                             var newConnection = listener.AcceptTcpClient();
-                            clients.Add(newConnection);
+                            var client = new OthelloTCPClient();
+                            client.Bind(newConnection);
 
-                            // Fire an event, will be used by the matchmaking
-                            OnClientConnect?.Invoke(this, new ServerEvent { Client = newConnection });
+                            // Will be used once to listen what type of game the player is searching
+                            client.OnOrderReceived += Client_OnOrderReceived;
+
+                            // DEBUG
+                            Console.WriteLine("NEW CLIENT CONNECTED");
                         }
                     }
                 });
 
-                // Every 5 seconds the server will ping clients
-                Task pinger = new Task(() =>
-                {
-                    // Notify if any client disconnects
-                    foreach (TcpClient client in clients)
-                    {
-                        if (!Ping(client))
-                            OnClientDisconnect?.Invoke(this, new ServerEvent { Client = client });
-                    }
+                // Start to accept new connection
+                t.Start();
 
-                    // Ping every 5 seconds
-                    Thread.Sleep(5000);
-                });
-
+                #endregion
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.Error.WriteLine(e.ToString());
+                Toolbox.LogError(ex);
+
+                // Restart Server
+                return StartListening();
             }
 
             return true;
         }
 
-        public bool Send(TcpClient client, string message)
+        private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
         {
-            if(client.Connected)
-            {
-                var stream = client.GetStream();
-                if(stream.CanWrite)
-                {
-                    byte[] vs = Encoding.ASCII.GetBytes(message);
-                    try
-                    {
-                        stream.Write(vs, 0, vs.Length);
-                    }
-                    catch (Exception ex)
-                    {
-                        Toolbox.LogError(ex);
-                    }
+            OthelloTCPClient client = sender as OthelloTCPClient;
 
-                    // Message send
-                    return true;
-                }
-            }
-            return false;
+            // Register client to the Matchmaker
+            Matchmaker.Instance.RegisterNewClient(client, e.Order);
+
+            // TCPServer should only listen once per new connection
+            // It will just listen to know how to annouce the new client to the matchmaker
+            client.OnOrderReceived -= Client_OnOrderReceived; //<-- When activated it react strangely
+        }
+
+        /// <summary>
+        /// From : https://stackoverflow.com/questions/409906/can-you-retrieve-the-hostname-and-port-from-a-system-net-sockets-tcpclient
+        /// </summary>
+        /// <param name="client">An OthelloTCPClient</param>
+        /// <returns><see cref="GetHostNameAndPort(TcpClient)"/></returns>
+        public Tuple<string, int> GetHostNameAndPort(OthelloTCPClient client)
+        {
+            return GetHostNameAndPort(client.TcpClient);
         }
 
         /// <summary>
         /// From : https://stackoverflow.com/questions/409906/can-you-retrieve-the-hostname-and-port-from-a-system-net-sockets-tcpclient
         /// </summary>
         /// <param name="client"></param>
-        /// <returns></returns>
+        /// <returns>A Tuple containing Hostname as Item1 and Port as Item2</returns>
         public Tuple<string, int> GetHostNameAndPort(TcpClient client)
         {
             IPEndPoint endPoint = (IPEndPoint)client.Client.LocalEndPoint;
@@ -137,21 +128,14 @@ namespace OthelloMillenniumServer
 
             return new Tuple<string, int>(hostName, port);
         }
-
-        public bool Ping(TcpClient client)
-        {
-            Ping p = new Ping();
-            var hp = GetHostNameAndPort(client);
-            var pr = p.Send(hp.Item1, Settings.TIMEOUT);
-            return pr.Status == IPStatus.Success;
-        }
     }
 
   
     public class ServerEvent : EventArgs
     {
+        public OthelloTCPClient Client { get; set; }
 
-        public TcpClient Client { get; set; }
+        public AOrder Order { get; set; }
 
         public DateTime FiredDateTime { get; private set; } = DateTime.Now;
     }
