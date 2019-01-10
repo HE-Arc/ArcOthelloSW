@@ -12,7 +12,6 @@ namespace OthelloMillenniumClient
     class GameHandler
     {
         #region Internal class
-        private static GameHandler instance = new GameHandler();
 
         public enum GameType
         {
@@ -24,7 +23,7 @@ namespace OthelloMillenniumClient
         #endregion
 
         #region Properties
-        public static GameHandler Instance { get => instance; private set; }
+        public static GameHandler Instance { get; private set; } = new GameHandler();
 
         public bool SinglePlayer { get; private set; }
 

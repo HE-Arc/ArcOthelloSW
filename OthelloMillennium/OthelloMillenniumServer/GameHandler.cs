@@ -46,6 +46,10 @@ namespace OthelloMillenniumServer
             this.Client1.Properties.Add("Opponent", this.Client2);
             this.Client2.Properties.Add("Opponent", this.Client1);
 
+            // Watch for connection issues
+            Client1.OnConnectionLost += Client_OnConnectionLost;
+            Client2.OnConnectionLost += Client_OnConnectionLost;
+
             // Assign color
             Client1.Send(OrderProvider.BlackAssigned);
             Client2.Send(OrderProvider.WhiteAssigned);
@@ -74,10 +78,6 @@ namespace OthelloMillenniumServer
             Client1.Send(OrderProvider.StartOfTheGame);
             Client2.Send(OrderProvider.StartOfTheGame);
 
-            // Update client state
-            Client1.State = PlayerState.InGame;
-            Client2.State = PlayerState.InGame;
-
             // Start the game
             GameManager.Start();
 
@@ -85,9 +85,18 @@ namespace OthelloMillenniumServer
             Client1.Send(OrderProvider.PlayerBegin);
             Client2.Send(OrderProvider.PlayerAwait);
 
+            // Send initial gameState
+            Client1.Send(OrderProvider.GetCurrentGameState);
+            Client2.Send(OrderProvider.GetCurrentGameState);
+
             // React to clients orders
             Client1.OnOrderReceived += OnOrderReceived;
             Client2.OnOrderReceived += OnOrderReceived;
+        }
+
+        private void Client_OnConnectionLost(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void GameManager_OnGameFinished(object sender, GameState e)

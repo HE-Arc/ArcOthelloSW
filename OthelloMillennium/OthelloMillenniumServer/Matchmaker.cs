@@ -37,9 +37,6 @@ namespace OthelloMillenniumServer
 
             // Start matchmaking
             StartMatchmaking();
-
-            // Start pinging
-            StartPinging();
         }
         #endregion
 
@@ -53,29 +50,6 @@ namespace OthelloMillenniumServer
         HashSet<OthelloTCPClient> LocalClients => registratedClientsPerGameTypeDict[GameManager.GameType.SinglePlayer];
         HashSet<OthelloTCPClient> OnlineClients => registratedClientsPerGameTypeDict[GameManager.GameType.MultiPlayer];
         #endregion
-
-        private void StartPinging()
-        {
-            // TODO : (FIXME : should be done inside the OthelloTCPClient)
-
-            Task pinger = new Task(() =>
-            {
-                foreach (var set in registratedClientsPerGameTypeDict.Values)
-                {
-                    foreach (var client in set)
-                    {
-                        if (!Toolbox.Connected(client))
-                        {
-                            DisconnectClient(client);
-                        }
-                    }
-                }
-
-                Thread.Sleep(5000);
-            });
-
-            pinger.Start();
-        }
 
         private void StartMatchmaking()
         {
@@ -140,10 +114,6 @@ namespace OthelloMillenniumServer
             client1.Send(OrderProvider.OpponentFound);
             client2.Send(OrderProvider.OpponentFound);
 
-            // Update client state
-            client1.State = PlayerState.Binded;
-            client2.State = PlayerState.Binded;
-
             // GameManager will now handle clients and put them as InGame
             var match = new GameHandler(client1, client2, gameType);
             matches.Add(match);
@@ -190,9 +160,6 @@ namespace OthelloMillenniumServer
             {
                 // Informs the client that he is now known to the server
                 client.Send(OrderProvider.RegisterSuccessful);
-
-                // Update client state
-                client.State = PlayerState.Searching;
             }
             else
             {
@@ -219,7 +186,6 @@ namespace OthelloMillenniumServer
                         // Check timers
                         // Disconnected for too long ?
                         Console.WriteLine("Client will be reconnected to the match"); // DEBUG
-                        client.State = PlayerState.Undefined; // TODO
                     }
                 }
                 else
@@ -253,9 +219,6 @@ namespace OthelloMillenniumServer
                 {
                     // Get the match 
                     var currentMatch = GetMatch(client);
-
-                    // Mark client as disconnected
-                    client.State = PlayerState.Disconnected;
 
                     if (currentMatch == null)
                     {

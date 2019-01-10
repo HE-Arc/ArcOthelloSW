@@ -17,11 +17,12 @@ namespace Tools
 
         // Informations
         public TcpClient TcpClient { get; private set; }
-        public PlayerState State { get; set; }
         public Dictionary<string, object> Properties { get; private set; } = new Dictionary<string, object>();
 
         // Events
         public event EventHandler<OthelloTCPClientArgs> OnOrderReceived;
+        public event EventHandler<OthelloTCPClientArgs> OnGameStateReceived;
+        public event EventHandler<EventArgs> OnConnectionLost;
 
         /// <summary>
         /// Basic constructor, start to listen for orders
@@ -41,8 +42,10 @@ namespace Tools
                     {
                         if (TcpClient.Connected)
                         {
-                            if (Receive() is AOrder output && !string.IsNullOrEmpty(output.GetAcronym()))
-                                OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs() { Order = output });
+                            if (Receive() is AOrder order && !string.IsNullOrEmpty(order.GetAcronym()))
+                                OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs() { Order = order });
+                            if (Receive() is GameState gameState)
+                                OnGameStateReceived?.Invoke(this, new OthelloTCPClientArgs() { GameState = gameState });
                         }
 
                         // Wait before reading again
@@ -53,12 +56,28 @@ namespace Tools
 
             // Start to listen
             listenerTask.Start();
+
+            // Ping task
+            Task pinger = new Task(() =>
+            {
+                while (true)
+                {
+                    if (!Toolbox.Connected(this))
+                    {
+                        OnConnectionLost?.Invoke(this, new EventArgs());
+                    }
+                    Thread.Sleep(5000);
+                }
+
+            });
+
+            // Start to ping
+            pinger.Start();
         }
 
         public void ConnectTo(string serverHostname, int serverPort)
         {
             TcpClient = new TcpClient();
-            State = PlayerState.Undefined;
 
             // Register this client to the server
             TcpClient.Connect(serverHostname, serverPort);
@@ -120,5 +139,6 @@ namespace Tools
     public class OthelloTCPClientArgs
     {
         public AOrder Order { get; set; }
+        public GameState GameState { get; set; }
     }
 }
