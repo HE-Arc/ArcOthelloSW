@@ -18,7 +18,7 @@ namespace ClientTest
             c2.ConnectTo("127.0.0.1", 65432);
 
             // Connect clients
-            c1.Send(OrderProvider.SearchLocalGame);
+            c1.Send(OrderProvider.SearchOnlineGame);
             c2.Send(OrderProvider.SearchOnlineGame);
 
             // Wait

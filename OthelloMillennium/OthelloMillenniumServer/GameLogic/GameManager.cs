@@ -57,6 +57,7 @@ namespace OthelloMillenniumServer
             indexState = 0;
             listGameState = new List<GameBoard>();
             listGameState.Add(GameBoard.CreateStartState());
+
             Assert.False(listGameState[indexState].GameEnded);
             Assert.True(listGameState[indexState].LastPlayer == GameBoard.CellState.WHITE);
 
@@ -68,7 +69,7 @@ namespace OthelloMillenniumServer
                     { Player.WhitePlayer, new StoppableTimer(Settings.TimePerPlayer) }
                 };
             }
-            
+
             CurrentPlayerTurn = Player.BlackPlayer;
 
             ComputeScore();
@@ -234,7 +235,7 @@ namespace OthelloMillenniumServer
             GameBoard gameState = listGameState[indexState];
             int maxScore = gameState.Board.GetLength(0) * gameState.Board.GetLength(1);
             
-            if (timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 || timeCounter[Player.WhitePlayer].GetRemainingTime() == 0)
+            if (Type == GameType.MultiPlayer && (timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 || timeCounter[Player.WhitePlayer].GetRemainingTime() == 0))
             {
                 //One player is out of time
                 scores = timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 ? new Tuple<int, int>(0, maxScore) : new Tuple<int, int>(maxScore, 0);
@@ -242,9 +243,9 @@ namespace OthelloMillenniumServer
             else
             {
                 // Get nb token per player
-                (int black, int white) = (gameState.getNbToken(GameBoard.CellState.BLACK), gameState.getNbToken(GameBoard.CellState.WHITE));
+                (int black, int white) = (gameState.GetNbToken(GameBoard.CellState.BLACK), gameState.GetNbToken(GameBoard.CellState.WHITE));
 
-                if (!GameEnded || gameState.getNbToken(GameBoard.CellState.EMPTY) == 0)
+                if (!GameEnded || gameState.GetNbToken(GameBoard.CellState.EMPTY) == 0)
                 {
                     // Default Count number of token for each player
                     scores = new Tuple<int, int>(black, white);
@@ -279,7 +280,7 @@ namespace OthelloMillenniumServer
                 }
             }
             
-            List<Tuple<int, int>> possiblesMoves = listGameState[indexState].PossibleMoves(PlayerToCellState(CurrentPlayerTurn));
+            List<Tuple<char, int>> possiblesMoves = listGameState[indexState].PossibleMoves(PlayerToCellState(CurrentPlayerTurn));
             Tuple<long, long> remainingTimes = new Tuple<long, long>(timeCounter[Player.BlackPlayer].GetRemainingTime(), timeCounter[Player.WhitePlayer].GetRemainingTime());
             
             return new GameState(GameEnded, (int)CurrentPlayerTurn, scores, board, possiblesMoves, remainingTimes, (int)winner);

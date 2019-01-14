@@ -19,9 +19,9 @@ namespace OthelloMillenniumServer
         {
             get
             {
-                if (instance == null)
+                lock (padlock)
                 {
-                    lock (padlock)
+                    if (instance == null)
                     {
                         instance = new Matchmaker();
                     }
@@ -37,9 +37,6 @@ namespace OthelloMillenniumServer
 
             // Start matchmaking
             StartMatchmaking();
-
-            // Start pinging
-            StartPinging();
         }
         #endregion
 
@@ -54,29 +51,6 @@ namespace OthelloMillenniumServer
         HashSet<OthelloTCPClient> OnlineClients => registratedClientsPerGameTypeDict[GameManager.GameType.MultiPlayer];
         #endregion
 
-        private void StartPinging()
-        {
-            // TODO : (FIXME : should be done inside the OthelloTCPClient)
-
-            Task pinger = new Task(() =>
-            {
-                foreach (var set in registratedClientsPerGameTypeDict.Values)
-                {
-                    foreach (var client in set)
-                    {
-                        if (!Toolbox.Connected(client))
-                        {
-                            DisconnectClient(client);
-                        }
-                    }
-                }
-
-                Thread.Sleep(5000);
-            });
-
-            pinger.Start();
-        }
-
         private void StartMatchmaking()
         {
             try
@@ -88,10 +62,6 @@ namespace OthelloMillenniumServer
                     {
                         while (running)
                         {
-                            Console.WriteLine("Currently queuing");
-                            Console.WriteLine($"Online  : {OnlineClients.Count}");
-                            Console.WriteLine($"Local  : {LocalClients.Count}");
-
                             #region Local
                             // Start to look for any good binding if there is 2 or more player/AI waiting
                             if (LocalClients.Count > 1)
@@ -140,20 +110,16 @@ namespace OthelloMillenniumServer
             var client1 = set.First();
             var client2 = set.Last();
 
+            // Informs clients that an opponent has be found
+            client1.Send(OrderProvider.OpponentFound);
+            client2.Send(OrderProvider.OpponentFound);
+
             // GameManager will now handle clients and put them as InGame
             var match = new GameHandler(client1, client2, gameType);
             matches.Add(match);
 
             // Link end of game event
             match.GameManager.OnGameFinished += GameManager_OnGameFinished;
-
-            // Informs clients that an opponent has be found
-            client1.Send(OrderProvider.OpponentFound);
-            client2.Send(OrderProvider.OpponentFound);
-
-            // Update client state
-            client1.State = PlayerState.Binded;
-            client2.State = PlayerState.Binded;
 
             // Remove them from the queue
             set.Remove(client1);
@@ -194,9 +160,6 @@ namespace OthelloMillenniumServer
             {
                 // Informs the client that he is now known to the server
                 client.Send(OrderProvider.RegisterSuccessful);
-
-                // Update client state
-                client.State = PlayerState.Searching;
             }
             else
             {
@@ -223,7 +186,6 @@ namespace OthelloMillenniumServer
                         // Check timers
                         // Disconnected for too long ?
                         Console.WriteLine("Client will be reconnected to the match"); // DEBUG
-                        client.State = PlayerState.Undefined; // TODO
                     }
                 }
                 else
@@ -257,9 +219,6 @@ namespace OthelloMillenniumServer
                 {
                     // Get the match 
                     var currentMatch = GetMatch(client);
-
-                    // Mark client as disconnected
-                    client.State = PlayerState.Disconnected;
 
                     if (currentMatch == null)
                     {
