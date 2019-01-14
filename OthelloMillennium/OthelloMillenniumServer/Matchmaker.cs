@@ -43,7 +43,6 @@ namespace OthelloMillenniumServer
         #region Attributes
         private readonly HashSet<GameHandler> matches = new HashSet<GameHandler>();
         private readonly Dictionary<GameManager.GameType, HashSet<OthelloTCPClient>> registratedClientsPerGameTypeDict = new Dictionary<GameManager.GameType, HashSet<OthelloTCPClient>>();
-        private bool running = false;
         #endregion
 
         #region Properties
@@ -55,12 +54,11 @@ namespace OthelloMillenniumServer
         {
             try
             {
-                if (!running)
+                if (TCPServer.Instance.Running)
                 {
-                    running = true;
                     Task binderThread = new Task(() =>
                     {
-                        while (running)
+                        while (TCPServer.Instance.Running)
                         {
                             #region Local
                             // Start to look for any good binding if there is 2 or more player/AI waiting

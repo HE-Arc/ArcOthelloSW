@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OthelloMillenniumClient.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,16 @@ namespace OthelloMillenniumClient
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void single_Click(object sender, RoutedEventArgs e)
+        {
+            ApplicationManager.Instance.Client.Search(OthelloMillenniumServer.GameManager.GameType.SinglePlayer);
+        }
+
+        private void multi_Click(object sender, RoutedEventArgs e)
+        {
+            ApplicationManager.Instance.Client.Search(OthelloMillenniumServer.GameManager.GameType.MultiPlayer);
         }
     }
 }
