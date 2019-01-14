@@ -59,8 +59,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\ApplicationManager.cs" />
-    <Compile Include="Gamboard.xaml.cs">
-      <DependentUpon>Gamboard.xaml</DependentUpon>
+    <Compile Include="Classes\GridHelpers.cs" />
+    <Compile Include="Gameboard.xaml.cs">
+      <DependentUpon>Gameboard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Game.xaml.cs">
       <DependentUpon>Game.xaml</DependentUpon>
@@ -75,7 +76,7 @@
     <Compile Include="Lobby.xaml.cs">
       <DependentUpon>Lobby.xaml</DependentUpon>
     </Compile>
-    <Page Include="Gamboard.xaml">
+    <Page Include="Gameboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

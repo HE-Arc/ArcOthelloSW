@@ -33,17 +33,17 @@ namespace OthelloMillenniumClient.Classes
         }
 
         private ApplicationManager() {
-            int port = StartLocalServer();
+            //int port = StartLocalServer();
 
-            // Test if server has been started
-            if (port > 0)
-            {
-                Client = new Client("localhost", port);
-            }
-            else
-            {
-                throw new Exception($"Unable to start server on port {port}");
-            }
+            //// Test if server has been started
+            //if (port > 0)
+            //{
+            //    Client = new Client("localhost", port);
+            //}
+            //else
+            //{
+            //    throw new Exception($"Unable to start server on port {port}");
+            //}
         }
         #endregion
 
