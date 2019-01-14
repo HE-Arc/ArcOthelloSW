@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Tools;
+using Tools.Classes;
 
 namespace OthelloMillenniumClient
 {
@@ -106,6 +107,22 @@ namespace OthelloMillenniumClient
         {
             //e.GameState;
             throw new NotImplementedException();
+        }
+    
+        private void OnCellClick(object sender, RoutedEventArgs e)
+        {
+            char column = 'a';
+            int row = 0;
+
+            // Generate a new order
+            var order = OrderProvider.PlayMove as PlayMoveOrder;
+            order.Coords = new Tuple<char, int>(column, row);
+
+            // Send the player new token location
+            ApplicationManager.Instance.Client.Send(order);
+
+            // End player's turn
+            ApplicationManager.Instance.Client.Send(OrderProvider.NextTurn);
         }
     }
 }
