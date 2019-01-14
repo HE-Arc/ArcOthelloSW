@@ -5,14 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OthelloMillenniumClient"
         mc:Ignorable="d"
-        Title="Game" Height="450" Width="800">
+        Title="Game" Height="450" Width="800"
+        Background="#080e0c">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20*"></ColumnDefinition>
             <ColumnDefinition Width="60*"></ColumnDefinition>
             <ColumnDefinition Width="20*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Image Grid.Column="0" Grid.ColumnSpan="3" x:Name="Background" Source="Images/Background.png" Stretch="Fill"/>
+        <!--<Image Grid.Column="0" Grid.ColumnSpan="3" x:Name="Background" Source="Images/Background.png" Stretch="Fill"/>-->
         <!-- TODO Add gameboard grid -->
         <Image Grid.Column="0" x:Name="tes" Source="Images/Finn.png" Width="100"/>
         <Image Grid.Column="2" x:Name="_as" Source="Images/Leia.png" Width="100"/>

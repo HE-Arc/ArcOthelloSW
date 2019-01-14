@@ -33,16 +33,22 @@ namespace OthelloMillenniumClient
         private void Init()
         {
             //Create game interface
-            //TODO change 
+            //TODO change
             int width = 9;
             int height = 7;
 
             Grid grid = MainGrid;
+            SolidColorBrush brush = new SolidColorBrush(Color.FromArgb(0xFF, 0x0F,0x3D, 0x56));
+            SolidColorBrush brushYellow = new SolidColorBrush(Color.FromArgb(0xFF, 0xFC, 0xB0, 0x01));
 
+            grid.Children.Clear();
+            grid.RowDefinitions.Clear();
             grid.ColumnDefinitions.Clear();
 
             GridLength oneStars = new GridLength(1, GridUnitType.Star);
             GridLength twoStars = new GridLength(2, GridUnitType.Star);
+            Thickness margin = new Thickness(1);
+            Thickness none = new Thickness(0);
 
             ColumnDefinition c1 = new ColumnDefinition();
             grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = oneStars });
@@ -64,12 +70,15 @@ namespace OthelloMillenniumClient
             for (int i = 1; i < width+1; ++i)
             {
                 Border border = new Border();
+                
                 border.SetValue(Grid.RowProperty, 0);
                 border.SetValue(Grid.ColumnProperty, i);
                 border.Child = new TextBlock() {
                     Text = ((char)(i+65)).ToString(),
                     VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Center
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = margin,
+                    Foreground = brushYellow
                 };
                 grid.Children.Add(border);
             }
@@ -83,7 +92,9 @@ namespace OthelloMillenniumClient
                 {
                     Text = i.ToString(),
                     VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Center
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = margin,
+                    Foreground = brushYellow
                 };
                 grid.Children.Add(border);
             }
@@ -96,7 +107,12 @@ namespace OthelloMillenniumClient
                     Border border = new Border();
                     border.SetValue(Grid.ColumnProperty, i+1);
                     border.SetValue(Grid.RowProperty, j+1);
-                    border.Child = new Button() { Content = 1 };
+                    border.Child = new Button() {
+                        Content = 1,
+                        Margin = margin,
+                        Background = brush,
+                        BorderThickness = none
+                    };
                     grid.Children.Add(border);
                 }
             }

@@ -28,8 +28,8 @@ namespace OthelloMillenniumClient
         public Game()
         {
             InitializeComponent();
-            ApplicationManager.Instance.Client.OnAwaitReceived += Client_OnAwaitReceived;
-            ApplicationManager.Instance.Client.OnBeginReceived += Client_OnBeginReceived;
+            // ApplicationManager.Instance.Client.OnAwaitReceived += Client_OnAwaitReceived;
+            // ApplicationManager.Instance.Client.OnBeginReceived += Client_OnBeginReceived;
         }
 
         private void Client_OnAwaitReceived(object sender, Tools.OthelloTCPClientArgs e)
