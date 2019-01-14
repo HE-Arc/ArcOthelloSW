@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OthelloMillenniumServer">
+      <HintPath>..\OthelloMillenniumServer\bin\Debug\netcoreapp2.0\OthelloMillenniumServer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -55,13 +58,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\ApplicationManager.cs" />
     <Compile Include="Gamboard.xaml.cs">
       <DependentUpon>Gamboard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Game.xaml.cs">
       <DependentUpon>Game.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GameHandler.cs" />
+    <Compile Include="Classes\GameHandler.cs" />
     <Compile Include="PlayerPicker.xaml.cs">
       <DependentUpon>PlayerPicker.xaml</DependentUpon>
     </Compile>
@@ -87,7 +91,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Client.cs" />
+    <Compile Include="Classes\Client.cs" />
     <Compile Include="Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
       <SubType>Code</SubType>
