@@ -9,7 +9,7 @@ namespace OthelloMillenniumServer
 {
     public class TCPServer
     {
-        public static int Port = 65432;
+        public static int Port { get; set; } = 65432;
 
         #region Singleton
         private static readonly object padlock = new object();
@@ -35,12 +35,15 @@ namespace OthelloMillenniumServer
 
         #region Properties
         private readonly TcpListener listener = new TcpListener(IPAddress.Any, Port);
+        public bool Running { get; private set; }
         #endregion
 
         public bool StartListening()
         {
             try
             {
+                Running = true;
+
                 // Start to listen
                 listener.Start(100);
 
@@ -52,7 +55,7 @@ namespace OthelloMillenniumServer
                 Task t = new Task(() =>
                 {
                     // Infinite loop
-                    while (true)
+                    while (Running)
                     {
                         // Accept connection
                         if (listener.Pending())
@@ -85,6 +88,15 @@ namespace OthelloMillenniumServer
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Stop the server and matchmaking process
+        /// </summary>
+        public void Stop()
+        {
+            Running = false;
+            listener.Stop();
         }
 
         private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
