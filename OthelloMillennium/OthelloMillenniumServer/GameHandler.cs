@@ -85,9 +85,10 @@ namespace OthelloMillenniumServer
             Client1.Send(OrderProvider.PlayerBegin);
             Client2.Send(OrderProvider.PlayerAwait);
 
-            // Send initial gameState
-            Client1.Send(OrderProvider.GetCurrentGameState);
-            Client2.Send(OrderProvider.GetCurrentGameState);
+            // Send current gameState
+            var gs = GameManager.Export();
+            Client1.Send(gs);
+            Client2.Send(gs);
 
             // React to clients orders
             Client1.OnOrderReceived += OnOrderReceived;
@@ -96,12 +97,22 @@ namespace OthelloMillenniumServer
 
         private void Client_OnConnectionLost(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            var opponent = (sender as OthelloTCPClient).Properties["Opponent"] as OthelloTCPClient;
+            opponent.Send(OrderProvider.OpponentConnectionLost);
         }
 
         private void GameManager_OnGameFinished(object sender, GameState e)
         {
-            throw new NotImplementedException();
+            var gameManager = sender as GameManager;
+            var finalGameState = gameManager.Export();
+
+            // Notifiy the end of the game
+            Client1.Send(OrderProvider.EndOfTheGame);
+            Client2.Send(OrderProvider.EndOfTheGame);
+
+            // Send the final state
+            Client1.Send(finalGameState);
+            Client2.Send(finalGameState);   
         }
 
         private void OnOrderReceived(object s, OthelloTCPClientArgs e)

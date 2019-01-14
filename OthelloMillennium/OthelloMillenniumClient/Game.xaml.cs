@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OthelloMillenniumClient.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,26 @@ namespace OthelloMillenniumClient
     /// </summary>
     public partial class Game : Window
     {
+        /// <summary>
+        /// Should be binded to the gameboard in order to allow or not the player to play
+        /// </summary>
+        public bool Locked { get; private set; }
+
         public Game()
         {
             InitializeComponent();
+            ApplicationManager.Instance.Client.OnAwaitReceived += Client_OnAwaitReceived;
+            ApplicationManager.Instance.Client.OnBeginReceived += Client_OnBeginReceived;
         }
+
+        private void Client_OnAwaitReceived(object sender, Tools.OthelloTCPClientArgs e)
+        {
+            Locked = true;
+        }
+
+        private void Client_OnBeginReceived(object sender, Tools.OthelloTCPClientArgs e)
+        {
+            Locked = false;
+        }   
     }
 }

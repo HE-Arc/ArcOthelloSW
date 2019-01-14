@@ -10,10 +10,27 @@ namespace OthelloMillenniumServer
 {
     public class Client : OthelloTCPClient
     {
+        public event EventHandler<OthelloTCPClientArgs> OnBeginReceived;
+        public event EventHandler<OthelloTCPClientArgs> OnAwaitReceived;
+
         public Client(string serverHostname, int serverPort)
             : base()
         {
             this.ConnectTo(serverHostname, serverPort);
+            this.OnOrderReceived += Client_OnOrderReceived;
+        }
+
+        private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
+        {
+            switch(e.Order)
+            {
+                case PlayerAwaitOrder order:
+                    OnAwaitReceived?.Invoke(this, e);
+                    break;
+                case PlayerBeginOrder order:
+                    OnBeginReceived?.Invoke(this, e);
+                    break;
+            }
         }
 
         /// <summary>
