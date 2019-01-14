@@ -12,6 +12,7 @@
             <SolidColorBrush x:Key="brush" Color="Silver"/>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
@@ -23,6 +24,7 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -32,15 +34,16 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <!-- TODO Add gameboard grid -->
-        <Border Grid.Row="0" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="0" Grid.Column="1" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="0" Grid.Column="2" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="0" Grid.Column="3" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="0" Grid.Column="4" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="0" Grid.Column="5" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="0" Grid.Column="6" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="0" Grid.Column="7" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="0" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="0" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock></TextBlock></Border>
+        <Border Grid.Row="0" Grid.Column="1" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>A</TextBlock></Border>
+        <Border Grid.Row="0" Grid.Column="2" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>B</TextBlock></Border>
+        <Border Grid.Row="0" Grid.Column="3" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>C</TextBlock></Border>
+        <Border Grid.Row="0" Grid.Column="4" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>D</TextBlock></Border>
+        <Border Grid.Row="0" Grid.Column="5" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>E</TextBlock></Border>
+        <Border Grid.Row="0" Grid.Column="6" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>F</TextBlock></Border>
+        <Border Grid.Row="0" Grid.Column="7" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>G</TextBlock></Border>
+        <Border Grid.Row="0" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>H</TextBlock></Border>
+        <Border Grid.Row="0" Grid.Column="9" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 0"><TextBlock>I</TextBlock></Border>
         <Border Grid.Row="1" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="1" Grid.Column="1" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="1" Grid.Column="2" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
@@ -49,8 +52,9 @@
         <Border Grid.Row="1" Grid.Column="5" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="1" Grid.Column="6" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="1" Grid.Column="7" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="1" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="2" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="1" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="1" Grid.Column="9" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="2" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>2</TextBlock></Border>
         <Border Grid.Row="2" Grid.Column="1" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="2" Grid.Column="2" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="2" Grid.Column="3" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
@@ -58,8 +62,9 @@
         <Border Grid.Row="2" Grid.Column="5" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="2" Grid.Column="6" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="2" Grid.Column="7" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="2" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="3" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="2" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="2" Grid.Column="9" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="3" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>3</TextBlock></Border>
         <Border Grid.Row="3" Grid.Column="1" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="3" Grid.Column="2" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="3" Grid.Column="3" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
@@ -67,8 +72,9 @@
         <Border Grid.Row="3" Grid.Column="5" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="3" Grid.Column="6" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="3" Grid.Column="7" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="3" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="4" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="3" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="3" Grid.Column="9" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="4" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>4</TextBlock></Border>
         <Border Grid.Row="4" Grid.Column="1" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="4" Grid.Column="2" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="4" Grid.Column="3" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
@@ -76,8 +82,9 @@
         <Border Grid.Row="4" Grid.Column="5" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="4" Grid.Column="6" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="4" Grid.Column="7" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="4" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="5" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="4" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="4" Grid.Column="9" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="5" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>5</TextBlock></Border>
         <Border Grid.Row="5" Grid.Column="1" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="5" Grid.Column="2" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="5" Grid.Column="3" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
@@ -85,15 +92,27 @@
         <Border Grid.Row="5" Grid.Column="5" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="5" Grid.Column="6" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
         <Border Grid.Row="5" Grid.Column="7" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="5" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 0"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="6" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="6" Grid.Column="1" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="6" Grid.Column="2" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="6" Grid.Column="3" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="6" Grid.Column="4" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="6" Grid.Column="5" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="6" Grid.Column="6" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="6" Grid.Column="7" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
-        <Border Grid.Row="6" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 1"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="5" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="5" Grid.Column="9" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="6" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>6</TextBlock></Border>
+        <Border Grid.Row="6" Grid.Column="1" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="6" Grid.Column="2" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="6" Grid.Column="3" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="6" Grid.Column="4" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="6" Grid.Column="5" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="6" Grid.Column="6" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="6" Grid.Column="7" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="6" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="6" Grid.Column="9" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 0"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="7" Grid.Column="0" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>7</TextBlock></Border>
+        <Border Grid.Row="7" Grid.Column="1" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="7" Grid.Column="2" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="7" Grid.Column="3" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="7" Grid.Column="4" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="7" Grid.Column="5" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="7" Grid.Column="6" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="7" Grid.Column="7" BorderBrush="{StaticResource brush}" BorderThickness="1 1 0 1"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="7" Grid.Column="8" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 1"><TextBlock>1</TextBlock></Border>
+        <Border Grid.Row="7" Grid.Column="9" BorderBrush="{StaticResource brush}" BorderThickness="1 1 1 1"><TextBlock>1</TextBlock></Border>
     </Grid>
 </UserControl>
