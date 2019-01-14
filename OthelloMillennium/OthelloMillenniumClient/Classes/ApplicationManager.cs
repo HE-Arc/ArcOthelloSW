@@ -38,7 +38,7 @@ namespace OthelloMillenniumClient.Classes
             // Test if server has been started
             if (port > 0)
             {
-                client = new Client("localhost", port);
+                Client = new Client("localhost", port);
             }
             else
             {
