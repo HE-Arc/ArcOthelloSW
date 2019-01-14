@@ -62,7 +62,9 @@ namespace OthelloMillenniumServer
                         {
                             // Store the new connection inside the client list
                             var newConnection = listener.AcceptTcpClient();
-                            var client = new OthelloTCPClient();
+
+                            // PlayerType will be fetched during the register method inside the matchmaking
+                            var client = new OthelloTCPClient(PlayerType.None);
                             client.Bind(newConnection);
 
                             // Will be used once to listen what type of game the player is searching

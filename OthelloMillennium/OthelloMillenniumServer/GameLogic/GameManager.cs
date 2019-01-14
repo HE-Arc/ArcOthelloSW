@@ -3,24 +3,14 @@ using OthelloMillenniumServer.GameLogic;
 using System;
 using System.Collections.Generic;
 using Tools;
+using Tools.Classes;
 
 namespace OthelloMillenniumServer
 {
     public class GameManager
     {
         #region Internal Classes
-        public enum GameType
-        {
-            SinglePlayer = 0,
-            MultiPlayer = 1
-        }
-
-        public enum Player
-        { // Values have been choosen to fit GameState.CellState
-            BlackPlayer = 1,
-            WhitePlayer = 2
-        }
-
+        
         private static GameBoard.CellState PlayerToCellState(Player player)
         {
             return player == Player.BlackPlayer ? GameBoard.CellState.BLACK : GameBoard.CellState.WHITE;
@@ -30,7 +20,7 @@ namespace OthelloMillenniumServer
 
         #region Properties
         public bool GameEnded { get; private set; }
-        public GameType Type { get; private set; }
+        public BattleType BattleType { get; private set; }
         public Player CurrentPlayerTurn { get; private set; }
 
         #endregion
@@ -38,7 +28,7 @@ namespace OthelloMillenniumServer
         #region Attributes
         private int indexState;
         private List<GameBoard> listGameState;
-        private Dictionary<Player, StoppableTimer> timeCounter;
+        private Dictionary<Player, StoppableTimer> timeCounter = new Dictionary<Player, StoppableTimer>();
         private Tuple<int, int> scores;
         private Player winner;
 
@@ -49,9 +39,9 @@ namespace OthelloMillenniumServer
 
         #endregion
 
-        public GameManager(GameType gameType)
+        public GameManager(BattleType battleType)
         {
-            Type = gameType;
+            BattleType = battleType;
 
             //Init GameState
             indexState = 0;
@@ -61,7 +51,7 @@ namespace OthelloMillenniumServer
             Assert.False(listGameState[indexState].GameEnded);
             Assert.True(listGameState[indexState].LastPlayer == GameBoard.CellState.WHITE);
 
-            if (Type == GameType.MultiPlayer)
+            if (BattleType == BattleType.AgainstPlayer)
             {
                 timeCounter = new Dictionary<Player, StoppableTimer>()
                 {
@@ -86,7 +76,7 @@ namespace OthelloMillenniumServer
             }
 
             //We start the counter
-            if (Type == GameType.MultiPlayer)
+            if (BattleType == BattleType.AgainstPlayer)
             {
                 timeCounter[Player.BlackPlayer].Start();
             }
@@ -109,7 +99,7 @@ namespace OthelloMillenniumServer
                 throw new Exception("Invalid player turn");
             }
 
-            if (Type == GameType.MultiPlayer)
+            if (BattleType == BattleType.AgainstPlayer)
             {
                 timeCounter[CurrentPlayerTurn].Stop();
             }
@@ -127,7 +117,7 @@ namespace OthelloMillenniumServer
             ++indexState;
 
             SwitchPlayer();
-            if (Type == GameType.MultiPlayer)
+            if (BattleType == BattleType.AgainstPlayer)
             {
                 timeCounter[CurrentPlayerTurn].Start();
             }
@@ -153,7 +143,7 @@ namespace OthelloMillenniumServer
                 throw new Exception("Game ended");
             }
 
-            if (Type == GameType.MultiPlayer)
+            if (BattleType == BattleType.AgainstPlayer)
             {
                 throw new Exception("Action not allowed in Multiplayer game type");
             }
@@ -179,7 +169,7 @@ namespace OthelloMillenniumServer
                 throw new Exception("Game ended");
             }
 
-            if (Type == GameType.MultiPlayer)
+            if (BattleType == BattleType.AgainstPlayer)
             {
                 throw new Exception("Action not allowed in Multiplayer game type");
             }
@@ -235,7 +225,7 @@ namespace OthelloMillenniumServer
             GameBoard gameState = listGameState[indexState];
             int maxScore = gameState.Board.GetLength(0) * gameState.Board.GetLength(1);
             
-            if (Type == GameType.MultiPlayer && (timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 || timeCounter[Player.WhitePlayer].GetRemainingTime() == 0))
+            if (BattleType == BattleType.AgainstPlayer && (timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 || timeCounter[Player.WhitePlayer].GetRemainingTime() == 0))
             {
                 //One player is out of time
                 scores = timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 ? new Tuple<int, int>(0, maxScore) : new Tuple<int, int>(maxScore, 0);

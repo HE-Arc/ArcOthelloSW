@@ -36,8 +36,8 @@ namespace Tools.Classes
     /// </summary>
     public static class OrderProvider
     {
-        public readonly static AOrder SearchLocalGame = new SearchLocalGameOrder();
-        public readonly static AOrder SearchOnlineGame = new SearchOnlineGameOrder();
+        public readonly static AOrder SearchBattleAgainstAI = new SearchBattleAgainstAIOrder();
+        public readonly static AOrder SearchBattleAgainstPlayer = new SearchBattleAgainstPlayerOrder();
         public readonly static AOrder RegisterSuccessful = new RegisterSuccessfulOrder();
         public readonly static AOrder OpponentFound = new OpponentFoundOrder();
         public readonly static AOrder StartOfTheGame = new StartOfTheGameOrder();
@@ -56,43 +56,63 @@ namespace Tools.Classes
     }
 
     [Serializable]
-    public class SearchLocalGameOrder : AOrder
+    public class SearchBattleAgainstAIOrder : AOrder
     {
-        protected SearchLocalGameOrder(SerializationInfo info, StreamingContext context)
+        public PlayerType PlayerType { get; set; }
+
+        protected SearchBattleAgainstAIOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
-        { }
+        {
+            PlayerType = (PlayerType)info.GetValue("PlayerType", typeof(PlayerType));
+        }
 
         public override string GetAcronym()
         {
-            return "SL";
+            return "SBAA";
         }
 
         public override string GetDefinition()
         {
-            return "Search a local game for the current player";
+            return "Search a battle against an AI";
         }
 
-        internal SearchLocalGameOrder() { }
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue("PlayerType", PlayerType);
+        }
+
+        internal SearchBattleAgainstAIOrder() { }
     }
 
     [Serializable]
-    public class SearchOnlineGameOrder : AOrder
+    public class SearchBattleAgainstPlayerOrder : AOrder
     {
-        protected SearchOnlineGameOrder(SerializationInfo info, StreamingContext context)
+        public PlayerType PlayerType { get; set; }
+
+        protected SearchBattleAgainstPlayerOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
-        { }
+        {
+            PlayerType = (PlayerType)info.GetValue("PlayerType", typeof(PlayerType));
+        }
 
         public override string GetAcronym()
         {
-            return "SO";
+            return "SBAP";
         }
 
         public override string GetDefinition()
         {
-            return "Search an online game for the current player";
+            return "Search a battle against a player";
         }
 
-        internal SearchOnlineGameOrder() { }
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue("PlayerType", PlayerType);
+        }
+
+        internal SearchBattleAgainstPlayerOrder() { }
     }
 
     [Serializable]

@@ -32,17 +32,19 @@ namespace OthelloMillenniumServer
         /// <summary>
         /// Type of game currently being played
         /// </summary>
-        public GameManager.GameType GameType => GameManager.Type;
+        public BattleType GameType => GameManager.BattleType;
 
-        public GameHandler(OthelloTCPClient black, OthelloTCPClient white, GameManager.GameType gameType)
+        public GameHandler(OthelloTCPClient black, OthelloTCPClient white)
         {
-            // Init Client
+            // Init Client 1
             this.Client1 = black;
-            this.Client1.Properties.Add("Color", GameManager.Player.BlackPlayer);
+            this.Client1.Properties.Add("Color", Player.BlackPlayer);
             
+            // Init Client 2
             this.Client2 = white;
-            this.Client2.Properties.Add("Color", GameManager.Player.WhitePlayer);
+            this.Client2.Properties.Add("Color", Player.WhitePlayer);
 
+            // Assign opponent to each other
             this.Client1.Properties.Add("Opponent", this.Client2);
             this.Client2.Properties.Add("Opponent", this.Client1);
 
@@ -54,25 +56,11 @@ namespace OthelloMillenniumServer
             Client1.Send(OrderProvider.BlackAssigned);
             Client2.Send(OrderProvider.WhiteAssigned);
 
-            // Init gameManager
-            switch(gameType)
-            {
-                case GameManager.GameType.MultiPlayer:
-                    // Init a gameManager
-                    this.GameManager = new GameManager(GameManager.GameType.MultiPlayer);
-
-                    break;
-                case GameManager.GameType.SinglePlayer:
-                    // Init a gameManager
-                    this.GameManager = new GameManager(GameManager.GameType.SinglePlayer);
-
-                    //TODO : AI starts or not ?
-                    break;
-                default:
-                    var ex = new Exception("Given gameType is invalid");
-                    Toolbox.LogError(ex);
-                    throw ex;
-            }
+            // Is it an AI battle ? Init gameManager
+            if (Client1.Type == PlayerType.Human & Client2.Type == PlayerType.Human)
+                this.GameManager = new GameManager(BattleType.AgainstPlayer);
+            else
+                this.GameManager = new GameManager(BattleType.AgainstAI);
 
             // Informs the players that the game is starting
             Client1.Send(OrderProvider.StartOfTheGame);
@@ -134,7 +122,7 @@ namespace OthelloMillenniumServer
                     break;
 
                 case PlayMoveOrder order:
-                    GameManager.PlayMove(order.Coords, (GameManager.Player)sender.Properties["Color"]);
+                    GameManager.PlayMove(order.Coords, (Player)sender.Properties["Color"]);
                     var gs = GameManager.Export();
 
                     // Send current gameState

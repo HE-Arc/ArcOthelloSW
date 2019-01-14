@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OthelloMillenniumServer;
 
 namespace OthelloMillenniumClient.Classes
@@ -36,20 +32,14 @@ namespace OthelloMillenniumClient.Classes
             int port = StartLocalServer();
 
             // Test if server has been started
-            if (port > 0)
-            {
-                Client = new Client("localhost", port);
-            }
-            else
+            if (port < 0)
             {
                 throw new Exception($"Unable to start server on port {port}");
             }
         }
         #endregion
 
-        #region Attributs
-        public Client Client { get; private set; }
-        #endregion
+        public IGameHandler CurrentGame { get; set; }
 
         #region Methods
         /// <summary>

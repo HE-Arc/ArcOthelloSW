@@ -1,18 +1,7 @@
 ﻿using OthelloMillenniumClient.Classes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Tools.Classes;
 
 namespace OthelloMillenniumClient
@@ -27,20 +16,30 @@ namespace OthelloMillenniumClient
             InitializeComponent();
         }
 
+        private Client GetCurrentPlayer()
+        {
+            //TODO: Get Information from server or keep it local
+            return null;
+        }
+
         private void OnCellClick(object sender, RoutedEventArgs e)
         {
             char column = 'a';
             int row = 0;
+
+            // Get the gamehandler
+            IGameHandler gameHandler = ApplicationManager.Instance.CurrentGame;
+            Client currentPlayer = gameHandler.GetCurrentPlayer();
 
             // Generate a new order
             var order = OrderProvider.PlayMove as PlayMoveOrder;
             order.Coords = new Tuple<char, int>(column, row);
 
             // Send the player new token location
-            ApplicationManager.Instance.Client.Send(order);
+            currentPlayer.Send(order);
 
             // End player's turn
-            ApplicationManager.Instance.Client.Send(OrderProvider.NextTurn);
+            currentPlayer.Send(OrderProvider.NextTurn);
         }
     }
 }

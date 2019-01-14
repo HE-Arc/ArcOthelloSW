@@ -9,17 +9,17 @@ namespace ClientTest
         static void Main(string[] args)
         {
             // Init clients
-            OthelloTCPClient c1 = new OthelloTCPClient();
+            OthelloTCPClient c1 = new OthelloTCPClient(PlayerType.Human);
             c1.OnOrderReceived += OthelloTCPClient_OnOrderReceived;
             c1.ConnectTo("127.0.0.1", 65432);
             
-            OthelloTCPClient c2 = new OthelloTCPClient();
+            OthelloTCPClient c2 = new OthelloTCPClient(PlayerType.Human);
             c2.OnOrderReceived += OthelloTCPClient_OnOrderReceived;
             c2.ConnectTo("127.0.0.1", 65432);
 
             // Connect clients
-            c1.Send(OrderProvider.SearchOnlineGame);
-            c2.Send(OrderProvider.SearchOnlineGame);
+            c1.Send(OrderProvider.SearchBattleAgainstPlayer);
+            c2.Send(OrderProvider.SearchBattleAgainstPlayer);
 
             // Wait
             Console.ReadLine();
