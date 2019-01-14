@@ -58,6 +58,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\GameHandlers\IGameHandler.cs" />
+    <Compile Include="Classes\GameHandlers\LocalGameHandler.cs" />
+    <Compile Include="Classes\GameHandlers\OnlineGameHandler.cs" />
     <Compile Include="Classes\ApplicationManager.cs" />
     <Compile Include="Classes\GridHelpers.cs" />
     <Compile Include="Gameboard.xaml.cs">
@@ -66,7 +69,6 @@
     <Compile Include="Game.xaml.cs">
       <DependentUpon>Game.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Classes\GameHandler.cs" />
     <Compile Include="PlayerPicker.xaml.cs">
       <DependentUpon>PlayerPicker.xaml</DependentUpon>
     </Compile>

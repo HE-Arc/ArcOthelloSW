@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Enums.cs" />
     <Compile Include="Classes\GameState.cs" />
     <Compile Include="Classes\Order.cs" />
     <Compile Include="Classes\OthelloTCPClient.cs" />

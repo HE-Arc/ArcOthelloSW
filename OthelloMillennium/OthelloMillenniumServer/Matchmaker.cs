@@ -32,8 +32,8 @@ namespace OthelloMillenniumServer
 
         private Matchmaker() {
             // Init dictionnary
-            registratedClientsPerGameTypeDict.Add(GameManager.GameType.SinglePlayer, new HashSet<OthelloTCPClient>());
-            registratedClientsPerGameTypeDict.Add(GameManager.GameType.MultiPlayer, new HashSet<OthelloTCPClient>());
+            registratedClients.Add(PlayerType.AI, new HashSet<OthelloTCPClient>());
+            registratedClients.Add(PlayerType.Human, new HashSet<OthelloTCPClient>());
 
             // Start matchmaking
             StartMatchmaking();
@@ -42,12 +42,12 @@ namespace OthelloMillenniumServer
 
         #region Attributes
         private readonly HashSet<GameHandler> matches = new HashSet<GameHandler>();
-        private readonly Dictionary<GameManager.GameType, HashSet<OthelloTCPClient>> registratedClientsPerGameTypeDict = new Dictionary<GameManager.GameType, HashSet<OthelloTCPClient>>();
+        private readonly Dictionary<PlayerType, HashSet<OthelloTCPClient>> registratedClients = new Dictionary<PlayerType, HashSet<OthelloTCPClient>>();
         #endregion
 
         #region Properties
-        HashSet<OthelloTCPClient> LocalClients => registratedClientsPerGameTypeDict[GameManager.GameType.SinglePlayer];
-        HashSet<OthelloTCPClient> OnlineClients => registratedClientsPerGameTypeDict[GameManager.GameType.MultiPlayer];
+        HashSet<OthelloTCPClient> RegistratedAIs => registratedClients[PlayerType.AI];
+        HashSet<OthelloTCPClient> RegistratedPlayers => registratedClients[PlayerType.Human];
         #endregion
 
         private void StartMatchmaking()
@@ -60,21 +60,18 @@ namespace OthelloMillenniumServer
                     {
                         while (TCPServer.Instance.Running)
                         {
-                            #region Local
-                            // Start to look for any good binding if there is 2 or more player/AI waiting
-                            if (LocalClients.Count > 1)
+                            foreach(var client in RegistratedPlayers.Union(RegistratedAIs))
                             {
-                                StartNewMatch(GameManager.GameType.SinglePlayer);
-                            }
-                            #endregion
+                                if (SearchOpponent(client) is OthelloTCPClient opponent)
+                                {
+                                    // Start a new match
+                                    StartNewMatch(client, opponent);
 
-                            #region Online
-                            // Start to look for any good binding if there is 2 or more player/AI waiting
-                            if (OnlineClients.Count > 1)
-                            {
-                                StartNewMatch(GameManager.GameType.MultiPlayer);
+                                    // Remove the two from the registredClients
+                                    (client.Type == PlayerType.Human ?  RegistratedPlayers : RegistratedAIs).Remove(client);
+                                    (opponent.Type == PlayerType.Human ? RegistratedPlayers : RegistratedAIs).Remove(opponent);
+                                }
                             }
-                            #endregion
 
                             // Sleep for 1 second
                             Thread.Sleep(1000);
@@ -95,33 +92,55 @@ namespace OthelloMillenniumServer
             }
         }
 
-        private void StartNewMatch(GameManager.GameType gameType)
+        /// <summary>
+        /// Search for a suitable client
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns>The opponent or null if no suitable opponent found</returns>
+        private OthelloTCPClient SearchOpponent(OthelloTCPClient client)
+        {
+            if ((PlayerType)client.Properties["Searching"] == PlayerType.AI)
+                return SearchAIOpponent(client);
+            else
+                return SearchPlayerOpponent(client);
+        }
+
+        /// <summary>
+        /// Search for an AI
+        /// <para/>(Different from the client if it is an ai)
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns>The opponent or null if no suitable opponent found</returns>
+        private OthelloTCPClient SearchAIOpponent(OthelloTCPClient client)
+        {
+            return RegistratedAIs.Where(ai => !ai.Equals(client)).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Search for a player
+        /// <para/>(Different from the client if it is a player)
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns>The opponent or null if no suitable opponent found</returns>
+        private OthelloTCPClient SearchPlayerOpponent(OthelloTCPClient client)
+        {
+            return RegistratedPlayers.Where(player => !player.Equals(client)).FirstOrDefault();
+        }
+
+        private void StartNewMatch(OthelloTCPClient client1, OthelloTCPClient client2)
         {
             Console.WriteLine("Starting match");
-
-            // Get the corresponding set
-            var set = gameType == GameManager.GameType.MultiPlayer ? OnlineClients : LocalClients;
-
-            // TODO : Insert logic (i.e. ranking, waiting time, etc)
-
-            // For now we take the first and the last one
-            var client1 = set.First();
-            var client2 = set.Last();
 
             // Informs clients that an opponent has be found
             client1.Send(OrderProvider.OpponentFound);
             client2.Send(OrderProvider.OpponentFound);
 
             // GameManager will now handle clients and put them as InGame
-            var match = new GameHandler(client1, client2, gameType);
+            var match = new GameHandler(client1, client2);
             matches.Add(match);
 
             // Link end of game event
             match.GameManager.OnGameFinished += GameManager_OnGameFinished;
-
-            // Remove them from the queue
-            set.Remove(client1);
-            set.Remove(client2);
         }
 
         private void GameManager_OnGameFinished(object sender, GameState e)
@@ -148,14 +167,26 @@ namespace OthelloMillenniumServer
 
         public bool IsKnown(OthelloTCPClient client)
         {
-            return LocalClients.Contains(client) | OnlineClients.Contains(client);
+            return RegistratedAIs.Contains(client) | RegistratedPlayers.Contains(client);
         }
 
-        private bool Register(OthelloTCPClient client, GameManager.GameType gameType)
+        /// <summary>
+        /// Register a new client and assign him his type and what he is searching for
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="playerType"></param>
+        /// <returns></returns>
+        private bool Register(OthelloTCPClient client, PlayerType playerType)
         {
-            bool result = registratedClientsPerGameTypeDict[gameType].Add(client);
+            // Try to add the client
+            bool result = registratedClients[playerType].Add(client);
+
+            // if result == false, client already exist
             if (result)
             {
+                // Set client type
+                client.Properties.Add("Searching", playerType);
+
                 // Informs the client that he is now known to the server
                 client.Send(OrderProvider.RegisterSuccessful);
             }
@@ -191,11 +222,10 @@ namespace OthelloMillenniumServer
                     // Store the new client in the matching hashset according to the player's game type wish
                     switch (order)
                     {
-                        case SearchLocalGameOrder x1:
-                            return Register(client, GameManager.GameType.SinglePlayer);
-                        case SearchOnlineGameOrder x2:
-                            return Register(client, GameManager.GameType.MultiPlayer);
-                        default:
+                        case SearchBattleAgainstAIOrder unboxedOrder:
+                            return Register(client, unboxedOrder.PlayerType);
+                        case SearchBattleAgainstPlayerOrder unboxedOrder:
+                            return Register(client, unboxedOrder.PlayerType);
                             throw new Exception("Invalid order received");
                     }
                 }
@@ -221,8 +251,7 @@ namespace OthelloMillenniumServer
                     if (currentMatch == null)
                     {
                         // Remove the client from the matchmaking
-                        Console.WriteLine("Disconnected");
-                        registratedClientsPerGameTypeDict[currentMatch.GameType].Remove(client);
+                        registratedClients[client.Type].Remove(client);
                     }
                     else
                     {

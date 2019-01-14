@@ -1,18 +1,8 @@
 ﻿using OthelloMillenniumClient.Classes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Tools.Classes;
 
 namespace OthelloMillenniumClient
 {
@@ -24,16 +14,38 @@ namespace OthelloMillenniumClient
         public MainWindow()
         {
             InitializeComponent();
+
+            InitComboBoxes();
         }
 
-        private void single_Click(object sender, RoutedEventArgs e)
+        private void InitComboBoxes()
         {
-            ApplicationManager.Instance.Client.Search(OthelloMillenniumServer.GameManager.GameType.SinglePlayer);
+            // Load game types
+            this.cbGameType.Items.Add(new ComboBoxItem() { Content = GameType.Local });
+            this.cbGameType.Items.Add(new ComboBoxItem() { Content = GameType.Online });
+
+            // Load battles
+            this.cbBattleType.Items.Add(new ComboBoxItem() { Content = BattleType.AgainstAI });
+            this.cbBattleType.Items.Add(new ComboBoxItem() { Content = BattleType.AgainstPlayer });
         }
 
-        private void multi_Click(object sender, RoutedEventArgs e)
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            ApplicationManager.Instance.Client.Search(OthelloMillenniumServer.GameManager.GameType.MultiPlayer);
+            try
+            {
+                GameType gameType = (GameType)cbGameType.SelectedItem;
+                BattleType battleType = (BattleType)cbBattleType.SelectedItem;
+
+                // Set a new gameHandler to the application manager (Can't be turned into ternary)
+                if (gameType == GameType.Local)
+                    ApplicationManager.Instance.CurrentGame = new LocalGameHandler(battleType);
+                else
+                    ApplicationManager.Instance.CurrentGame = new OnlineGameHandler(battleType);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+            }
         }
     }
 }

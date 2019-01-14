@@ -17,6 +17,7 @@ namespace Tools
 
         // Informations
         public TcpClient TcpClient { get; private set; }
+        public PlayerType Type { get; private set; }
         public Dictionary<string, object> Properties { get; private set; } = new Dictionary<string, object>();
 
         // Events
@@ -27,8 +28,13 @@ namespace Tools
         /// <summary>
         /// Basic constructor, start to listen for orders
         /// </summary>
-        public OthelloTCPClient()
+        /// <param name="type">Player or AI</param>
+        public OthelloTCPClient(PlayerType type)
         {
+            // Store the type of player
+            Type = type;
+
+            // Listener task
             listenerTask = new Task(() =>
             {
                 while (true)
@@ -62,13 +68,20 @@ namespace Tools
             {
                 while (true)
                 {
-                    if (!Toolbox.Connected(this))
+                    if (TcpClient == null)
                     {
-                        OnConnectionLost?.Invoke(this, new EventArgs());
+                        // Wait 1 second and check TcpConnection again
+                        Thread.Sleep(1000);
                     }
-                    Thread.Sleep(5000);
+                    else
+                    {
+                        if (!Toolbox.Connected(this))
+                        {
+                            OnConnectionLost?.Invoke(this, new EventArgs());
+                        }
+                        Thread.Sleep(5000);
+                    }
                 }
-
             });
 
             // Start to ping
