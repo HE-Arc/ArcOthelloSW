@@ -129,10 +129,10 @@ namespace OthelloMillenniumClient
 
                     grid.Children.Add(border);
 
-                    Rectangle myRectangle = new Rectangle();
-                    myRectangle.Fill = myRadialGradientBrush;
-                    myRectangle.SetValue(Grid.ColumnProperty, i + 1);
-                    myRectangle.SetValue(Grid.RowProperty, j + 1);
+                    //Rectangle myRectangle = new Rectangle();
+                    //myRectangle.Fill = myRadialGradientBrush;
+                    //myRectangle.SetValue(Grid.ColumnProperty, i + 1);
+                    //myRectangle.SetValue(Grid.RowProperty, j + 1);
                     //grid.Children.Add(myRectangle);
                 }
             }
