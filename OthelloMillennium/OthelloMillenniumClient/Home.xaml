@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OthelloMillenniumClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}">
     <Grid>
         <Button x:Name="btnSearch" Content="Rechercher une partie" HorizontalAlignment="Left" Margin="120,180,0,0" VerticalAlignment="Top" Width="120" Click="btnSearch_Click"/>
         <ComboBox Name="cbGameType" HorizontalAlignment="Left" Margin="120,70,0,0" VerticalAlignment="Top" Width="120"/>

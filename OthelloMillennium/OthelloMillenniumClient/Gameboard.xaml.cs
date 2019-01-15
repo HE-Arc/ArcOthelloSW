@@ -111,32 +111,32 @@ namespace OthelloMillenniumClient
                 grid.Children.Add(border);
             }
 
+            Style styleBlack = this.Resources["rectangle-black"] as Style;
+            Style styleWhite = this.Resources["rectangle-white"] as Style;
+            Style styleCell = this.Resources["cell"] as Style;
+            
             // Add buttons
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
-                    Border border = new Border();
-                    border.SetValue(Grid.ColumnProperty, i+1);
-                    border.SetValue(Grid.RowProperty, j+1);
                     Button button = new Button() {
-                        Content = 1,
-                        BorderThickness = none,
                         Tag = ((char)(i+66), j+1),
+                        Style = styleCell,
+                        MinWidth = 12,
+                        MinHeight = 12
+                    };
+                    button.SetValue(Grid.ColumnProperty, i+1);
+                    button.SetValue(Grid.RowProperty, j+1);
+                    button.Content = new Rectangle()
+                    {
+                        Style = styleBlack
                     };
                     button.Click += OnCellClick;
-                    border.Child = button;
-
-                    grid.Children.Add(border);
-
-                    //Rectangle myRectangle = new Rectangle();
-                    //myRectangle.Fill = myRadialGradientBrush;
-                    //myRectangle.SetValue(Grid.ColumnProperty, i + 1);
-                    //myRectangle.SetValue(Grid.RowProperty, j + 1);
-                    //grid.Children.Add(myRectangle);
+                    
+                    grid.Children.Add(button);
                 }
             }
-            
         }
 
         private void OnReceiveGameState(object sender, OthelloTCPClientArgs e)
