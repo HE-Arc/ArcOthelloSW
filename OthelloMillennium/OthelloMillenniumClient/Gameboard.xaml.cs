@@ -1,6 +1,7 @@
 ﻿using OthelloMillenniumClient.Classes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,17 @@ namespace OthelloMillenniumClient
 
         private void Init()
         {
+            //
+            RadialGradientBrush myRadialGradientBrush = new RadialGradientBrush();
+            myRadialGradientBrush.GradientOrigin = new Point(0.5, 0.5);
+            myRadialGradientBrush.Center = new Point(0.5, 0.5);
+            myRadialGradientBrush.RadiusX = 0.5;
+            myRadialGradientBrush.RadiusY = 0.5;
+
+            myRadialGradientBrush.GradientStops.Add( new GradientStop(Colors.White, 0.75) );
+            myRadialGradientBrush.GradientStops.Add( new GradientStop(Colors.Blue, 0.75) );
+            myRadialGradientBrush.GradientStops.Add( new GradientStop(Color.FromArgb(0,0,0,0), 1.0));
+
             //Create game interface
             //TODO change
             int width = 9;
@@ -74,7 +86,7 @@ namespace OthelloMillenniumClient
                 border.SetValue(Grid.RowProperty, 0);
                 border.SetValue(Grid.ColumnProperty, i);
                 border.Child = new TextBlock() {
-                    Text = ((char)(i+65)).ToString(),
+                    Text = ((char)(i+66)).ToString(),
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     Margin = margin,
@@ -107,13 +119,21 @@ namespace OthelloMillenniumClient
                     Border border = new Border();
                     border.SetValue(Grid.ColumnProperty, i+1);
                     border.SetValue(Grid.RowProperty, j+1);
-                    border.Child = new Button() {
+                    Button button = new Button() {
                         Content = 1,
-                        Margin = margin,
-                        Background = brush,
-                        BorderThickness = none
+                        BorderThickness = none,
+                        Tag = ((char)(i+66), j+1),
                     };
+                    button.Click += OnCellClick;
+                    border.Child = button;
+
                     grid.Children.Add(border);
+
+                    Rectangle myRectangle = new Rectangle();
+                    myRectangle.Fill = myRadialGradientBrush;
+                    myRectangle.SetValue(Grid.ColumnProperty, i + 1);
+                    myRectangle.SetValue(Grid.RowProperty, j + 1);
+                    //grid.Children.Add(myRectangle);
                 }
             }
             
@@ -127,8 +147,11 @@ namespace OthelloMillenniumClient
     
         private void OnCellClick(object sender, RoutedEventArgs e)
         {
-            char column = 'a';
-            int row = 0;
+            (char column, int row) = ((char, int))((Button)sender).Tag;
+
+            Debug.WriteLine("Call");
+            Debug.WriteLine(column.ToString(), row.ToString());
+            return;
 
             // Get the gamehandler
             IGameHandler gameHandler = ApplicationManager.Instance.CurrentGame;

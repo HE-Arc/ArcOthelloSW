@@ -22,6 +22,6 @@
         <Label Grid.Column="2" x:Name="label_Copy2" Content="Ph0tonic" HorizontalAlignment="Left" VerticalAlignment="Top" Width="180" HorizontalContentAlignment="Center" FontSize="24"/>
         <Label Grid.Column="2" x:Name="label_Copy" Content="12" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="159" HorizontalContentAlignment="Center" FontSize="18"/>
 
-        <local:Gameboard Grid.Column="1" Margin="0 50 0 50"></local:Gameboard>
+        <local:Gameboard Grid.Column="1"></local:Gameboard>
     </Grid>
 </Window>
