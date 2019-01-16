@@ -19,9 +19,9 @@ namespace OthelloMillenniumServer
         {
             get
             {
-                if (instance == null)
+                lock (padlock)
                 {
-                    lock (padlock)
+                    if (instance == null)
                     {
                         instance = new TCPServer();
                     }
