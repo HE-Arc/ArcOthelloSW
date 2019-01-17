@@ -132,8 +132,8 @@ namespace OthelloMillenniumServer
             Console.WriteLine("Starting match");
 
             // Informs clients that an opponent has be found
-            client1.Send(OrderProvider.OpponentFound);
-            client2.Send(OrderProvider.OpponentFound);
+            client1.Send(new OpponentFoundOrder() { Opponent = client2 });
+            client2.Send(new OpponentFoundOrder() { Opponent = client1 });
 
             // GameManager will now handle clients and put them as InGame
             var match = new GameHandler(client1, client2);
@@ -188,7 +188,7 @@ namespace OthelloMillenniumServer
                 client.Properties.Add("Searching", playerType);
 
                 // Informs the client that he is now known to the server
-                client.Send(OrderProvider.RegisterSuccessful);
+                client.Send(new RegisterSuccessfulOrder());
             }
             else
             {
@@ -258,7 +258,7 @@ namespace OthelloMillenniumServer
                         // Warn the opponent
                         if(client.Properties.TryGetValue("Opponent", out object output) && output is OthelloTCPClient opponent)
                         {
-                            opponent.Send(OrderProvider.OpponentDisconnected);
+                            opponent.Send(new OpponentDisconnectedOrder());
                         }
                         else
                         {

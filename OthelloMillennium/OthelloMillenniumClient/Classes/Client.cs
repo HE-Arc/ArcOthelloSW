@@ -9,6 +9,8 @@ namespace OthelloMillenniumClient
     {
         public event EventHandler<OthelloTCPClientArgs> OnBeginReceived;
         public event EventHandler<OthelloTCPClientArgs> OnAwaitReceived;
+        public event EventHandler<OthelloTCPClientArgs> OnOpponentFoundReceived;
+        public event EventHandler<OthelloTCPClientArgs> OnGameStartedReceived;
 
         public Client(PlayerType type, GameType gameType)
             : base(type)
@@ -37,6 +39,12 @@ namespace OthelloMillenniumClient
                     break;
                 case PlayerBeginOrder order:
                     OnBeginReceived?.Invoke(this, e);
+                    break;
+                case OpponentFoundOrder order:
+                    OnOpponentFoundReceived?.Invoke(this, e);
+                    break;
+                case StartOfTheGameOrder order:
+                    OnGameStartedReceived?.Invoke(this, e);
                     break;
             }
         }

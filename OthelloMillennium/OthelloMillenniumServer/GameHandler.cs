@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Tools;
 using Tools.Classes;
 
@@ -53,8 +48,8 @@ namespace OthelloMillenniumServer
             Client2.OnConnectionLost += Client_OnConnectionLost;
 
             // Assign color
-            Client1.Send(OrderProvider.BlackAssigned);
-            Client2.Send(OrderProvider.WhiteAssigned);
+            Client1.Send(new BlackAssignedOrder());
+            Client2.Send(new WhiteAssignedOrder());
 
             // Is it an AI battle ? Init gameManager
             if (Client1.Type == PlayerType.Human & Client2.Type == PlayerType.Human)
@@ -63,15 +58,15 @@ namespace OthelloMillenniumServer
                 this.GameManager = new GameManager(BattleType.AgainstAI);
 
             // Informs the players that the game is starting
-            Client1.Send(OrderProvider.StartOfTheGame);
-            Client2.Send(OrderProvider.StartOfTheGame);
+            Client1.Send(new StartOfTheGameOrder());
+            Client2.Send(new StartOfTheGameOrder());
 
             // Start the game
             GameManager.Start();
 
             // Black Start
-            Client1.Send(OrderProvider.PlayerBegin);
-            Client2.Send(OrderProvider.PlayerAwait);
+            Client1.Send(new PlayerBeginOrder());
+            Client2.Send(new PlayerAwaitOrder());
 
             // Send current gameState
             var gs = GameManager.Export();
@@ -86,7 +81,7 @@ namespace OthelloMillenniumServer
         private void Client_OnConnectionLost(object sender, EventArgs e)
         {
             var opponent = (sender as OthelloTCPClient).Properties["Opponent"] as OthelloTCPClient;
-            opponent.Send(OrderProvider.OpponentConnectionLost);
+            opponent.Send(new OpponentConnectionLostOrder());
         }
 
         private void GameManager_OnGameFinished(object sender, GameState e)
@@ -95,8 +90,8 @@ namespace OthelloMillenniumServer
             var finalGameState = gameManager.Export();
 
             // Notifiy the end of the game
-            Client1.Send(OrderProvider.EndOfTheGame);
-            Client2.Send(OrderProvider.EndOfTheGame);
+            Client1.Send(new EndOfTheGameOrder());
+            Client2.Send(new EndOfTheGameOrder());
 
             // Send the final state
             Client1.Send(finalGameState);
@@ -117,8 +112,8 @@ namespace OthelloMillenniumServer
 
                 case NextTurnOrder order:
                     // Inform opponent that he can start to play.
-                    sender.Send(OrderProvider.PlayerAwait);
-                    opponent.Send(OrderProvider.PlayerBegin);
+                    sender.Send(new PlayerAwaitOrder());
+                    opponent.Send(new PlayerBeginOrder());
                     break;
 
                 case PlayMoveOrder order:

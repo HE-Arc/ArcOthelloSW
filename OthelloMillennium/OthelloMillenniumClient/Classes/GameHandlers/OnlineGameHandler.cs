@@ -2,44 +2,25 @@
 using OthelloMillenniumServer;
 using Tools;
 using Tools.Classes;
+using GameHandler = OthelloMillenniumClient.Classes.GameHandler;
 
 namespace OthelloMillenniumClient
 {
     /// <summary>
     /// Classe wrapper entre l'interface de jeu et la partie communication avec le serveur
     /// </summary>
-    public class OnlineGameHandler : IGameHandler
+    public class OnlineGameHandler : GameHandler
     {
-        #region Properties
-        public GameType GameType { get; } = GameType.Local;
-        public BattleType BattleType { get; private set; }
-
-        public Client Client { get; private set; }
-        public Client Opponent { get; private set; }
-        public GameState GameState { get; private set; }
-        #endregion
-
-        #region Attributes
-        private bool isClientTurn;
-        #endregion
-
         public OnlineGameHandler(BattleType battleType)
-        {
-            BattleType = battleType;
-        }
+            : base (battleType)
+        { }
 
-        public Client GetCurrentPlayer()
+        public override void Init()
         {
-            throw new System.NotImplementedException();
-        }
-
-        public void StartNewGame()
-        {
-            switch (this.BattleType)
+            switch (BattleType)
             {
                 case BattleType.AgainstAI:
                     Client = new Client(PlayerType.Human, GameType.Online);
-                    Opponent = new Client(PlayerType.AI, GameType.Online);
 
                     Client.OnBeginReceived += Client_OnBeginReceived;
                     Client.OnAwaitReceived += Client_OnAwaitReceived;
@@ -51,7 +32,6 @@ namespace OthelloMillenniumClient
                     break;
                 case BattleType.AgainstPlayer:
                     Client = new Client(PlayerType.Human, GameType.Online);
-                    Opponent = new Client(PlayerType.Human, GameType.Online);
 
                     Client.OnBeginReceived += Client_OnBeginReceived;
                     Client.OnAwaitReceived += Client_OnAwaitReceived;
@@ -64,19 +44,9 @@ namespace OthelloMillenniumClient
             }
         }
 
-        private void Client_OnBeginReceived(object sender, OthelloTCPClientArgs e)
+        protected override void Client_OnOpponentFound(object sender, OthelloTCPClientArgs e)
         {
-            isClientTurn = true;
-        }
-
-        private void Client_OnAwaitReceived(object sender, OthelloTCPClientArgs e)
-        {
-            isClientTurn = false;
-        }
-
-        private void Client_OnGameStateReceived(object sender, OthelloTCPClientArgs e)
-        {
-            GameState = e.GameState;
+            Opponent = sender as Client;
         }
     }
 }

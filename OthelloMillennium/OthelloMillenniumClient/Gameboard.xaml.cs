@@ -131,7 +131,7 @@ namespace OthelloMillenniumClient
             int row = 0;
 
             // Get the gamehandler
-            IGameHandler gameHandler = ApplicationManager.Instance.CurrentGame;
+            GameHandler gameHandler = ApplicationManager.Instance.CurrentGame;
             Client currentPlayer = gameHandler.GetCurrentPlayer();
 
             // Generate a new order

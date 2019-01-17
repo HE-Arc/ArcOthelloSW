@@ -41,6 +41,10 @@ namespace OthelloMillenniumClient
                     ApplicationManager.Instance.CurrentGame = new LocalGameHandler(battleType);
                 else
                     ApplicationManager.Instance.CurrentGame = new OnlineGameHandler(battleType);
+
+                // Start matchmaking
+                ApplicationManager.Instance.CurrentGame.Init();
+
             }
             catch (Exception ex)
             {
