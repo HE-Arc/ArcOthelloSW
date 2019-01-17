@@ -5,48 +5,38 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:OthelloMillenniumClient"
       mc:Ignorable="d" 
-      d:DesignHeight="750" d:DesignWidth="950">
+      d:DesignHeight="750" d:DesignWidth="950"
+      Margin="2"
+      Background="#262626">
     <UserControl.Resources>
         <Style TargetType="Button" x:Key="cell">
             <Setter Property="BorderThickness" Value="0"></Setter>
-            <Setter Property="Margin" Value="1"></Setter>
-            <Setter Property="Background" Value="#f2b632"></Setter>
+            <Setter Property="Margin" Value="2"></Setter>
+            <Setter Property="Background" Value="#ffbe29"></Setter>
         </Style>
-        <Style TargetType="Rectangle" x:Key="white-square">
-            <Setter Property="Stretch" Value="UniformToFill"></Setter>
-            <Setter Property="Fill">
-                <Setter.Value>
-                    <RadialGradientBrush 
-                          GradientOrigin="0.5,0.5" Center="0.5,0.5" 
-                          RadiusX="0.5" RadiusY="0.5">
-                        <GradientStop Color="White" Offset="0.9" />
-                        <GradientStop Color="#00000000" Offset="0.9" />
-                    </RadialGradientBrush>
-                </Setter.Value>
-            </Setter>
+        <Style TargetType="Ellipse" x:Key="white-circle">
+            <Setter Property="Stretch" Value="UniformToFill" />
+            <Setter Property="Fill" Value="White" />
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="Margin" Value="2"/>
         </Style>
-        <Style TargetType="Rectangle" x:Key="black-square">
-            <Setter Property="Stretch" Value="UniformToFill"></Setter>
-            <Setter Property="Fill">
-                <Setter.Value>
-                    <RadialGradientBrush 
-                          GradientOrigin="0.5,0.5" Center="0.5,0.5" 
-                          RadiusX="0.5" RadiusY="0.5">
-                        <GradientStop Color="Black" Offset="0.9" />
-                        <GradientStop Color="#00000000" Offset="0.9" />
-                    </RadialGradientBrush>
-                </Setter.Value>
-            </Setter>
+        <Style TargetType="Ellipse" x:Key="black-circle">
+            <Setter Property="Stretch" Value="UniformToFill" />
+            <Setter Property="Fill" Value="Black" />
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+        <Style TargetType="Ellipse" x:Key="grey-circle">
+            <Setter Property="Stretch" Value="UniformToFill" />
+            <Setter Property="Fill" Value="#7FFFFFFF" />
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="Margin" Value="2"/>
         </Style>
     </UserControl.Resources>
 
     <Grid x:Name="MainGrid">
-        <Grid.Resources>
-            <SolidColorBrush x:Key="brush" Color="#ffcb05"/>
-        </Grid.Resources>
-
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.5*"></ColumnDefinition>
+            <ColumnDefinition Width="0*"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
@@ -58,7 +48,7 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.5*"></RowDefinition>
+            <RowDefinition Height="0*"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -67,112 +57,96 @@
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <!-- TODO Add gameboard grid -->
-        <Rectangle Grid.ColumnSpan="3" Margin="-251,156,1,-124" Grid.Row="7">
-            <Rectangle.Fill>
-                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                    <GradientStop Color="#00000000" Offset="0.0" />
-                    <GradientStop Color="Yellow" Offset="0.25" />
-                    <GradientStop Color="White" Offset="0.5" />
-                    <GradientStop Color="White" Offset="0.5" />
-                    <GradientStop Color="Yellow" Offset="0.75" />
-                    <GradientStop Color="#00000000" Offset="1.0" />
-                </LinearGradientBrush>
-            </Rectangle.Fill>
-        </Rectangle>
-        <Button Grid.Row="0" Grid.Column="1"  Margin="1">
 
-        </Button>
-        <Button Grid.Row="0" Grid.Column="2"></Button>
-        <Button Grid.Row="0" Grid.Column="3"></Button>
-        <Button Grid.Row="0" Grid.Column="4"></Button>
-        <Button Grid.Row="0" Grid.Column="5"></Button>
-        <Button Grid.Row="0" Grid.Column="6"></Button>
-        <Button Grid.Row="0" Grid.Column="7"></Button>
-        <Button Grid.Row="0" Grid.Column="8"></Button>
-        <Button Grid.Row="0" Grid.Column="9"></Button>
-        <Button Grid.Row="1" Grid.Column="0"></Button>
-        <Button Grid.Row="1" Grid.Column="1"></Button>
-        <Button Grid.Row="1" Grid.Column="2"></Button>
-        <Button Grid.Row="1" Grid.Column="3"></Button>
-        <Button Grid.Row="1" Grid.Column="4"></Button>
-        <Button Grid.Row="1" Grid.Column="5"></Button>
-        <Button Grid.Row="1" Grid.Column="6"></Button>
-        <Button Grid.Row="1" Grid.Column="7"></Button>
-        <Button Grid.Row="1" Grid.Column="8"></Button>
-        <Button Grid.Row="1" Grid.Column="9"></Button>
-        <Button Grid.Row="2" Grid.Column="0"></Button>
-        <Button Grid.Row="2" Grid.Column="1"></Button>
-        <Button Grid.Row="2" Grid.Column="2"></Button>
-        <Button Grid.Row="2" Grid.Column="3"></Button>
-        <Button Grid.Row="2" Grid.Column="4"></Button>
-        <Button Grid.Row="2" Grid.Column="5"></Button>
-        <Button Grid.Row="2" Grid.Column="6"></Button>
-        <Button Grid.Row="2" Grid.Column="7"></Button>
-        <Button Grid.Row="2" Grid.Column="8"></Button>
-        <Button Grid.Row="2" Grid.Column="9"></Button>
-        <Button Grid.Row="3" Grid.Column="0"></Button>
-        <Button Grid.Row="3" Grid.Column="1"></Button>
-        <Button Grid.Row="3" Grid.Column="2"></Button>
-        <Button Grid.Row="3" Grid.Column="3"></Button>
-        <Button Grid.Row="3" Grid.Column="4"></Button>
-        <Button Grid.Row="3" Grid.Column="5"></Button>
-        <Button Grid.Row="3" Grid.Column="6"></Button>
-        <Button Grid.Row="3" Grid.Column="7"></Button>
-        <Button Grid.Row="3" Grid.Column="8"></Button>
-        <Button Grid.Row="3" Grid.Column="9"></Button>
-        <Button Grid.Row="4" Grid.Column="0"></Button>
-        <Button Grid.Row="4" Grid.Column="1"></Button>
-        <Button Grid.Row="4" Grid.Column="2"></Button>
-        <Button Grid.Row="4" Grid.Column="3"></Button>
-        <Button Grid.Row="4" Grid.Column="4">
-            <Button.Content>
-                <Rectangle Style="{ StaticResource black-square }"></Rectangle>
-            </Button.Content>
+        <Button Grid.Row="0" Grid.Column="0" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="0" Grid.Column="1" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="0" Grid.Column="2" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="0" Grid.Column="3" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="0" Grid.Column="4" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="0" Grid.Column="5" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="0" Grid.Column="6" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="0" Grid.Column="7" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="0" Grid.Column="8" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="0" Grid.Column="9" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="1" Grid.Column="0" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="1" Grid.Column="1" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="1" Grid.Column="2" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="1" Grid.Column="3" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="1" Grid.Column="4" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="1" Grid.Column="5" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="1" Grid.Column="6" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="1" Grid.Column="7" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="1" Grid.Column="8" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="1" Grid.Column="9" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="2" Grid.Column="0" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="2" Grid.Column="1" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="2" Grid.Column="2" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="2" Grid.Column="3" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="2" Grid.Column="4" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="2" Grid.Column="5" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="2" Grid.Column="6" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="2" Grid.Column="7" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="2" Grid.Column="8" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="2" Grid.Column="9" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="3" Grid.Column="0" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="3" Grid.Column="1" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="3" Grid.Column="2" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="3" Grid.Column="3" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="3" Grid.Column="4" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="3" Grid.Column="5" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="3" Grid.Column="6" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="3" Grid.Column="7" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="3" Grid.Column="8" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="3" Grid.Column="9" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="4" Grid.Column="0" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="4" Grid.Column="1" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="4" Grid.Column="2" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="4" Grid.Column="3" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="4" Grid.Column="4" Style="{ StaticResource cell }">
+            <Ellipse Style="{ StaticResource black-circle}"/>
         </Button>
         <Button Grid.Row="4" Grid.Column="5" Style="{ StaticResource cell }">
-            <Button.Content>
-                <Rectangle Style="{ StaticResource white-square }"></Rectangle>
-            </Button.Content></Button>
-        <Button Grid.Row="4" Grid.Column="6"></Button>
-        <Button Grid.Row="4" Grid.Column="7"></Button>
-        <Button Grid.Row="4" Grid.Column="8"></Button>
-        <Button Grid.Row="4" Grid.Column="9"></Button>
-        <Button Grid.Row="5" Grid.Column="0"></Button>
-        <Button Grid.Row="5" Grid.Column="1"></Button>
-        <Button Grid.Row="5" Grid.Column="2"></Button>
-        <Button Grid.Row="5" Grid.Column="3"></Button>
-        <Button Grid.Row="5" Grid.Column="4">
-            <Button.Content>
-                <Rectangle Style="{ StaticResource white-square }"></Rectangle>
-            </Button.Content></Button>
-        <Button Grid.Row="5" Grid.Column="5">
-            <Button.Content>
-                <Rectangle Style="{ StaticResource black-square }"></Rectangle>
-            </Button.Content></Button>
-        <Button Grid.Row="5" Grid.Column="6"></Button>
-        <Button Grid.Row="5" Grid.Column="7"></Button>
-        <Button Grid.Row="5" Grid.Column="8"></Button>
-        <Button Grid.Row="5" Grid.Column="9"></Button>
-        <Button Grid.Row="6" Grid.Column="0"></Button>
-        <Button Grid.Row="6" Grid.Column="1"></Button>
-        <Button Grid.Row="6" Grid.Column="2"></Button>
-        <Button Grid.Row="6" Grid.Column="3"></Button>
-        <Button Grid.Row="6" Grid.Column="4"></Button>
-        <Button Grid.Row="6" Grid.Column="5"></Button>
-        <Button Grid.Row="6" Grid.Column="6"></Button>
-        <Button Grid.Row="6" Grid.Column="7"></Button>
-        <Button Grid.Row="6" Grid.Column="8"></Button>
-        <Button Grid.Row="6" Grid.Column="9"></Button>
-        <Button Grid.Row="7" Grid.Column="0"></Button>
-        <Button Grid.Row="7" Grid.Column="1"></Button>
-        <Button Grid.Row="7" Grid.Column="2"></Button>
-        <Button Grid.Row="7" Grid.Column="3"></Button>
-        <Button Grid.Row="7" Grid.Column="4"></Button>
-        <Button Grid.Row="7" Grid.Column="5"></Button>
-        <Button Grid.Row="7" Grid.Column="6"></Button>
-        <Button Grid.Row="7" Grid.Column="7"></Button>
-        <Button Grid.Row="7" Grid.Column="8"></Button>
-        <Button Grid.Row="7" Grid.Column="9"></Button>
+            <Ellipse Style="{ StaticResource white-circle }"/>
+        </Button>
+        <Button Grid.Row="4" Grid.Column="6" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="4" Grid.Column="7" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="4" Grid.Column="8" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="4" Grid.Column="9" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="5" Grid.Column="0" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="5" Grid.Column="1" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="5" Grid.Column="2" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="5" Grid.Column="3" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="5" Grid.Column="4" Style="{ StaticResource cell }">
+            <Ellipse Style="{ StaticResource white-circle }"/>
+        </Button>
+        <Button Grid.Row="5" Grid.Column="5" Style="{ StaticResource cell }">
+            <Ellipse Style="{ StaticResource black-circle }"/>
+        </Button>
+        <Button Grid.Row="5" Grid.Column="6" Style="{ StaticResource cell }">
+            <Ellipse Style="{ StaticResource grey-circle }"/>
+        </Button>
+        <Button Grid.Row="5" Grid.Column="7" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="5" Grid.Column="8" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="5" Grid.Column="9" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="6" Grid.Column="0" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="6" Grid.Column="1" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="6" Grid.Column="2" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="6" Grid.Column="3" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="6" Grid.Column="4" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="6" Grid.Column="5" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="6" Grid.Column="6" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="6" Grid.Column="7" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="6" Grid.Column="8" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="6" Grid.Column="9" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="7" Grid.Column="0" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="7" Grid.Column="1" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="7" Grid.Column="2" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="7" Grid.Column="3" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="7" Grid.Column="4" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="7" Grid.Column="5" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="7" Grid.Column="6" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="7" Grid.Column="7" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="7" Grid.Column="8" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="7" Grid.Column="9" Style="{ StaticResource cell }"></Button>
     </Grid>
 </UserControl>
