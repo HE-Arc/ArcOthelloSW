@@ -7,7 +7,7 @@ namespace Tools.Classes
     [Serializable]
     public abstract class AOrder : ISerializable
     {
-        internal AOrder() { }
+        public AOrder() { }
 
         public Dictionary<string, object> Properties { get; private set; } = new Dictionary<string, object>();
 
@@ -29,30 +29,6 @@ namespace Tools.Classes
         {
             info.AddValue("Properties", Properties);
         }
-    }
-
-    /// <summary>
-    /// Flyweight orders provider
-    /// </summary>
-    public static class OrderProvider
-    {
-        public readonly static AOrder SearchBattleAgainstAI = new SearchBattleAgainstAIOrder();
-        public readonly static AOrder SearchBattleAgainstPlayer = new SearchBattleAgainstPlayerOrder();
-        public readonly static AOrder RegisterSuccessful = new RegisterSuccessfulOrder();
-        public readonly static AOrder OpponentFound = new OpponentFoundOrder();
-        public readonly static AOrder StartOfTheGame = new StartOfTheGameOrder();
-        public readonly static AOrder EndOfTheGame = new EndOfTheGameOrder();
-        public readonly static AOrder BlackAssigned = new BlackAssignedOrder();
-        public readonly static AOrder WhiteAssigned = new WhiteAssignedOrder();
-        public readonly static AOrder PlayerBegin = new PlayerBeginOrder();
-        public readonly static AOrder PlayerAwait = new PlayerAwaitOrder();
-        public readonly static AOrder PlayerState = new PlayerStateOrder();
-        public readonly static AOrder OpponentDisconnected = new OpponentDisconnectedOrder();
-        public readonly static AOrder OpponentConnectionLost = new OpponentConnectionLostOrder();
-        public readonly static AOrder NextTurn = new NextTurnOrder();
-        public readonly static AOrder GetCurrentGameState = new GetCurrentGameStateOrder();
-        public readonly static AOrder GetPreviousGameState = new GetPreviousGameStateOrder();
-        public readonly static AOrder PlayMove = new PlayMoveOrder();
     }
 
     [Serializable]
@@ -82,7 +58,7 @@ namespace Tools.Classes
             info.AddValue("PlayerType", PlayerType);
         }
 
-        internal SearchBattleAgainstAIOrder() { }
+        public SearchBattleAgainstAIOrder() { }
     }
 
     [Serializable]
@@ -112,7 +88,7 @@ namespace Tools.Classes
             info.AddValue("PlayerType", PlayerType);
         }
 
-        internal SearchBattleAgainstPlayerOrder() { }
+        public SearchBattleAgainstPlayerOrder() { }
     }
 
     [Serializable]
@@ -132,7 +108,7 @@ namespace Tools.Classes
             return "Inform current player that he has been registred successfully";
         }
 
-        internal RegisterSuccessfulOrder() { }
+        public RegisterSuccessfulOrder() { }
     }
 
     [Serializable]
@@ -152,7 +128,7 @@ namespace Tools.Classes
             return "Inform current player that an opponent has been found";
         }
 
-        internal OpponentFoundOrder() { }
+        public OpponentFoundOrder() { }
     }
 
     [Serializable]
@@ -172,7 +148,7 @@ namespace Tools.Classes
             return "Inform current player that the game has started";
         }
 
-        internal StartOfTheGameOrder() { }
+        public StartOfTheGameOrder() { }
     }
 
     [Serializable]
@@ -192,7 +168,7 @@ namespace Tools.Classes
             return "Inform current player that the has ended";
         }
 
-        internal EndOfTheGameOrder() { }
+        public EndOfTheGameOrder() { }
     }
 
     [Serializable]
@@ -212,7 +188,7 @@ namespace Tools.Classes
             return "Inform current player that the color has been assigned to him";
         }
 
-        internal BlackAssignedOrder() { }
+        public BlackAssignedOrder() { }
     }
 
     [Serializable]
@@ -232,7 +208,7 @@ namespace Tools.Classes
             return "Inform current player that the color white has been assigned to him";
         }
 
-        internal WhiteAssignedOrder() { }
+        public WhiteAssignedOrder() { }
     }
 
     [Serializable]
@@ -252,7 +228,7 @@ namespace Tools.Classes
             return "Inform current player that he begins";
         }
 
-        internal PlayerBeginOrder() { }
+        public PlayerBeginOrder() { }
     }
 
     [Serializable]
@@ -272,7 +248,7 @@ namespace Tools.Classes
             return "Inform current player that he has to await his turn";
         }
 
-        internal PlayerAwaitOrder() { }
+        public PlayerAwaitOrder() { }
     }
 
     [Serializable]
@@ -292,7 +268,7 @@ namespace Tools.Classes
             return "Ask for the current player state";
         }
 
-        internal PlayerStateOrder() { }
+        public PlayerStateOrder() { }
     }
 
     [Serializable]
@@ -312,7 +288,7 @@ namespace Tools.Classes
             return "Inform current player that the opponent has disconnected";
         }
 
-        internal OpponentDisconnectedOrder() { }
+        public OpponentDisconnectedOrder() { }
     }
 
     [Serializable]
@@ -332,7 +308,7 @@ namespace Tools.Classes
             return "Inform current player that the opponent has lost connection with the server";
         }
 
-        internal OpponentConnectionLostOrder() { }
+        public OpponentConnectionLostOrder() { }
     }
 
     [Serializable]
@@ -352,7 +328,7 @@ namespace Tools.Classes
             return "Current player either finish or pass his turn";
         }
 
-        internal NextTurnOrder() { }
+        public NextTurnOrder() { }
     }
 
     [Serializable]
@@ -372,7 +348,7 @@ namespace Tools.Classes
             return "Ask the server for the current gameState";
         }
 
-        internal GetCurrentGameStateOrder() { }
+        public GetCurrentGameStateOrder() { }
     }
 
     [Serializable]
@@ -392,7 +368,7 @@ namespace Tools.Classes
             return "Ask the server for the previous gameState";
         }
 
-        internal GetPreviousGameStateOrder() { }
+        public GetPreviousGameStateOrder() { }
     }
 
     [Serializable]
@@ -422,7 +398,7 @@ namespace Tools.Classes
             info.AddValue("Coords", Coords);
         }
 
-        internal PlayMoveOrder() { }
+        public PlayMoveOrder() { }
     }
 
     #region Example
@@ -444,7 +420,7 @@ namespace Tools.Classes
             return System.Text.Encoding.ASCII.GetByteCount(GetAcronym());
         }
 
-        internal Order() { }
+        public Order() { }
     }
     */
     #endregion

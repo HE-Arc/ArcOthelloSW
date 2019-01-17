@@ -18,8 +18,10 @@ namespace ClientTest
             c2.ConnectTo("127.0.0.1", 65432);
 
             // Connect clients
-            c1.Send(OrderProvider.SearchBattleAgainstPlayer);
-            c2.Send(OrderProvider.SearchBattleAgainstPlayer);
+            var order = new SearchBattleAgainstPlayerOrder() { PlayerType = PlayerType.Human };
+
+            c1.Send(order);
+            c2.Send(order);
 
             // Wait
             Console.ReadLine();
