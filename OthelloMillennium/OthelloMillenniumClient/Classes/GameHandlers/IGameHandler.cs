@@ -1,12 +1,15 @@
-﻿using Tools.Classes;
+﻿using Tools;
+using Tools.Classes;
 
 namespace OthelloMillenniumClient.Classes
 {
     public interface IGameHandler
     {
-        Client GetClient();
-        Client GetOpponent();
+        Client Client { get; }
+        Client Opponent { get; }
+        GameState GameState { get; }
+
         Client GetCurrentPlayer();
-        void StartNewGame(BattleType type);
+        void StartNewGame();
     }
 }
