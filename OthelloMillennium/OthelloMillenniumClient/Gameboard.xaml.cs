@@ -166,12 +166,12 @@ namespace OthelloMillenniumClient
             Console.WriteLine(column.ToString(), row.ToString());
             return;
 
-            //// Get the gamehandler
-            //IGameHandler gameHandler = ApplicationManager.Instance.CurrentGame;
+            // Get the gamehandler
+            //GameHandler gameHandler = ApplicationManager.Instance.CurrentGame;
             //Client currentPlayer = gameHandler.GetCurrentPlayer();
 
             // Generate a new order
-            //var playOrder = new PlayMoveOrder()
+            //var playOrder = n<ew PlayMoveOrder()
             //{
             //    Coords = new Tuple<char, int>(column, row)
             //};

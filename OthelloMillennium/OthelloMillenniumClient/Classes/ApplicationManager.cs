@@ -40,7 +40,7 @@ namespace OthelloMillenniumClient.Classes
         }
         #endregion
 
-        public IGameHandler CurrentGame { get; set; }
+        public GameHandler CurrentGame { get; set; }
 
         #region Methods
         /// <summary>

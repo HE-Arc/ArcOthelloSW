@@ -9,7 +9,8 @@
         Foreground="#f2b632">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="571.2"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="198*" />
@@ -17,19 +18,26 @@
             <ColumnDefinition Width="709*"/>
         </Grid.ColumnDefinitions>
 
-        <local:PlayerCard Grid.Column="0" Pseudo="Test"/>
         <!--<Image Grid.Column="0" Grid.ColumnSpan="3" x:Name="Background" Source="Images/Background.png" Stretch="Fill"/>-->
         <!-- TODO Add gameboard grid -->
-        <Image Grid.Column="0" x:Name="_as" Source="Images/Leia.png" Margin="-13,202,12.4,369.2"/>
-        <Image Grid.Column="0" x:Name="tes_Copy" Source="Images/Finn.png" Margin="6,507,4.4,64.2"/>
-        <Label Grid.Column="0" x:Name="label_Copy3" Content="12:12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="181" HorizontalContentAlignment="Center" FontSize="24" Margin="7,707,0,-177.8" Height="42" Grid.ColumnSpan="2"/>
+        <Image Grid.Column="0" x:Name="_as" Source="Images/Leia.png" Margin="-13,202,12.4,136.4"/>
+        <Image Grid.Column="0" x:Name="tes_Copy" Source="Images/Finn.png" Margin="6,168.6,4.4,64.2" Grid.Row="1"/>
+        <Label Grid.Column="0" x:Name="label_Copy3" Content="12:12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="181" HorizontalContentAlignment="Center" FontSize="24" Margin="7,368.6,0,-177.8" Height="42" Grid.ColumnSpan="2" Grid.Row="1"/>
 
-        <Rectangle Grid.Column="1" Height="445" Margin="6.6,155,562.6,-28.8" Width="66" Fill="#60b5b5b7" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
-        <Rectangle Grid.Column="1" Height="156" Margin="6.6,0,562.6,0.2" Fill="#60b5b5b7" Width="66" VerticalAlignment="Bottom" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
-        <Label Grid.Column="1" x:Name="score1" Content="12" Foreground="#b5b5b7" Width="66" VerticalAlignment="Top" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" Height="440" Margin="5.6,150,563.6,-18.8" Grid.ColumnSpan="2"/>
-        <Label Grid.Column="1" x:Name="score" Content="12" Foreground="#b5b5b7" Width="66" VerticalAlignment="Bottom" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" Height="156" Margin="5.6,0,563.6,0.2" Grid.ColumnSpan="2"/>
+        <Rectangle Grid.Column="1" Height="445" Margin="6.6,155,562.6,-28.8" Width="66" Fill="#60b5b5b7" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+        <Rectangle Grid.Column="1" Height="156" Margin="6.6,0,562.6,0.2" Fill="#60b5b5b7" Width="66" VerticalAlignment="Bottom" HorizontalAlignment="Center" Grid.ColumnSpan="2" Grid.Row="1"/>
+        <Label Grid.Column="1" x:Name="score1" Content="12" Foreground="#b5b5b7" Width="66" VerticalAlignment="Top" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" Height="440" Margin="5.6,150,563.6,-18.8" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+        <Label Grid.Column="1" x:Name="score" Content="12" Foreground="#b5b5b7" Width="66" VerticalAlignment="Bottom" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" Height="156" Margin="5.6,0,563.6,0.2" Grid.ColumnSpan="2" Grid.Row="1"/>
 
-        <local:Gameboard Grid.Column="2" Margin="9.8,65,9.6,156.2"/>
+        <Viewbox Grid.Column="2" Grid.Row="0" Grid.RowSpan="2">
+            <local:Gameboard Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"/>
+        </Viewbox>
+        <Viewbox  Grid.Row="0" Grid.Column="0">
+            <local:PlayerCard Image="Images/BB-8.png" Pseudo="Ph0tonic" Time="12:123" Inactive="False" />
+        </Viewbox>
+        <Viewbox Grid.Row="1" Grid.Column="0">
+            <local:PlayerCard Image="Images/Snoke.png" Pseudo="Mearing" Time="12:123" Inactive="True" />
+        </Viewbox>
 
     </Grid>
 </Window>

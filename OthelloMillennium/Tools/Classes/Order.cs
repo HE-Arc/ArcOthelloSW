@@ -114,9 +114,13 @@ namespace Tools.Classes
     [Serializable]
     public class OpponentFoundOrder : AOrder
     {
+        public OthelloTCPClient Opponent;
+
         protected OpponentFoundOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
-        { }
+        {
+            Opponent = (OthelloTCPClient)info.GetValue("Opponent", typeof(OthelloTCPClient));
+        }
 
         public override string GetAcronym()
         {
@@ -126,6 +130,12 @@ namespace Tools.Classes
         public override string GetDefinition()
         {
             return "Inform current player that an opponent has been found";
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue("Opponent", Opponent);
         }
 
         public OpponentFoundOrder() { }

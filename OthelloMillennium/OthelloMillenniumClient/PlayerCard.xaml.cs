@@ -31,10 +31,10 @@ namespace OthelloMillenniumClient
 
         public string Time
         {
-            get => (string)GetValue(PropertyPseudo);
+            get => (string)GetValue(PropertyTime);
             set
             {
-                SetValue(PropertyPseudo, value);
+                SetValue(PropertyTime, value);
             }
         }
 
@@ -47,6 +47,15 @@ namespace OthelloMillenniumClient
             }
         }
 
+        public bool Inactive
+        {
+            get => (bool)GetValue(PropertyInactive);
+            set
+            {
+                SetValue(PropertyInactive, value);
+            }
+        }
+
         // Using a DependencyProperty as the backing store for Property1.  
         // This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PropertyImage
@@ -54,7 +63,7 @@ namespace OthelloMillenniumClient
                   "Image",
                   typeof(string),
                   typeof(PlayerCard),
-                  new PropertyMetadata("Images/None.png")
+                  new PropertyMetadata("Images/BB-8.png")
               );
 
         public static readonly DependencyProperty PropertyTime
@@ -62,7 +71,7 @@ namespace OthelloMillenniumClient
                   "Time",
                   typeof(string),
                   typeof(PlayerCard),
-                  new PropertyMetadata("2:30")
+                  new PropertyMetadata("2:300")
               );
 
         public static readonly DependencyProperty PropertyPseudo
@@ -72,11 +81,22 @@ namespace OthelloMillenniumClient
                   typeof(PlayerCard),
                   new PropertyMetadata("Darth Vader")
               );
+
+        public static readonly DependencyProperty PropertyInactive
+            = DependencyProperty.Register(
+                  "Inactive",
+                  typeof(bool),
+                  typeof(PlayerCard),
+                  new PropertyMetadata(true)
+              );
+
         #endregion
 
         public PlayerCard()
         {
             InitializeComponent();
+
+            DataContext = this;
         }
     }
 }
