@@ -10,26 +10,25 @@ namespace OthelloMillenniumClient
     public partial class PlayerVisualiser : UserControl
     {
         #region Properties
-        public string ImagePlayer
+        public string Image
         {
-            get => (string)GetValue(PropertyImagePlayer);
+            get => (string)GetValue(PropertyImage);
             set
             {
-                SetValue(PropertyImagePlayer, value);
-                Debug.WriteLine(value);
+                SetValue(PropertyImage, value);
             }
         }
 
         // Using a DependencyProperty as the backing store for Property1.  
         // This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PropertyImagePlayer
+        public static readonly DependencyProperty PropertyImage
             = DependencyProperty.Register(
-                  "ImagePlayer",
+                  "Image",
                   typeof(string),
                   typeof(PlayerVisualiser),
                   new PropertyMetadata("Images/None.png")
               );
-
+        
         #endregion
 
         public PlayerVisualiser()

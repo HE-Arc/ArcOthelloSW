@@ -19,8 +19,9 @@
             <ColumnDefinition Width="150px"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <local:PlayerPicker Grid.Column="1" Grid.Row="1" x:Name="PlayerPicker"></local:PlayerPicker>
-        <local:PlayerVisualiser Grid.Column="0" Grid.Row="1" ImagePlayer="{ Binding ElementName=PlayerPicker, Path=ImagePlayerOne }"></local:PlayerVisualiser>
-        <local:PlayerVisualiser Grid.Column="2" Grid.Row="1" ImagePlayer="{ Binding ElementName=PlayerPicker, Path=ImagePlayerTwo }"></local:PlayerVisualiser>
+        <local:PlayerVisualiser Grid.Column="0" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerOne }"/>
+        <local:PlayerVisualiser Grid.Column="0" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerTwo }"/>
+
         <Button Grid.Column="0" Grid.Row="0">Start game</Button>
     </Grid>
 </Window>
