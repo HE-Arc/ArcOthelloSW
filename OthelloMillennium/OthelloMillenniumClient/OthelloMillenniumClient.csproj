@@ -79,16 +79,25 @@
     <Compile Include="Game.xaml.cs">
       <DependentUpon>Game.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Home\MainScreen.xaml.cs">
-      <DependentUpon>MainScreen.xaml</DependentUpon>
+    <Compile Include="Menus\MenuOnlinePlayAs.xaml.cs">
+      <DependentUpon>MenuOnlinePlayAs.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Home\MainMode.xaml.cs">
-      <DependentUpon>MainMode.xaml</DependentUpon>
+    <Compile Include="Menus\MenuHelp.xaml.cs">
+      <DependentUpon>MenuHelp.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Home\MainOnline.xaml.cs">
-      <DependentUpon>MainOnline.xaml</DependentUpon>
+    <Compile Include="Menus\MenuMain.xaml.cs">
+      <DependentUpon>MenuMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Menus\MenuLocalBattleType.xaml.cs">
+      <DependentUpon>MenuLocalBattleType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Menus\MenuGameType.xaml.cs">
+      <DependentUpon>MenuGameType.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main.cs" />
+    <Compile Include="Menus\MenuOnlinePlayAgainst.xaml.cs">
+      <DependentUpon>MenuOnlinePlayAgainst.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PlayerCardBlack.xaml.cs">
       <DependentUpon>PlayerCardBlack.xaml</DependentUpon>
     </Compile>
@@ -112,11 +121,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Home\MainScreen.xaml">
+    <Page Include="Menus\MenuOnlinePlayAs.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Home\MainMode.xaml">
+    <Page Include="Menus\MenuHelp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Menus\MenuMain.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Menus\MenuLocalBattleType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -133,7 +150,11 @@
       <DependentUpon>Home.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Home\MainOnline.xaml">
+    <Page Include="Menus\MenuGameType.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Menus\MenuOnlinePlayAgainst.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

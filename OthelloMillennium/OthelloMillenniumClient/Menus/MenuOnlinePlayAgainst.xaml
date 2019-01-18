@@ -1,0 +1,14 @@
+﻿<UserControl x:Class="OthelloMillenniumClient.MenuOnlinePlayAgainst"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OthelloMillenniumClient"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Button Click="RaiseHumanEvent" Content="Human" Margin="87,90,416,53.6"/>
+        <Button Click="RaiseAiEvent" Content="Ai" Margin="430,90,101,53.6"/>
+
+    </Grid>
+</UserControl>

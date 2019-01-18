@@ -24,10 +24,5 @@ namespace OthelloMillenniumClient
         {
             InitializeComponent();
         }
-
-        private void Gameboard_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-
-        }
     }
 }

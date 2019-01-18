@@ -13,16 +13,26 @@ namespace OthelloMillenniumClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        Stack<UserControl> pages = new Stack<UserControl>();
+        private GameType gameType;
+        private BattleType battleType;
+        private PlayerType playerType;
+
+        private MenuMain menuMain;
+        private MenuHelp menuHelp;
+        private MenuGameType menuGameType;
+        private MenuLocalBattleType menuLocalBattleType;
+        private MenuOnlinePlayAs menuOnlinePlayAs;
+        private MenuOnlinePlayAgainst menuOnlinePlayAgainst;
 
         public MainWindow()
         {
             InitializeComponent();
-            
-            pageTransitionControl.TransitionType = PageTransitionType.Grow;
-            pageTransitionControl.ShowPage(new MainScreen());
+            menuMain = new MenuMain();
+            menuMain.PlayEvent += OnPlay;
+            menuMain.HelpEvent += OnHelp;
 
-            InitComboBoxes();
+            pageTransitionControl.TransitionType = PageTransitionType.Grow;
+            pageTransitionControl.ShowPage(menuMain);
         }
 
         public void NextStep()
@@ -30,25 +40,83 @@ namespace OthelloMillenniumClient
             //TODO
             pageTransitionControl.TransitionType = PageTransitionType.SlideAndFade;
         }
-
-        private void InitComboBoxes()
+        private void OnPlay()
         {
-            // Load game types
-            this.cbGameType.Items.Add(new ComboBoxItem() { Content = GameType.Local });
-            this.cbGameType.Items.Add(new ComboBoxItem() { Content = GameType.Online });
-
-            // Load battles
-            this.cbBattleType.Items.Add(new ComboBoxItem() { Content = BattleType.AgainstAI });
-            this.cbBattleType.Items.Add(new ComboBoxItem() { Content = BattleType.AgainstPlayer });
+            //Todo Play
+            pageTransitionControl.TransitionType = PageTransitionType.SlideAndFade;
+            if (menuGameType == null)
+            {
+                menuGameType = new MenuGameType();
+                menuGameType.GameTypeEvent += OnGameType;
+            }
+            pageTransitionControl.ShowPage(menuGameType);
         }
 
-        private void BtnSearch_Click(object sender, RoutedEventArgs e)
+        private void OnHelp()
+        {
+            if (menuHelp == null)
+            {
+                menuHelp = new MenuHelp();
+            }
+            pageTransitionControl.ShowPage(menuGameType);
+        }
+
+        private void OnGameType(GameType gameType)
+        {
+            this.gameType = gameType;
+            UserControl nextPage;
+            if(gameType == GameType.Local)
+            {
+                if (menuLocalBattleType == null)
+                {
+                    menuLocalBattleType = new MenuLocalBattleType();
+                    menuLocalBattleType.BattleTypeEvent += OnBattleType;
+                }
+                nextPage = menuLocalBattleType;
+            }
+            else
+            {
+                if (menuOnlinePlayAs == null)
+                {
+                    menuOnlinePlayAs = new MenuOnlinePlayAs();
+                    menuOnlinePlayAs.PlayerTypeEvent += OnPlayAs;
+                }
+                nextPage = menuOnlinePlayAs;
+            }
+
+            pageTransitionControl.ShowPage(nextPage);
+        }
+
+        private void OnBattleType((PlayerType, BattleType) data)
+        {
+            this.playerType = data.Item1;
+            this.battleType = data.Item2;
+
+            LaunchGame();
+        }
+
+        private void OnPlayAs(PlayerType playerType)
+        {
+            this.playerType = playerType;
+            if (menuOnlinePlayAgainst == null)
+            {
+                menuOnlinePlayAgainst = new MenuOnlinePlayAgainst();
+                menuOnlinePlayAgainst.BattleTypeEvent += OnPlayAgainst;
+            }
+            pageTransitionControl.ShowPage(menuOnlinePlayAgainst);
+        }
+
+        private void OnPlayAgainst(BattleType battleType)
+        {
+            this.battleType = battleType;
+
+            LaunchGame();
+        }
+
+        private void LaunchGame()
         {
             try
             {
-                GameType gameType = (GameType)cbGameType.SelectedItem;
-                BattleType battleType = (BattleType)cbBattleType.SelectedItem;
-
                 // Set a new gameHandler to the application manager (Can't be turned into ternary)
                 if (gameType == GameType.Local)
                     ApplicationManager.Instance.CurrentGame = new LocalGameHandler(battleType);
@@ -57,7 +125,6 @@ namespace OthelloMillenniumClient
 
                 // Start matchmaking
                 ApplicationManager.Instance.CurrentGame.Init();
-
             }
             catch (Exception ex)
             {

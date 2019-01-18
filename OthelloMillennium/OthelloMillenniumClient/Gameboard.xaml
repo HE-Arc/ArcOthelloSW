@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="750" d:DesignWidth="950"
              Margin="2"
-             Background="#262626"> 
+             Background="#6F262626"> 
     <UserControl.Resources>
         <Style TargetType="Button" x:Key="cell">
             <Setter Property="BorderThickness" Value="0"></Setter>

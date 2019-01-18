@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="OthelloMillenniumClient.MainScreen"
+﻿<UserControl x:Class="OthelloMillenniumClient.MenuMain"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <Grid>
-        <Button Content="Play" Margin="10,156,493,138"/>
-        <Button Content="Help" Margin="375,156,156,138"/>
+        <Button Click="RaisePlayEvent" Content="Play" Margin="90,176,413,118"/>
+        <Button Click="RaiseHelpEvent" Content="Help" Margin="433,176,98,118"/>
     </Grid>
 </UserControl>
