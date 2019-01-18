@@ -33,10 +33,10 @@
             <local:Gameboard Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"/>
         </Viewbox>
         <Viewbox  Grid.Row="0" Grid.Column="0">
-            <local:PlayerCard Image="Images/BB-8.png" Pseudo="Ph0tonic" Time="12:123" Inactive="False" />
+            <local:PlayerCard Image="Images/BB-8.png" Pseudo="Ph0tonic" Time="12:123" Inactive="False" Color="White"/>
         </Viewbox>
         <Viewbox Grid.Row="1" Grid.Column="0">
-            <local:PlayerCard Image="Images/Snoke.png" Pseudo="Mearing" Time="12:123" Inactive="True" />
+            <local:PlayerCard Image="Images/Snoke.png" Pseudo="Mearing" Time="12:123" Inactive="False" Color="Black"/>
         </Viewbox>
 
     </Grid>

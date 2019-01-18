@@ -55,6 +55,14 @@ namespace OthelloMillenniumClient
                 SetValue(PropertyInactive, value);
             }
         }
+        public string Color
+        {
+            get => (string)GetValue(PropertyInactive);
+            set
+            {
+                SetValue(PropertyInactive, value);
+            }
+        }
 
         // Using a DependencyProperty as the backing store for Property1.  
         // This enables animation, styling, binding, etc...
@@ -88,6 +96,14 @@ namespace OthelloMillenniumClient
                   typeof(bool),
                   typeof(PlayerCard),
                   new PropertyMetadata(true)
+              );
+
+        public static readonly DependencyProperty PropertyColor
+            = DependencyProperty.Register(
+                  "Color",
+                  typeof(string),
+                  typeof(PlayerCard),
+                  new PropertyMetadata("#FFFFFF")
               );
 
         #endregion
