@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace OthelloMillenniumClient
 {
 
-    public partial class PlayerCard : UserControl
+    public partial class PlayerCardWhite : UserControl
     {
         #region Properties
 
@@ -55,14 +55,6 @@ namespace OthelloMillenniumClient
                 SetValue(PropertyInactive, value);
             }
         }
-        public string Color
-        {
-            get => (string)GetValue(PropertyInactive);
-            set
-            {
-                SetValue(PropertyInactive, value);
-            }
-        }
 
         // Using a DependencyProperty as the backing store for Property1.  
         // This enables animation, styling, binding, etc...
@@ -70,7 +62,7 @@ namespace OthelloMillenniumClient
             = DependencyProperty.Register(
                   "Image",
                   typeof(string),
-                  typeof(PlayerCard),
+                  typeof(PlayerCardWhite),
                   new PropertyMetadata("Images/BB-8.png")
               );
 
@@ -78,7 +70,7 @@ namespace OthelloMillenniumClient
             = DependencyProperty.Register(
                   "Time",
                   typeof(string),
-                  typeof(PlayerCard),
+                  typeof(PlayerCardWhite),
                   new PropertyMetadata("2:300")
               );
 
@@ -86,7 +78,7 @@ namespace OthelloMillenniumClient
             = DependencyProperty.Register(
                   "Pseudo",
                   typeof(string),
-                  typeof(PlayerCard),
+                  typeof(PlayerCardWhite),
                   new PropertyMetadata("Darth Vader")
               );
 
@@ -94,21 +86,13 @@ namespace OthelloMillenniumClient
             = DependencyProperty.Register(
                   "Inactive",
                   typeof(bool),
-                  typeof(PlayerCard),
+                  typeof(PlayerCardWhite),
                   new PropertyMetadata(true)
-              );
-
-        public static readonly DependencyProperty PropertyColor
-            = DependencyProperty.Register(
-                  "Color",
-                  typeof(string),
-                  typeof(PlayerCard),
-                  new PropertyMetadata("#FFFFFF")
               );
 
         #endregion
 
-        public PlayerCard()
+        public PlayerCardWhite()
         {
             InitializeComponent();
 

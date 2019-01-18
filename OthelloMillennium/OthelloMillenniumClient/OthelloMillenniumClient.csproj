@@ -79,8 +79,8 @@
     <Compile Include="Game.xaml.cs">
       <DependentUpon>Game.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PlayerCard.xaml.cs">
-      <DependentUpon>PlayerCard.xaml</DependentUpon>
+    <Compile Include="PlayerCardBlack.xaml.cs">
+      <DependentUpon>PlayerCardBlack.xaml</DependentUpon>
     </Compile>
     <Compile Include="PlayerPicker.xaml.cs">
       <DependentUpon>PlayerPicker.xaml</DependentUpon>
@@ -90,6 +90,9 @@
     </Compile>
     <Compile Include="Lobby.xaml.cs">
       <DependentUpon>Lobby.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerCardWhite.xaml.cs">
+      <DependentUpon>PlayerCardWhite.xaml</DependentUpon>
     </Compile>
     <Page Include="Gameboard.xaml">
       <SubType>Designer</SubType>
@@ -112,7 +115,7 @@
       <DependentUpon>Home.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="PlayerCard.xaml">
+    <Page Include="PlayerCardBlack.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -125,6 +128,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Lobby.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PlayerCardWhite.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
