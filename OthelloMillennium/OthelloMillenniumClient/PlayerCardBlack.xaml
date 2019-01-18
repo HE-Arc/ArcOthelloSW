@@ -20,7 +20,11 @@
         </Grid.RowDefinitions>
         <Rectangle Grid.Row="0" Fill="#ffbe29"/>
         <Label Grid.Row="0" Content="{ Binding Pseudo }" FontFamily="Segoe UI Semibold" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Image Grid.Row="1" Source="{ Binding Image }" Margin="5"/>
+        <Image Grid.Row="1" Source="{ Binding Image }" Margin="5">
+            <Image.RenderTransform>
+                <ScaleTransform ScaleX="-1"/>
+            </Image.RenderTransform>
+        </Image>
 
         <Polygon Grid.Row="1" Points="0,-70 -47.5,0, 0,0" StrokeThickness="0" Fill="Black" Margin="4.5" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
         <Polygon Grid.Row="1" Points="0,-60 -40.5,0, 0,0" StrokeThickness="1" Stroke="#ffbe29" Fill="Black" Margin="4.5" VerticalAlignment="Bottom" HorizontalAlignment="Right" />

@@ -30,7 +30,9 @@ namespace OthelloMillenniumClient
         public Gameboard()
         {
             InitializeComponent();
+            //gameState = ApplicationManager.Instance.CurrentGame.GameState;
             Init();
+            
             //ApplicationManager.Instance.CurrentGame.GetClient().OnGameStateReceived += OnReceiveGameState;
         }
 
@@ -38,8 +40,8 @@ namespace OthelloMillenniumClient
         {
             //Create game interface
             //TODO change
-            int width = 9;
-            int height = 7;
+            int width = gameState.Gameboard.GetLength(0);
+            int height = gameState.Gameboard.GetLength(1);
 
             buttons = new Button[width, height];
 
@@ -164,23 +166,24 @@ namespace OthelloMillenniumClient
 
             Console.WriteLine("Call");
             Console.WriteLine(column.ToString(), row.ToString());
-            return;
-
+            
             // Get the gamehandler
-            //GameHandler gameHandler = ApplicationManager.Instance.CurrentGame;
-            //Client currentPlayer = gameHandler.GetCurrentPlayer();
-
+            GameHandler gameHandler = ApplicationManager.Instance.CurrentGame;
+            Client currentPlayer = gameHandler.GetCurrentPlayer();
+            
+            //TODO: SEGAN Remove logic from the view
+            
             // Generate a new order
-            //var playOrder = n<ew PlayMoveOrder()
-            //{
-            //    Coords = new Tuple<char, int>(column, row)
-            //};
+            var playOrder = new PlayMoveOrder()
+            {
+                Coords = new Tuple<char, int>(column, row)
+            };
 
-            //// Send the player new token location
-            //currentPlayer.Send(playOrder);
+            // Send the player new token location
+            currentPlayer.Send(playOrder);
 
-            //// End player's turn
-            //currentPlayer.Send(new NextTurnOrder());
+            // End player's turn
+            currentPlayer.Send(new NextTurnOrder());
         }
     }
 }

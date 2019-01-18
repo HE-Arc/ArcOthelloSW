@@ -3,13 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:pageTransitions="clr-namespace:WpfPageTransitions;assembly=WpfPageTransitions"
         xmlns:local="clr-namespace:OthelloMillenniumClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
-        Background="{DynamicResource MaterialDesignPaper}"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}">
+        Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button x:Name="btnSearch" Content="Rechercher une partie" HorizontalAlignment="Left" Margin="120,180,0,0" VerticalAlignment="Top" Width="120" Click="btnSearch_Click"/>
+        <pageTransitions:PageTransition Name="pageTransitionControl" Margin="25" TransitionType="SlideAndFade" />
+        
+        <Button x:Name="btnSearch" Content="Rechercher une partie" HorizontalAlignment="Left" Margin="120,180,0,0" VerticalAlignment="Top" Width="120" Click="BtnSearch_Click"/>
         <ComboBox Name="cbGameType" HorizontalAlignment="Left" Margin="120,70,0,0" VerticalAlignment="Top" Width="120"/>
         <ComboBox Name="cbBattleType" HorizontalAlignment="Left" Margin="120,120,0,0" VerticalAlignment="Top" Width="120"/>
     </Grid>

@@ -1,8 +1,10 @@
 ﻿using OthelloMillenniumClient.Classes;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Tools.Classes;
+using WpfPageTransitions;
 
 namespace OthelloMillenniumClient
 {
@@ -11,11 +13,22 @@ namespace OthelloMillenniumClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        Stack<UserControl> pages = new Stack<UserControl>();
+
         public MainWindow()
         {
             InitializeComponent();
+            
+            pageTransitionControl.TransitionType = PageTransitionType.Grow;
+            pageTransitionControl.ShowPage(new MainScreen());
 
             InitComboBoxes();
+        }
+
+        public void NextStep()
+        {
+            //TODO
+            pageTransitionControl.TransitionType = PageTransitionType.SlideAndFade;
         }
 
         private void InitComboBoxes()
@@ -29,7 +42,7 @@ namespace OthelloMillenniumClient
             this.cbBattleType.Items.Add(new ComboBoxItem() { Content = BattleType.AgainstPlayer });
         }
 
-        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        private void BtnSearch_Click(object sender, RoutedEventArgs e)
         {
             try
             {

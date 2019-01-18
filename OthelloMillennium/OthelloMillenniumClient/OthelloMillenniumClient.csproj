@@ -79,6 +79,16 @@
     <Compile Include="Game.xaml.cs">
       <DependentUpon>Game.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Home\MainScreen.xaml.cs">
+      <DependentUpon>MainScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Home\MainMode.xaml.cs">
+      <DependentUpon>MainMode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Home\MainOnline.xaml.cs">
+      <DependentUpon>MainOnline.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main.cs" />
     <Compile Include="PlayerCardBlack.xaml.cs">
       <DependentUpon>PlayerCardBlack.xaml</DependentUpon>
     </Compile>
@@ -102,6 +112,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Home\MainScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Home\MainMode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Home.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -115,6 +133,10 @@
       <DependentUpon>Home.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Home\MainOnline.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PlayerCardBlack.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -233,6 +255,10 @@
     <ProjectReference Include="..\Tools\Tools.csproj">
       <Project>{d1a41933-b18c-4f63-9435-1a9d3a10237d}</Project>
       <Name>Tools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WpfPageTransitions\WpfPageTransitions.csproj">
+      <Project>{22a46d61-1d40-43a9-802c-b9d43dadd9ec}</Project>
+      <Name>WpfPageTransitions</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

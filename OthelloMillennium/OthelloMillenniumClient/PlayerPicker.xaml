@@ -43,6 +43,6 @@
         <Image Grid.Row="3" Grid.Column="3" Width="100px" Height="100px" x:Name="Stormtrooper" Source="Images/Stormtrooper.png" Stretch="Fill"/>
         <Image Grid.Row="3" Grid.Column="4" Width="100px" Height="100px" x:Name="TheEmperor" Source="Images/TheEmperor.png" Stretch="Fill"/>
         <Image Grid.Row="0" Grid.Column="0" Panel.ZIndex="-1" x:Name="SelectorPlayer1" Source="Images/SelectorTest.png" Stretch="Fill"/>
-        <Image Grid.Row="0" Grid.Column="0" Panel.ZIndex="-1" x:Name="SelectorPlayer2" Source="Images/SelectorTest.png" Stretch="Fill"/>
+        <Image Grid.Row="0" Grid.Column="0" Panel.ZIndex="-1" x:Name="SelectorPlayer2" Source="Images/SelectorTest.png" Stretch="Fill"/> 
     </Grid>
 </UserControl>
