@@ -73,11 +73,11 @@
     <Compile Include="Classes\GameHandlers\LocalGameHandler.cs" />
     <Compile Include="Classes\GameHandlers\OnlineGameHandler.cs" />
     <Compile Include="Classes\ApplicationManager.cs" />
-    <Compile Include="Gameboard.xaml.cs">
-      <DependentUpon>Gameboard.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Game.xaml.cs">
       <DependentUpon>Game.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Gameboard.xaml.cs">
+      <DependentUpon>Gameboard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Menus\MenuOnlinePlayAs.xaml.cs">
       <DependentUpon>MenuOnlinePlayAs.xaml</DependentUpon>
@@ -113,11 +113,11 @@
     <Compile Include="PlayerCardWhite.xaml.cs">
       <DependentUpon>PlayerCardWhite.xaml</DependentUpon>
     </Compile>
-    <Page Include="Gameboard.xaml">
+    <Page Include="Game.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Game.xaml">
+    <Page Include="Gameboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -197,6 +197,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Fonts\digital-7-mono.ttf" />
+    <Resource Include="Fonts\digital-7.ttf" />
+    <Resource Include="Fonts\Starjhol.ttf" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -284,6 +287,35 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\help.png" />
+    <Resource Include="Icons\offline.png" />
+    <Resource Include="Icons\online.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\VS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\offline_orange.png" />
+    <Resource Include="Icons\online_black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\help_black.png" />
+    <Resource Include="Icons\VS_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\VS_orange.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\AI.png" />
+    <Resource Include="Icons\Human.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\human_black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\AI_orange.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

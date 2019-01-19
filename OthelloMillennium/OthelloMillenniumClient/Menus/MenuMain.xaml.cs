@@ -15,19 +15,13 @@ namespace OthelloMillenniumClient
         public void RaisePlayEvent(object sender, System.Windows.RoutedEventArgs e)
         {
             // Your logic
-            if (PlayEvent != null)
-            {
-                PlayEvent();
-            }
+            PlayEvent?.Invoke();
         }
 
         public void RaiseHelpEvent(object sender, System.Windows.RoutedEventArgs e)
         {
             // Your logic
-            if (HelpEvent != null)
-            {
-                HelpEvent();
-            }
+            HelpEvent?.Invoke();
         }
 
         public MenuMain()

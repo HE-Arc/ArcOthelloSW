@@ -1,17 +1,8 @@
 ﻿using OthelloMillenniumClient.Classes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Tools;
 using Tools.Classes;
@@ -23,22 +14,28 @@ namespace OthelloMillenniumClient
     /// </summary>
     public partial class Gameboard : UserControl
     {
+        private Button[,] listButtons;
+        //private GameState gameState;
+
         public Gameboard()
         {
             InitializeComponent();
+            //gameState = ApplicationManager.Instance.CurrentGame.GameState;
             Init();
-            //ApplicationManager.Instance.Client.OnGameStateReceived += OnReceiveGameState;
+
+            //ApplicationManager.Instance.CurrentGame.GetClient().OnGameStateReceived += OnReceiveGameState;
         }
 
         private void Init()
         {
             //Create game interface
             //TODO change
-            int width = 9;
-            int height = 7;
+            int width = 9;// gameState.Gameboard.GetLength(0);
+            int height = 7;// gameState.Gameboard.GetLength(1);
+
+            listButtons = new Button[width, height];
 
             Grid grid = MainGrid;
-            SolidColorBrush brush = new SolidColorBrush(Color.FromArgb(0xFF, 0x0F,0x3D, 0x56));
             SolidColorBrush brushYellow = new SolidColorBrush(Color.FromArgb(0xFF, 0xFC, 0xB0, 0x01));
 
             grid.Children.Clear();
@@ -51,8 +48,8 @@ namespace OthelloMillenniumClient
             Thickness none = new Thickness(0);
 
             ColumnDefinition c1 = new ColumnDefinition();
-            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = oneStars });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = oneStars });
+            //grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = oneStars });
+            //grid.RowDefinitions.Add(new RowDefinition() { Height = oneStars });
 
             //Add columns
             for (int i = 0; i < width; ++i)
@@ -65,70 +62,100 @@ namespace OthelloMillenniumClient
             {
                 grid.RowDefinitions.Add(new RowDefinition() { Height = twoStars });
             }
-            
-            // Add legend for rows and column
-            for (int i = 1; i < width+1; ++i)
-            {
-                Border border = new Border();
-                
-                border.SetValue(Grid.RowProperty, 0);
-                border.SetValue(Grid.ColumnProperty, i);
-                border.Child = new TextBlock() {
-                    Text = ((char)(i+65)).ToString(),
-                    VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Margin = margin,
-                    Foreground = brushYellow
-                };
-                grid.Children.Add(border);
-            }
 
-            for (int i = 1; i < height+1; ++i)
-            {
-                Border border = new Border();
-                border.SetValue(Grid.RowProperty, i);
-                border.SetValue(Grid.ColumnProperty, 0);
-                border.Child = new TextBlock()
-                {
-                    Text = i.ToString(),
-                    VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Margin = margin,
-                    Foreground = brushYellow
-                };
-                grid.Children.Add(border);
-            }
+            //// Add legend for rows and column
+            //for (int i = 1; i < width+1; ++i)
+            //{
+            //    Border border = new Border();
+
+            //    border.SetValue(Grid.RowProperty, 0);
+            //    border.SetValue(Grid.ColumnProperty, i);
+            //    border.Child = new TextBlock() {
+            //        Text = ((char)(i+66)).ToString(),
+            //        VerticalAlignment = VerticalAlignment.Center,
+            //        HorizontalAlignment = HorizontalAlignment.Center,
+            //        Margin = margin,
+            //        Foreground = brushYellow
+            //    };
+            //    grid.Children.Add(border);
+            //}
+
+            //for (int i = 1; i < height+1; ++i)
+            //{
+            //    Border border = new Border();
+            //    border.SetValue(Grid.RowProperty, i);
+            //    border.SetValue(Grid.ColumnProperty, 0);
+            //    border.Child = new TextBlock()
+            //    {
+            //        Text = i.ToString(),
+            //        VerticalAlignment = VerticalAlignment.Center,
+            //        HorizontalAlignment = HorizontalAlignment.Center,
+            //        Margin = margin,
+            //        Foreground = brushYellow
+            //    };
+            //    grid.Children.Add(border);
+            //}
+
+            Style styleBlack = this.Resources["black-circle"] as Style;
+            Style styleWhite = this.Resources["white-circle"] as Style;
+            Style styleCell = this.Resources["cell"] as Style;
 
             // Add buttons
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
-                    Border border = new Border();
-                    border.SetValue(Grid.ColumnProperty, i+1);
-                    border.SetValue(Grid.RowProperty, j+1);
-                    border.Child = new Button() {
-                        Content = 1,
-                        Margin = margin,
-                        Background = brush,
-                        BorderThickness = none
+                    Button button = new Button()
+                    {
+                        Tag = ((char)(i + 65), j),
+                        Style = styleCell,
+                        MinWidth = 12,
+                        MinHeight = 12
                     };
-                    grid.Children.Add(border);
+                    button.SetValue(Grid.ColumnProperty, i);
+                    button.SetValue(Grid.RowProperty, j);
+                    button.Content = new Ellipse()
+                    {
+                        Style = styleBlack
+                    };
+                    button.Click += OnCellClick;
+
+                    listButtons[i, j] = button;
+                    grid.Children.Add(button);
                 }
             }
-            
         }
 
         private void OnReceiveGameState(object sender, OthelloTCPClientArgs e)
         {
-            //e.GameState;
-            throw new NotImplementedException();
+            //Update grid with played tokens
+            int[,] gameboard = e.GameState.Gameboard;
+            for (int i = 0; i < gameboard.GetLength(0); ++i)
+            {
+                for (int j = 0; j < gameboard.GetLength(1); ++i)
+                {
+                    if (gameboard[i, j] > 0)
+                    {
+                        listButtons[i, j].Style = e.GameState.Gameboard[i, j] == 1 ? this.Resources["circle-black"] as Style : this.Resources["circle-white"] as Style;
+                    }
+                }
+            }
+
+            //Update grid with potential moves
+            foreach (Tuple<char, int> move in e.GameState.PossiblesMoves)
+            {
+                int i = move.Item1 - 65;
+                int j = move.Item2;
+                listButtons[i, j].Style = this.Resources["circle-grey"] as Style;
+            }
         }
-    
+
         private void OnCellClick(object sender, RoutedEventArgs e)
         {
-            char column = 'a';
-            int row = 0;
+            (char column, int row) = ((char, int))((Button)sender).Tag;
+
+            Console.WriteLine("Call");
+            Console.WriteLine(column.ToString(), row.ToString());
 
             // Get the gamehandler
             GameHandler gameHandler = ApplicationManager.Instance.CurrentGame;

@@ -35,11 +35,6 @@ namespace OthelloMillenniumClient
             pageTransitionControl.ShowPage(menuMain);
         }
 
-        public void NextStep()
-        {
-            //TODO
-            pageTransitionControl.TransitionType = PageTransitionType.SlideAndFade;
-        }
         private void OnPlay()
         {
             //Todo Play
@@ -54,11 +49,12 @@ namespace OthelloMillenniumClient
 
         private void OnHelp()
         {
+            pageTransitionControl.TransitionType = PageTransitionType.SlideAndFade;
             if (menuHelp == null)
             {
                 menuHelp = new MenuHelp();
             }
-            pageTransitionControl.ShowPage(menuGameType);
+            pageTransitionControl.ShowPage(menuHelp);
         }
 
         private void OnGameType(GameType gameType)

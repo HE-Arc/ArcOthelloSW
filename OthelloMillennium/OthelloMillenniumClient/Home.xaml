@@ -1,4 +1,4 @@
-﻿<Window x:Class="OthelloMillenniumClient.MainWindow"
+﻿<Window x:Name="Othello_Millenium" x:Class="OthelloMillenniumClient.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,8 +6,22 @@
 		xmlns:pageTransitions="clr-namespace:WpfPageTransitions;assembly=WpfPageTransitions"
         xmlns:local="clr-namespace:OthelloMillenniumClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        ResizeMode="NoResize">
     <Grid>
-        <pageTransitions:PageTransition Name="pageTransitionControl" Margin="25" TransitionType="SlideAndFade" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.2*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Images/Background.png" Stretch="UniformToFill"/>
+        </Grid.Background>
+
+        <Label Grid.Row="0" Content="othello" FontFamily="/Fonts/Starjhol.ttf#Star Jedi Hollow" FontSize="45" HorizontalAlignment="Center" VerticalAlignment="Top"></Label>
+        <Label Grid.Row="0" Content="Millenium" FontFamily="/Fonts/Starjhol.ttf#Star Jedi Hollow" FontSize="45" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"></Label>
+
+        <pageTransitions:PageTransition Grid.Row="0" Grid.RowSpan="2" Name="pageTransitionControl" TransitionType="SlideAndFade" />
+
+        <Label Grid.Row="1" Content="© 2019 Segan Salomon &amp; Bastien Wermeille" Foreground="#282828" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="10"/>
     </Grid>
 </Window>
