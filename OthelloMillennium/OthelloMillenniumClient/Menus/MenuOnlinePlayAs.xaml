@@ -7,6 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        
         <Button Click="RaiseHumanEvent" Content="Human" Margin="87,90,444,53.6"/>
         <Button Click="RaiseAiEvent" Content="AI" Margin="412,90,91,53.6"/>
 
