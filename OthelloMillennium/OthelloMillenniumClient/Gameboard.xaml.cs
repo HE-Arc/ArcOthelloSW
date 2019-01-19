@@ -12,12 +12,12 @@ namespace OthelloMillenniumClient
     /// <summary>
     /// Logique d'interaction pour Gamboard.xaml
     /// </summary>
-    public partial class Gameboard2 : UserControl
+    public partial class Gameboard : UserControl
     {
         private Button[,] listButtons;
         //private GameState gameState;
 
-        public Gameboard2()
+        public Gameboard()
         {
             InitializeComponent();
             //gameState = ApplicationManager.Instance.CurrentGame.GameState;
