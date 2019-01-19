@@ -19,6 +19,6 @@
         <Label Grid.Row="0" Content="othello" FontFamily="/Fonts/Starjhol.ttf#Star Jedi Hollow" FontSize="45" HorizontalAlignment="Center" VerticalAlignment="Top"></Label>
         <Label Grid.Row="0" Content="Millenium" FontFamily="/Fonts/Starjhol.ttf#Star Jedi Hollow" FontSize="45" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"></Label>
         
-        <pageTransitions:PageTransition Grid.Row="0" Grid.RowSpan="2" Name="pageTransitionControl" Margin="25" TransitionType="SlideAndFade" />
+        <pageTransitions:PageTransition Grid.Row="0" Grid.RowSpan="2" Name="pageTransitionControl" TransitionType="SlideAndFade" />
     </Grid>
 </Window>

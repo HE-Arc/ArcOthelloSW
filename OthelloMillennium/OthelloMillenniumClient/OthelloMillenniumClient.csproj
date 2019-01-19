@@ -296,5 +296,20 @@
   <ItemGroup>
     <Resource Include="Icons\VS.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\offline_orange.png" />
+    <Resource Include="Icons\online_black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\help_black.png" />
+    <Resource Include="Icons\VS_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\VS_orange.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\AI.png" />
+    <Resource Include="Icons\Human.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
