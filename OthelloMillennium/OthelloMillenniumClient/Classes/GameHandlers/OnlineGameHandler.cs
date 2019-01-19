@@ -35,8 +35,11 @@ namespace OthelloMillenniumClient
                     Client.OnAwaitReceived += Client_OnAwaitReceived;
                     Client.OnGameStateReceived += Client_OnGameStateReceived;
 
+                    // Register client
+                    Client.Register(GameType.Online);
+
                     // Send orders
-                    Client.Search(GameType.Online, BattleType.AgainstAI);
+                    Client.Search(BattleType.AgainstAI);
 
                     break;
                 case BattleType.AgainstPlayer:
@@ -46,8 +49,11 @@ namespace OthelloMillenniumClient
                     Client.OnAwaitReceived += Client_OnAwaitReceived;
                     Client.OnGameStateReceived += Client_OnGameStateReceived;
 
+                    // Register client
+                    Client.Register(GameType.Online);
+
                     // Send orders
-                    Client.Search(GameType.Online, BattleType.AgainstPlayer);
+                    Client.Search(BattleType.AgainstPlayer);
 
                     break;
             }

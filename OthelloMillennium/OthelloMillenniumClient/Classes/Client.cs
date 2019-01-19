@@ -5,6 +5,10 @@ using Tools.Classes;
 
 namespace OthelloMillenniumClient
 {
+    /// <summary>
+    /// Wrapper of OthelloTCPClient
+    /// <para/>Client must register itself and then search a game
+    /// </summary>
     public class Client : OthelloTCPClient
     {
         public event EventHandler<OthelloTCPClientArgs> OnBeginReceived;
@@ -15,10 +19,11 @@ namespace OthelloMillenniumClient
         public PlayerType PlayerType { get; private set; }
         public string Name { get; private set; }
 
-        public Client(PlayerType type, string Name)
+        public Client(PlayerType type, string name)
             : base()
         {
             PlayerType = type;
+            Name = name;
 
             this.OnOrderReceived += Client_OnOrderReceived;
         }
@@ -43,14 +48,12 @@ namespace OthelloMillenniumClient
         }
 
         /// <summary>
-        /// Connect to the matching server
-        /// Send a message in order to register itself
+        /// Connect to a server
         /// </summary>
-        /// <param name="battleType"></param>
         /// <param name="gameType"></param>
-        public void Search(GameType gameType, BattleType battleType)
+        public void Register(GameType gameType)
         {
-            if(this.TcpClient.Connected)
+            if (this.TcpClient.Connected)
             {
                 this.TcpClient.Close();
             }
@@ -67,8 +70,21 @@ namespace OthelloMillenniumClient
                     throw new Exception("Invalid gameType provided");
             }
 
-            // Send a request
-            this.Send(new SearchOrder(battleType == BattleType.AgainstAI ? PlayerType.AI : PlayerType.Human));
+            // Send a register request
+            this.Send(new RegisterOrder(PlayerType, Name));
+        }
+
+        /// <summary>
+        /// Send a message in order to register itself
+        /// </summary>
+        /// <param name="battleType"></param>
+        public void Search(BattleType battleType)
+        {
+            if (this.TcpClient.Connected)
+            {
+                // Send a request
+                this.Send(new SearchOrder(battleType == BattleType.AgainstAI ? PlayerType.AI : PlayerType.Human));
+            }
         }
 
         /// <summary>
