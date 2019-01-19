@@ -12,15 +12,15 @@ namespace OthelloMillenniumClient
     /// <summary>
     /// Logique d'interaction pour Gamboard.xaml
     /// </summary>
-    public partial class Gameboard : UserControl
+    public partial class Gameboard2 : UserControl
     {
-        private Button[,] buttons;
-        private GameState gameState;
+        private Button[,] listButtons;
+        //private GameState gameState;
 
-        public Gameboard()
+        public Gameboard2()
         {
             InitializeComponent();
-            gameState = ApplicationManager.Instance.CurrentGame.GameState;
+            //gameState = ApplicationManager.Instance.CurrentGame.GameState;
             Init();
 
             //ApplicationManager.Instance.CurrentGame.GetClient().OnGameStateReceived += OnReceiveGameState;
@@ -30,10 +30,10 @@ namespace OthelloMillenniumClient
         {
             //Create game interface
             //TODO change
-            int width = gameState.Gameboard.GetLength(0);
-            int height = gameState.Gameboard.GetLength(1);
+            int width = 9;// gameState.Gameboard.GetLength(0);
+            int height = 7;// gameState.Gameboard.GetLength(1);
 
-            buttons = new Button[width, height];
+            listButtons = new Button[width, height];
 
             Grid grid = MainGrid;
             SolidColorBrush brushYellow = new SolidColorBrush(Color.FromArgb(0xFF, 0xFC, 0xB0, 0x01));
@@ -120,7 +120,7 @@ namespace OthelloMillenniumClient
                     };
                     button.Click += OnCellClick;
 
-                    buttons[i, j] = button;
+                    listButtons[i, j] = button;
                     grid.Children.Add(button);
                 }
             }
@@ -136,7 +136,7 @@ namespace OthelloMillenniumClient
                 {
                     if (gameboard[i, j] > 0)
                     {
-                        buttons[i, j].Style = e.GameState.Gameboard[i, j] == 1 ? this.Resources["circle-black"] as Style : this.Resources["circle-white"] as Style;
+                        listButtons[i, j].Style = e.GameState.Gameboard[i, j] == 1 ? this.Resources["circle-black"] as Style : this.Resources["circle-white"] as Style;
                     }
                 }
             }
@@ -146,7 +146,7 @@ namespace OthelloMillenniumClient
             {
                 int i = move.Item1 - 65;
                 int j = move.Item2;
-                buttons[i, j].Style = this.Resources["circle-grey"] as Style;
+                listButtons[i, j].Style = this.Resources["circle-grey"] as Style;
             }
         }
 
