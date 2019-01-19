@@ -311,5 +311,11 @@
     <Resource Include="Icons\AI.png" />
     <Resource Include="Icons\Human.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\human_black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\AI_orange.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
