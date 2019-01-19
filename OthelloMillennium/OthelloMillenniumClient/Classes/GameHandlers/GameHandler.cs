@@ -30,7 +30,9 @@ namespace OthelloMillenniumClient.Classes
             return isClientTurn ? Client : Opponent;
         }
 
-        public abstract void Init();
+
+        public abstract void Init(ExportedGame data);
+        public abstract void Init(string clientName, string opponentName);
 
         protected void Client_OnBeginReceived(object sender, OthelloTCPClientArgs e)
         {

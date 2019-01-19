@@ -131,18 +131,11 @@ namespace OthelloMillenniumClient
             int row = 0;
 
             // Get the gamehandler
-            IGameHandler gameHandler = ApplicationManager.Instance.CurrentGame;
+            GameHandler gameHandler = ApplicationManager.Instance.CurrentGame;
             Client currentPlayer = gameHandler.GetCurrentPlayer();
 
-            // Generate a new order
-            var order = OrderProvider.PlayMove as PlayMoveOrder;
-            order.Coords = new Tuple<char, int>(column, row);
-
             // Send the player new token location
-            currentPlayer.Send(order);
-
-            // End player's turn
-            currentPlayer.Send(OrderProvider.NextTurn);
+            currentPlayer.Send(new PlayMoveOrder(new Tuple<char, int>(column, row)));
         }
     }
 }

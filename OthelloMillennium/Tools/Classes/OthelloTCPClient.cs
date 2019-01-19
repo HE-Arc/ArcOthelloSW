@@ -17,23 +17,19 @@ namespace Tools
 
         // Informations
         public TcpClient TcpClient { get; private set; }
-        public PlayerType Type { get; private set; }
         public Dictionary<string, object> Properties { get; private set; } = new Dictionary<string, object>();
 
         // Events
         public event EventHandler<OthelloTCPClientArgs> OnOrderReceived;
         public event EventHandler<OthelloTCPClientArgs> OnGameStateReceived;
+        public event EventHandler<OthelloTCPClientArgs> OnSaveReceived;
         public event EventHandler<EventArgs> OnConnectionLost;
 
         /// <summary>
         /// Basic constructor, start to listen for orders
         /// </summary>
-        /// <param name="type">Player or AI</param>
-        public OthelloTCPClient(PlayerType type)
+        public OthelloTCPClient()
         {
-            // Store the type of player
-            Type = type;
-
             // Listener task
             listenerTask = new Task(() =>
             {
@@ -48,10 +44,12 @@ namespace Tools
                     {
                         if (TcpClient.Connected)
                         {
-                            if (Receive() is AOrder order && !string.IsNullOrEmpty(order.GetAcronym()))
+                            if (Receive() is Order order && !string.IsNullOrEmpty(order.GetAcronym()))
                                 OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs() { Order = order });
                             if (Receive() is GameState gameState)
                                 OnGameStateReceived?.Invoke(this, new OthelloTCPClientArgs() { GameState = gameState });
+                            if (Receive() is ExportedGame save)
+                                OnSaveReceived?.Invoke(this, new OthelloTCPClientArgs() { Save = save });
                         }
 
                         // Wait before reading again
@@ -151,7 +149,8 @@ namespace Tools
 
     public class OthelloTCPClientArgs
     {
-        public AOrder Order { get; set; }
+        public Order Order { get; set; }
         public GameState GameState { get; set; }
+        public ExportedGame Save { get; set; }
     }
 }

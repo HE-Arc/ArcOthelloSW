@@ -13,13 +13,22 @@ namespace OthelloMillenniumClient
             : base(battleType)
         { }
 
-        public override void Init()
+        public override void Init(ExportedGame data)
+        {
+            return;
+        }
+
+        /// <summary>
+        /// Instanciate two clients
+        /// <para/>Send a search request
+        /// </summary>
+        public override void Init(string clientName, string opponentName)
         {
             switch (this.BattleType)
             {
                 case BattleType.AgainstAI:
-                    Client = new Client(PlayerType.Human, GameType.Local);
-                    Opponent = new Client(PlayerType.AI, GameType.Local);
+                    Client = new Client(PlayerType.Human, clientName);
+                    Opponent = new Client(PlayerType.AI, opponentName);
 
                     Client.OnBeginReceived += Client_OnBeginReceived;
                     Client.OnAwaitReceived += Client_OnAwaitReceived;
@@ -27,21 +36,21 @@ namespace OthelloMillenniumClient
                     Opponent.OnGameStateReceived += Client_OnGameStateReceived;
 
                     // Send orders
-                    Client.Search(PlayerType.AI);
-                    Opponent.Search(PlayerType.Human);
+                    Client.Search(GameType.Local, BattleType.AgainstAI);
+                    Opponent.Search(GameType.Local, BattleType.AgainstPlayer);
 
                     break;
                 case BattleType.AgainstPlayer:
-                    Client = new Client(PlayerType.Human, GameType.Local);
-                    Opponent = new Client(PlayerType.Human, GameType.Local);
+                    Client = new Client(PlayerType.Human, clientName);
+                    Opponent = new Client(PlayerType.Human, opponentName);
 
                     Client.OnBeginReceived += Client_OnBeginReceived;
                     Client.OnAwaitReceived += Client_OnAwaitReceived;
                     Client.OnGameStateReceived += Client_OnGameStateReceived;
 
                     // Send orders
-                    Client.Search(PlayerType.Human);
-                    Opponent.Search(PlayerType.Human);
+                    Client.Search(GameType.Local, BattleType.AgainstPlayer);
+                    Opponent.Search(GameType.Local, BattleType.AgainstPlayer);
 
                     break;
             }

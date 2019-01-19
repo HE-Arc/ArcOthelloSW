@@ -12,22 +12,15 @@ namespace OthelloMillenniumClient
         public event EventHandler<OthelloTCPClientArgs> OnOpponentFoundReceived;
         public event EventHandler<OthelloTCPClientArgs> OnGameStartedReceived;
 
-        public Client(PlayerType type, GameType gameType)
-            : base(type)
-        {
-            this.OnOrderReceived += Client_OnOrderReceived;
+        public PlayerType PlayerType { get; private set; }
+        public string Name { get; private set; }
 
-            switch (gameType)
-            {
-                case GameType.Local:
-                    this.ConnectTo("localhost", TCPServer.Port);
-                    break;
-                case GameType.Online:
-                    this.ConnectTo(OthelloMillenniumClient.Properties.Settings.Default.OnlineHostname, OthelloMillenniumClient.Properties.Settings.Default.OnlinePort);
-                    break;
-                default:
-                    throw new Exception("Invalid gameType provided");
-            }
+        public Client(PlayerType type, string Name)
+            : base()
+        {
+            PlayerType = type;
+
+            this.OnOrderReceived += Client_OnOrderReceived;
         }
 
         private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
@@ -50,26 +43,32 @@ namespace OthelloMillenniumClient
         }
 
         /// <summary>
-        /// Send a message to the binded server in order to register itself
+        /// Connect to the matching server
+        /// Send a message in order to register itself
         /// </summary>
-        /// <param name="searchingFor">player type you're looking for</param>
-        public void Search(PlayerType searchingFor)
+        /// <param name="battleType"></param>
+        /// <param name="gameType"></param>
+        public void Search(GameType gameType, BattleType battleType)
         {
-            switch(searchingFor)
+            if(this.TcpClient.Connected)
             {
-                case PlayerType.AI:
-                    this.Send(new SearchBattleAgainstAIOrder()
-                    {
-                        PlayerType = this.Type
-                    });
-                    break;
-                case PlayerType.Human:
-                    this.Send(new SearchBattleAgainstPlayerOrder()
-                    {
-                        PlayerType = this.Type
-                    });
-                    break;
+                this.TcpClient.Close();
             }
+
+            switch (gameType)
+            {
+                case GameType.Local:
+                    this.ConnectTo("localhost", TCPServer.Port);
+                    break;
+                case GameType.Online:
+                    this.ConnectTo(OthelloMillenniumClient.Properties.Settings.Default.OnlineHostname, OthelloMillenniumClient.Properties.Settings.Default.OnlinePort);
+                    break;
+                default:
+                    throw new Exception("Invalid gameType provided");
+            }
+
+            // Send a request
+            this.Send(new SearchOrder(battleType == BattleType.AgainstAI ? PlayerType.AI : PlayerType.Human));
         }
 
         /// <summary>
@@ -79,10 +78,7 @@ namespace OthelloMillenniumClient
         /// <param name="column">column</param>
         public void Play(char row, int column)
         {
-            this.Send(new PlayMoveOrder()
-            {
-                Coords = new Tuple<char, int>(row, column)
-            });
+            this.Send(new PlayMoveOrder(new Tuple<char, int>(row, column)));
         }
     }
 }

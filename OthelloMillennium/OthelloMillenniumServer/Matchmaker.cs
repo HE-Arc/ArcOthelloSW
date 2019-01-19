@@ -60,7 +60,7 @@ namespace OthelloMillenniumServer
                     {
                         while (TCPServer.Instance.Running)
                         {
-                            foreach(var client in RegistratedPlayers.Union(RegistratedAIs))
+                            foreach (var client in RegistratedPlayers.Union(RegistratedAIs).Where(client => (bool)client.Properties["Active"]))
                             {
                                 if (SearchOpponent(client) is OthelloTCPClient opponent)
                                 {
@@ -68,8 +68,8 @@ namespace OthelloMillenniumServer
                                     StartNewMatch(client, opponent);
 
                                     // Remove the two from the registredClients
-                                    (client.Type == PlayerType.Human ?  RegistratedPlayers : RegistratedAIs).Remove(client);
-                                    (opponent.Type == PlayerType.Human ? RegistratedPlayers : RegistratedAIs).Remove(opponent);
+                                    ((PlayerType)client.Properties["PlayerType"] == PlayerType.Human ?  RegistratedPlayers : RegistratedAIs).Remove(client);
+                                    ((PlayerType)opponent.Properties["PlayerType"] == PlayerType.Human ? RegistratedPlayers : RegistratedAIs).Remove(opponent);
                                 }
                             }
 
@@ -132,8 +132,8 @@ namespace OthelloMillenniumServer
             Console.WriteLine("Starting match");
 
             // Informs clients that an opponent has be found
-            client1.Send(new OpponentFoundOrder() { Opponent = client2 });
-            client2.Send(new OpponentFoundOrder() { Opponent = client1 });
+            client1.Send(new OpponentFoundOrder(client2));
+            client2.Send(new OpponentFoundOrder(client1));
 
             // GameManager will now handle clients and put them as InGame
             var match = new GameHandler(client1, client2);
@@ -175,8 +175,9 @@ namespace OthelloMillenniumServer
         /// </summary>
         /// <param name="client"></param>
         /// <param name="playerType"></param>
+        /// <param name="opponentType"></param>
         /// <returns></returns>
-        private bool Register(OthelloTCPClient client, PlayerType playerType)
+        private bool Register(OthelloTCPClient client, PlayerType playerType, string Name)
         {
             // Try to add the client
             bool result = registratedClients[playerType].Add(client);
@@ -184,8 +185,13 @@ namespace OthelloMillenniumServer
             // if result == false, client already exist
             if (result)
             {
-                // Set client type
-                client.Properties.Add("Searching", playerType);
+                // Set client properties
+                client.Properties.Add("Name", Name);
+                client.Properties.Add("PlayerType", playerType);
+                client.Properties.Add("Active", false);
+
+                // React to searchOrder
+                client.OnOrderReceived += Client_OnOrderReceived;
 
                 // Informs the client that he is now known to the server
                 client.Send(new RegisterSuccessfulOrder());
@@ -197,13 +203,28 @@ namespace OthelloMillenniumServer
             return result;
         }
 
-        public bool RegisterNewClient(OthelloTCPClient client, AOrder order)
+        private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
+        {
+            if(sender is OthelloTCPClient client && e.Order is SearchOrder order)
+            {
+                // Register the type of player the client is searching
+                client.Properties.Add("Searching", order.OpponentType);
+
+                // Make him active for matchmaking
+                client.Properties["Active"] = true;
+
+                // Disconnect this function
+                client.OnOrderReceived -= Client_OnOrderReceived;
+            }
+        }
+
+        public bool RegisterNewClient(OthelloTCPClient client, Order order)
         {
             try
             {
                 if (IsKnown(client))
                 {
-                    var currentMatch = matches.Where(match => match.Client1 == client || match.Client2 == client).First();
+                    var currentMatch = GetMatch(client);
                     if (currentMatch == null)
                     {
                         throw new Exception("Client already registred and searching for a game");
@@ -220,13 +241,14 @@ namespace OthelloMillenniumServer
                 else
                 {
                     // Store the new client in the matching hashset according to the player's game type wish
-                    switch (order)
+                    if(order is RegisterOrder rsOrder)
                     {
-                        case SearchBattleAgainstAIOrder unboxedOrder:
-                            return Register(client, unboxedOrder.PlayerType);
-                        case SearchBattleAgainstPlayerOrder unboxedOrder:
-                            return Register(client, unboxedOrder.PlayerType);
-                            throw new Exception("Invalid order received");
+                        return Register(client, rsOrder.PlayerType, rsOrder.Name);
+                    }
+                    else if (order is LoadOrder loadOrder)
+                    {
+                        // Bypass the matchmaking process
+                        //TODO
                     }
                 }
             }
@@ -251,7 +273,7 @@ namespace OthelloMillenniumServer
                     if (currentMatch == null)
                     {
                         // Remove the client from the matchmaking
-                        registratedClients[client.Type].Remove(client);
+                        registratedClients[(PlayerType)client.Properties["PlayerType"]].Remove(client);
                     }
                     else
                     {

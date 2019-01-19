@@ -15,30 +15,39 @@ namespace OthelloMillenniumClient
             : base (battleType)
         { }
 
-        public override void Init()
+        public override void Init(ExportedGame data)
+        {
+            return;
+        }
+
+        /// <summary>
+        /// Instanciate two clients
+        /// <para/>Send a search request
+        /// </summary>
+        public override void Init(string clientName, string opponentName = "")
         {
             switch (BattleType)
             {
                 case BattleType.AgainstAI:
-                    Client = new Client(PlayerType.Human, GameType.Online);
+                    Client = new Client(PlayerType.Human, clientName);
 
                     Client.OnBeginReceived += Client_OnBeginReceived;
                     Client.OnAwaitReceived += Client_OnAwaitReceived;
                     Client.OnGameStateReceived += Client_OnGameStateReceived;
 
                     // Send orders
-                    Client.Search(PlayerType.AI);
+                    Client.Search(GameType.Online, BattleType.AgainstAI);
 
                     break;
                 case BattleType.AgainstPlayer:
-                    Client = new Client(PlayerType.Human, GameType.Online);
+                    Client = new Client(PlayerType.Human, clientName);
 
                     Client.OnBeginReceived += Client_OnBeginReceived;
                     Client.OnAwaitReceived += Client_OnAwaitReceived;
                     Client.OnGameStateReceived += Client_OnGameStateReceived;
 
                     // Send orders
-                    Client.Search(PlayerType.Human);
+                    Client.Search(GameType.Online, BattleType.AgainstPlayer);
 
                     break;
             }
