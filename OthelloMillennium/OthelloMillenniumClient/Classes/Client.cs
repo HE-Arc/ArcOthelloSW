@@ -19,11 +19,14 @@ namespace OthelloMillenniumClient
         public PlayerType PlayerType { get; private set; }
         public string Name { get; private set; }
 
-        public Client(PlayerType type, string name)
+        public int AvatarID { get; private set; }
+
+        public Client(PlayerType type, string name, int avatarID)
             : base()
         {
             PlayerType = type;
             Name = name;
+            AvatarID = avatarID;
 
             this.OnOrderReceived += Client_OnOrderReceived;
         }
@@ -71,7 +74,7 @@ namespace OthelloMillenniumClient
             }
 
             // Send a register request
-            this.Send(new RegisterOrder(PlayerType, Name));
+            this.Send(new RegisterOrder(PlayerType, Name, AvatarID));
         }
 
         /// <summary>

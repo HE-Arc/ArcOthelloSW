@@ -35,12 +35,14 @@ namespace Tools.Classes
     public class RegisterOrder : Order
     {
         public string Name { get; private set; }
+        public int AvatarID { get; private set; }
         public PlayerType PlayerType { get; private set; }
 
 
-        public RegisterOrder(PlayerType playerType, string name) {
+        public RegisterOrder(PlayerType playerType, string name, int avatarID) {
             PlayerType = playerType;
             Name = name;
+            AvatarID = avatarID;
         }
 
         protected RegisterOrder(SerializationInfo info, StreamingContext context)
@@ -48,6 +50,7 @@ namespace Tools.Classes
         {
             PlayerType = (PlayerType)info.GetValue("PlayerType", typeof(PlayerType));
             Name = (string)info.GetValue("Name", typeof(string));
+            AvatarID = (int)info.GetValue("AvatarID", typeof(int));
         }
 
         public override string GetAcronym()
@@ -65,6 +68,7 @@ namespace Tools.Classes
             base.GetObjectData(info, context);
             info.AddValue("PlayerType", PlayerType);
             info.AddValue("Name", Name);
+            info.AddValue("AvatarID", AvatarID);
         }
     }
 
