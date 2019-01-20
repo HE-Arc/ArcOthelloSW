@@ -1,5 +1,6 @@
 
-﻿using System;
+using OthelloMillenniumClient.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,14 @@ namespace OthelloMillenniumClient
         public Lobby()
         {
             InitializeComponent();
+
+
+            //TODO in case of online make local player on the left
+            if (ApplicationManager.Instance.CurrentGame.GameType == Tools.Classes.GameType.Online)
+            {
+                //Grid.SetRow(BlackPlayer, 1);
+                
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

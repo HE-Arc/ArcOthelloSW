@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OthelloMillenniumClient.Classes;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -11,59 +12,63 @@ namespace OthelloMillenniumClient
     {
 
         #region Attributes
-        private Tuple<int, int> playerOne;
-        private Tuple<int, int> playerTwo;
+        private Tuple<int, int> playerBlack;
+        private Tuple<int, int> playerWhite;
 
         #endregion
 
         #region Properties
-        public Tuple<int, int> PlayerOne
+        public Tuple<int, int> PlayerBlack
         {
-            get => playerOne;
+            get => playerBlack;
             set {
-                playerOne = value;
+                playerBlack = value;
+
+                // TODO BASTIEN : peut-être à déplacer dans lobby ?
+                // Utiliser la méthode ChangeAvatar d'un client lors d'un clic depuis l'interface sur un avatar pour en informer l'opposant
                 Grid.SetRow(BackgroundBlack, value.Item1);
                 Grid.SetColumn(BackgroundBlack, value.Item2);
             }
         }
 
-        public Tuple<int, int> PlayerTwo
+        public Tuple<int, int> PlayerWhite
         {
-            get => playerTwo;
+            get => playerWhite;
             set {
-                playerTwo = value;
+                playerWhite = value;
                 Grid.SetRow(BackgroundWhite, value.Item1);
                 Grid.SetColumn(BackgroundWhite, value.Item2);
             }
         }
 
-        public string ImagePlayerOne
+        public string ImagePlayerBlack
         {
-            get { return (string)GetValue(ImagePlayerOneProperty); }
-            set { SetValue(ImagePlayerOneProperty, value); }
+            get { return (string)GetValue(ImagePlayerBlackProperty); }
+            set { SetValue(ImagePlayerBlackProperty, value); }
         }
 
-        public string ImagePlayerTwo
+        public string ImagePlayerWhite
         {
-            get { return (string)GetValue(ImagePlayerTwoProperty); }
-            set { SetValue(ImagePlayerTwoProperty, value); }
+            get { return (string)GetValue(ImagePlayerWhiteProperty); }
+            set { SetValue(ImagePlayerWhiteProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for ImagePlayerOne. This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ImagePlayerOneProperty =
-            DependencyProperty.Register("ImagePlayerOne", typeof(string), typeof(PlayerPicker), new PropertyMetadata("/Images/R2-D2.png"));
-        public static readonly DependencyProperty ImagePlayerTwoProperty =
-            DependencyProperty.Register("ImagePlayerTwo", typeof(string), typeof(PlayerPicker), new PropertyMetadata("/Images/Finn.png"));
+        public static readonly DependencyProperty ImagePlayerBlackProperty =
+            DependencyProperty.Register("ImagePlayerBlack", typeof(string), typeof(PlayerPicker), new PropertyMetadata("/Images/R2-D2.png"));
+        public static readonly DependencyProperty ImagePlayerWhiteProperty =
+            DependencyProperty.Register("ImagePlayerWhite", typeof(string), typeof(PlayerPicker), new PropertyMetadata("/Images/Finn.png"));
 
         #endregion
 
         public PlayerPicker()
         {
             InitializeComponent();
-            PlayerOne = new Tuple<int, int>(0, 0);
-            PlayerTwo = new Tuple<int, int>(3, 4);
+
+            PlayerWhite = new Tuple<int, int>(3, 4);
 
             DataContext = this;
+
+            //ApplicationManager.Instance.CurrentGame.Player1.ChangeAvatar
         }
 
         private void Rectangle_GiveFeedback(object sender, GiveFeedbackEventArgs e)

@@ -120,8 +120,11 @@
     <Compile Include="PlayerPicker.xaml.cs">
       <DependentUpon>PlayerPicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PlayerVisualiser.xaml.cs">
-      <DependentUpon>PlayerVisualiser.xaml</DependentUpon>
+    <Compile Include="PlayerVisualiserWhite.xaml.cs">
+      <DependentUpon>PlayerVisualiserWhite.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerVisualiserBlack.xaml.cs">
+      <DependentUpon>PlayerVisualiserBlack.xaml</DependentUpon>
     </Compile>
     <Compile Include="Lobby.xaml.cs">
       <DependentUpon>Lobby.xaml</DependentUpon>
@@ -202,7 +205,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PlayerVisualiser.xaml">
+    <Page Include="PlayerVisualiserWhite.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PlayerVisualiserBlack.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

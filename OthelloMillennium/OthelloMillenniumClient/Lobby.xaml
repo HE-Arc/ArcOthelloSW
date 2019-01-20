@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:OthelloMillenniumClient"
         mc:Ignorable="d"
         Title="Saloon" Height="450" Width="800">
-    <Grid>
+    <Grid x:Name="MainGrid">
+        <Grid.Background>
+            <ImageBrush ImageSource="/Images/Background.png" Stretch="UniformToFill"/>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -23,8 +26,8 @@
             <local:PlayerPicker  x:Name="PlayerPicker" />
         </Viewbox>
         
-        <local:PlayerVisualiser Grid.Column="0" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerOne }"/>
-        <local:PlayerVisualiser Grid.Column="0" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerTwo }"/>
+        <local:PlayerVisualiserBlack Grid.Column="0" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerBlack }" Margin="5"/>
+        <local:PlayerVisualiserWhite Grid.Column="3" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerWhite }" Margin="5"/>
 
         <Button Grid.Column="0" Grid.Row="0">Start game</Button>
     </Grid>

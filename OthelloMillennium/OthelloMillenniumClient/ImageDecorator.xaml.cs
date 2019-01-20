@@ -37,7 +37,7 @@ namespace OthelloMillenniumClient
                   "ImageSource",
                   typeof(string),
                   typeof(ImageDecorator),
-                  new PropertyMetadata("Images/BB-8.png")
+                  new PropertyMetadata("/Images/BB-8.png")
               );
 
         #endregion
@@ -45,6 +45,8 @@ namespace OthelloMillenniumClient
         public ImageDecorator()
         {
             InitializeComponent();
+
+            DataContext = this;
         }
     }
 }

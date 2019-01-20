@@ -134,10 +134,10 @@ namespace OthelloMillenniumClient
                 throw new Exception("AI not supported yet");
 
                 // TODO BASTIEN :corriger cette ligne voodoo
-                string pseudo = (menuParam.player1 as PlayerAI);
+                //string pseudo = (menuParam.player1 as PlayerAI);
 
                 // Create the player
-                player1 = new Client(playerType, pseudo);
+                //player1 = new Client(playerType, pseudo);
             }
 
             //TODO Get two param
@@ -154,10 +154,10 @@ namespace OthelloMillenniumClient
                 throw new Exception("AI not supported yet");
 
                 // TODO BASTIEN :corriger cette ligne voodoo
-                string pseudo = (menuParam.player2 as PlayerAI);
+                //string pseudo = (menuParam.player2 as PlayerAI);
 
                 // Create the player
-                player2 = new Client(playerType, pseudo);
+                //player2 = new Client(playerType, pseudo);
             }
 
             // Register clients to applicationManager
@@ -188,10 +188,10 @@ namespace OthelloMillenniumClient
                 throw new Exception("AI not supported yet");
 
                 // TODO BASTIEN :corriger cette ligne voodoo
-                string pseudo = (menuParam.player1 as PlayerAI);
+                //string pseudo = (menuParam.player1 as PlayerAI);
 
                 // Create the player
-                player1 = new Client(playerType, pseudo);
+                //player1 = new Client(playerType, pseudo);
             }
 
             // TODO BASTIEN : peut-être à déplacer dans lobby ?
@@ -215,9 +215,17 @@ namespace OthelloMillenniumClient
                 Console.Error.WriteLine(ex.Message);
             }
 
+            //ApplicationManager.Instance.CurrentGame.IsReady += OnGameReady();
             // TODO SEGAN When matchmaking ok give some place to put windows changing code to go to lobby
             // TODO BASTIEN : Utiliser ça ApplicationManager.Instance.CurrentGame.IsReady; pour savoir si c'est prêt ou non
 
+        }
+
+        private void OnGameReady()
+        {
+            Lobby lobby = new Lobby();
+            lobby.Show();
+            this.Close();
         }
     }
 }

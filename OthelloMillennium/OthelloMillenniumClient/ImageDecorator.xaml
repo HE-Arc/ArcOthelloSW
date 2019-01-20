@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="140" d:DesignWidth="140">
     <Grid>
-        <Image Source="Images/BB-8.png" Width="140" Height="140"/>
+        <Image Source="{ Binding ImageSource }" Width="140" Height="140"/>
         <Polygon Grid.Row="1" Points="0,75 -50,0, 0,0" StrokeThickness="0" Fill="Black" VerticalAlignment="Top" HorizontalAlignment="Right"/>
         <Polygon Grid.Row="1" Points="0,-75 50,0, 0,0" StrokeThickness="0" Fill="Black" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
     </Grid>

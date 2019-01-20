@@ -7,7 +7,7 @@ namespace OthelloMillenniumClient
     /// <summary>
     /// Logique d'interaction pour PlayerVisualiser.xaml
     /// </summary>
-    public partial class PlayerVisualiser : UserControl
+    public partial class PlayerVisualiserBlack : UserControl
     {
         #region Properties
         public string Image
@@ -19,19 +19,34 @@ namespace OthelloMillenniumClient
             }
         }
 
-        // Using a DependencyProperty as the backing store for Property1.  
-        // This enables animation, styling, binding, etc...
+        public string Pseudo
+        {
+            get => (string)GetValue(PropertyPseudo);
+            set
+            {
+                SetValue(PropertyPseudo, value);
+            }
+        }
+        
         public static readonly DependencyProperty PropertyImage
             = DependencyProperty.Register(
                   "Image",
                   typeof(string),
-                  typeof(PlayerVisualiser),
+                  typeof(PlayerVisualiserBlack),
                   new PropertyMetadata("Images/None.png")
               );
-        
+
+        public static readonly DependencyProperty PropertyPseudo
+            = DependencyProperty.Register(
+                  "Pseudo",
+                  typeof(string),
+                  typeof(PlayerVisualiserBlack),
+                  new PropertyMetadata("Player Black")
+              );
+
         #endregion
 
-        public PlayerVisualiser()
+        public PlayerVisualiserBlack()
         {
             InitializeComponent();
 
