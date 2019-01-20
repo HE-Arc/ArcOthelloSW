@@ -40,7 +40,6 @@ namespace OthelloMillenniumClient
 
         private void OnPlay()
         {
-            //Todo Play
             pageTransitionControl.TransitionType = PageTransitionType.SlideAndFade;
             if (menuGameType == null)
             {
@@ -123,7 +122,6 @@ namespace OthelloMillenniumClient
             Client player1;
             Client player2;
 
-            //TODO Get two param
             if (playerType == PlayerType.Human)
             {
                 string pseudo = (menuParam.player1 as PlayerName).Pseudo;
@@ -180,7 +178,6 @@ namespace OthelloMillenniumClient
         {
             Client player1;
 
-            //TODO Get two param
             if (playerType == PlayerType.Human)
             {
                 string pseudo = (menuParam.player as PlayerName).Pseudo;
