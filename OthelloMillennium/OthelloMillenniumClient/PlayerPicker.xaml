@@ -26,19 +26,5 @@
         <Rectangle x:Name="BackgroundBlack" Grid.Row="0" Grid.Column="0" Fill="black"/>
         <Rectangle x:Name="BackgroundWhite" Grid.Row="1" Grid.Column="0" Fill="white"/>
 
-        
-        <local:ImageDecorator Grid.Row="1" Grid.Column="0" Margin="10" x:Name="Yoda" ImageSource="Images/Yoda.png"/>
-        
-        <Polygon Grid.Row="1" Points="0,-76 51,0, 0,0" StrokeThickness="0" Fill="White" Margin="9.75" VerticalAlignment="Bottom" />
-        <Polygon Grid.Row="1" Points="0,-60 40.5,0, 0,0" StrokeThickness="1" Stroke="#ffbe29" Margin="10" VerticalAlignment="Bottom" />
-        <Polygon Grid.Row="1" Points="0,76 -51,0, 0,0" StrokeThickness="0" Fill="White" Margin="9.75" HorizontalAlignment="Right" VerticalAlignment="Top"/>
-        <Polygon Grid.Row="1" Points="0,60 -40.5,0, 0,0" StrokeThickness="1" Stroke="#ffbe29" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Top"/>
-
-        <local:ImageDecorator Grid.Row="1" Grid.Column="1" Margin="10" ImageSource="Images/BB-8.png"/>
-        <local:Selector Grid.Column="2" Grid.Row="2" Color="White" RenderTransformOrigin="0.5, 0.5">
-            <local:Selector.RenderTransform>
-                <ScaleTransform ScaleX="-1"/>
-            </local:Selector.RenderTransform>
-        </local:Selector>
     </Grid>
 </UserControl>
