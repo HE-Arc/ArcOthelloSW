@@ -257,24 +257,22 @@ namespace OthelloMillenniumClient
             else
             {
                 //Mode local, wasd pour le joueur à droite et et touches flèchés pour le joueur à gauche
-                PlayerBlackImageId = ManageKeyWASD(e.Key, PlayerBlackImageId);
-
                 int newId = ManageKeyWASD(e.Key, PlayerBlackImageId);
-                if (newId != PlayerWhiteImageId)
-                {
-                    PlayerWhiteImageId = newId;
-
-                    // Will inform the opponent of the change too
-                    GetClientFromColor(Color.White).AvatarID = newId;
-                }
-
-                newId = ManageKeyUpLeftDownRight(e.Key, PlayerWhiteImageId);
                 if (newId != PlayerBlackImageId)
                 {
                     PlayerBlackImageId = newId;
 
                     // Will inform the opponent of the change too
                     GetClientFromColor(Color.Black).AvatarID = newId;
+                }
+
+                newId = ManageKeyUpLeftDownRight(e.Key, PlayerWhiteImageId);
+                if (newId != PlayerWhiteImageId)
+                {
+                    PlayerWhiteImageId = newId;
+
+                    // Will inform the opponent of the change too
+                    GetClientFromColor(Color.White).AvatarID = newId;
                 }
             }
         }
@@ -306,10 +304,10 @@ namespace OthelloMillenniumClient
                 case Key.Left:
                     player--;
                     break;
-                case Key.Right:
+                case Key.Down:
                     player += NB_COLUMN;
                     break;
-                case Key.Down:
+                case Key.Right:
                     player++;
                     break;
                 case Key.Up:
