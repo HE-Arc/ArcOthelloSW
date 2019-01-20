@@ -1,6 +1,5 @@
 ﻿using OthelloMillenniumServer;
 using System;
-using System.IO;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -12,8 +11,7 @@ namespace Tools
 {
     public class OthelloTCPClient
     {
-        private Task listenerTask;
-        private object padlock = new object();
+        private BinaryFormatter formatter = new BinaryFormatter();
 
         // Informations
         public TcpClient TcpClient { get; private set; }
@@ -31,7 +29,7 @@ namespace Tools
         protected OthelloTCPClient()
         {
             // Listener task
-            listenerTask = new Task(() =>
+            new Task(() =>
             {
                 while (true)
                 {
@@ -44,37 +42,37 @@ namespace Tools
                     {
                         if (TcpClient.Connected)
                         {
-                            var streamOutput = Receive();
+                            while (TcpClient.Available > 0)
+                            {
+                                object streamOutput = Receive();
 
-                            if (streamOutput is Order order && !string.IsNullOrEmpty(order.GetAcronym()))
-                            {
-                                OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs(order));
-                            }
-                            else if (streamOutput is GameState gameState)
-                            {
-                                OnGameStateReceived?.Invoke(this, new OthelloTCPClientGameStateArgs(gameState));
-                            }
-                            else if (streamOutput is Data data)
-                            {
-                                OnDataReceived?.Invoke(this, new OthelloTCPClientDataArgs(data));
-                            }
-                            else if (streamOutput is ExportedGame exportedGame)
-                            {
-                                OnSaveReceived?.Invoke(this, new OthelloTCPClientSaveArgs(exportedGame));
+                                if (streamOutput is Order order && !string.IsNullOrEmpty(order.GetAcronym()))
+                                {
+                                    OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs(order));
+                                }
+                                else if (streamOutput is GameState gameState)
+                                {
+                                    OnGameStateReceived?.Invoke(this, new OthelloTCPClientGameStateArgs(gameState));
+                                }
+                                else if (streamOutput is Data data)
+                                {
+                                    OnDataReceived?.Invoke(this, new OthelloTCPClientDataArgs(data));
+                                }
+                                else if (streamOutput is ExportedGame exportedGame)
+                                {
+                                    OnSaveReceived?.Invoke(this, new OthelloTCPClientSaveArgs(exportedGame));
+                                }
                             }
                         }
 
                         // Wait before reading again
-                        Thread.Sleep(100);
+                        Thread.Sleep(10);
                     }
                 }
-            });
-
-            // Start to listen
-            listenerTask.Start();
+            }).Start();
 
             // Ping task
-            Task pinger = new Task(() =>
+            new Task(() =>
             {
                 while (true)
                 {
@@ -92,15 +90,12 @@ namespace Tools
                         Thread.Sleep(5000);
                     }
                 }
-            });
-
-            // Start to ping
-            pinger.Start();
+            }).Start();
         }
 
         public void ConnectTo(string serverHostname, int serverPort)
         {
-            TcpClient = new TcpClient();
+            Bind(new TcpClient());
 
             // Register this client to the server
             TcpClient.Connect(serverHostname, serverPort);
@@ -117,16 +112,11 @@ namespace Tools
         /// <param name="obj">What to transfer</param>
         public void Send(ISerializable obj)
         {
-            lock (padlock)
+            lock (formatter)
             {
                 try
                 {
-                    var stream = TcpClient.GetStream();
-                    if (stream.CanWrite)
-                    {
-                        BinaryFormatter binaryFmt = new BinaryFormatter();
-                        binaryFmt.Serialize(stream, obj);
-                    }
+                    formatter.Serialize(TcpClient.GetStream(), obj);
                 }
                 catch (Exception ex)
                 {
@@ -142,18 +132,11 @@ namespace Tools
         /// <returns>Deserialized object</returns>
         private object Receive()
         {
-            lock (padlock)
+            lock (formatter)
             {
                 try
                 {
-                    var stream = TcpClient.GetStream();
-                    var streamReader = new StreamReader(stream);
-
-                    if (stream.CanRead)
-                    {
-                        BinaryFormatter binaryFmt = new BinaryFormatter();
-                        return binaryFmt.Deserialize(stream);
-                    }
+                    return formatter.Deserialize(TcpClient.GetStream());
                 }
                 catch (Exception ex)
                 {

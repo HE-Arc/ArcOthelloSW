@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -50,7 +51,7 @@ namespace OthelloMillenniumServer
         #region Attributes
         private readonly HashSet<GameHandler> matches = new HashSet<GameHandler>();
         private readonly HashSet<Client> registratedClients = new HashSet<Client>();
-        private readonly Dictionary<Client, Container> searchingClients = new Dictionary<Client, Container>();
+        private readonly ConcurrentDictionary<Client, Container> searchingClients = new ConcurrentDictionary<Client, Container>();
         #endregion
 
         private void StartMatchmaking()
@@ -61,35 +62,32 @@ namespace OthelloMillenniumServer
                 {
                     while (TCPServer.Instance.Running)
                     {
-                        lock (padlock)
+                        List<Client> clientsToRemove = new List<Client>();
+                        foreach (var kv in searchingClients)
                         {
-                            List<Client> clientsToRemove = new List<Client>();
-                            foreach (var kv in searchingClients)
+                            Client client = kv.Key;
+                            PlayerType opponentType = kv.Value.PlayerType;
+
+                            if (SearchOpponent(client, opponentType) is Client opponent && searchingClients[opponent].PlayerType != PlayerType.None)
                             {
-                                Client client = kv.Key;
-                                PlayerType opponentType = kv.Value.PlayerType;
+                                // Start a new match
+                                StartNewMatch(client, opponent);
 
-                                if (SearchOpponent(client, opponentType) is Client opponent && searchingClients[opponent].PlayerType != PlayerType.None)
-                                {
-                                    // Start a new match
-                                    StartNewMatch(client, opponent);
+                                // Remove the two from the registredClients
+                                clientsToRemove.Add(client);
+                                clientsToRemove.Add(opponent);
 
-                                    // Remove the two from the registredClients
-                                    clientsToRemove.Add(client);
-                                    clientsToRemove.Add(opponent);
-
-                                    // Switch opponentType to None in order to prevent binding with these
-                                    // It has to be done like this since C# does not allow a modification on the list being iterated
-                                    searchingClients[client].PlayerType = PlayerType.None;
-                                    searchingClients[opponent].PlayerType = PlayerType.None;
-                                }
+                                // Switch opponentType to None in order to prevent binding with these
+                                // It has to be done like this since C# does not allow a modification on the list being iterated
+                                searchingClients[client].PlayerType = PlayerType.None;
+                                searchingClients[opponent].PlayerType = PlayerType.None;
                             }
+                        }
 
-                            // Remove clients
-                            foreach (Client client in clientsToRemove)
-                            {
-                                searchingClients.Remove(client);
-                            }
+                        // Remove clients
+                        foreach (Client client in clientsToRemove)
+                        {
+                            searchingClients.TryRemove(client, out Container container);
                         }
 
                         // Sleep for 1 second
@@ -222,7 +220,7 @@ namespace OthelloMillenniumServer
                 if(IsKnown(client))
                 {
                     registratedClients.Remove(client);
-                    searchingClients.Add(client, new Container(order.OpponentType));
+                    searchingClients.TryAdd(client, new Container(order.OpponentType));
 
                     // Disconnect this function
                     client.OnOrderReceived -= Client_OnOrderReceived;
@@ -291,7 +289,7 @@ namespace OthelloMillenniumServer
                     {
                         // Remove the client from the matchmaking
                         registratedClients.Remove(client);
-                        searchingClients.Remove(client);
+                        searchingClients.TryRemove(client, out Container container);
                     }
                     else
                     {
