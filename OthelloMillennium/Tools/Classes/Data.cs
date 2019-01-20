@@ -21,10 +21,10 @@ namespace Tools.Classes
 
         protected Data(SerializationInfo info, StreamingContext context)
         {
-            PlayerType = (PlayerType)info.GetValue("PlayerType", typeof(PlayerType));
+            PlayerType = (PlayerType)info.GetValue("PlayerType", typeof(int));
             Name = (string)info.GetValue("Name", typeof(string));
             AvatarID = (int)info.GetValue("AvatarID", typeof(int));
-            Color = (Color)info.GetValue("Color", typeof(Color));
+            Color = (Color)info.GetValue("Color", typeof(int));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
