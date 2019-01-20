@@ -35,7 +35,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             GameState = e.GameState;
         }
 
-        private void GameReadyReceived(object sender, OthelloTCPClientArgs e)
+        protected void GameReadyReceived(object sender, OthelloTCPClientArgs e)
         {
             OnGameReady?.Invoke(this, e);
         }
