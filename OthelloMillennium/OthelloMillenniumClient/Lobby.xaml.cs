@@ -1,7 +1,8 @@
 
 using OthelloMillenniumClient.Classes;
+using System;
 using System.Windows;
-
+using Tools;
 
 namespace OthelloMillenniumClient
 {
@@ -15,6 +16,22 @@ namespace OthelloMillenniumClient
         public Lobby()
         {
             InitializeComponent();
+
+            // Will listen for a gameStarted event
+            ApplicationManager.Instance.Player1.OnGameStartedReceived += OnGameStartedReceived;
+        }
+
+        private void OnGameStartedReceived(object sender, OthelloTCPClientArgs e)
+        {
+            SwitchToGameboard();
+
+            // Unsubscribe from the event
+            ApplicationManager.Instance.Player1.OnGameStartedReceived -= OnGameStartedReceived;
+        }
+
+        private void SwitchToGameboard()
+        {
+            // TODO Bastien
         }
 
         private void OnStartGame(object sender, RoutedEventArgs e)
