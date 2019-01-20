@@ -1,59 +1,51 @@
-﻿using Tools;
+﻿using System;
+using Tools;
 using Tools.Classes;
 
-namespace OthelloMillenniumClient.Classes
+namespace OthelloMillenniumClient.Classes.GameHandlers
 {
     public abstract class GameHandler
     {
         #region Properties
-        public GameType GameType { get; } = GameType.Local;
-        public BattleType BattleType { get; private set; }
+        public GameType GameType { get; protected set; }
+        public BattleType BattleType { get; protected set; }
 
-        public Client Client { get; protected set; }
-        public Client Opponent { get; protected set; }
+        public GameState GameState { get; protected set; } = null;
+        public bool IsReady { get; protected set; } = false;
 
-        public bool IsGameReady { get; private set; }
-        public GameState GameState { get; private set; }
+        public Client Player1 { get; protected set; } = null;
+        public Client Player2 { get; protected set; } = null;
         #endregion
 
-        #region Attributes
-        protected bool isClientTurn;
+        #region Abstract methods
+        public abstract void Register(Client client);
+        public abstract void Search();
         #endregion
 
-        protected GameHandler(BattleType battleType)
+        #region Events
+        protected void GameStateUpdate(object sender, OthelloTCPClientArgs e)
         {
-            BattleType = battleType;
+            IsReady = true;
+            GameState = e.GameState;
+        }
+        #endregion
+
+        #region Methods
+        public void DropClients()
+        {
+            Player1 = Player2 = null;
         }
 
         public Client GetCurrentPlayer()
         {
-            return isClientTurn ? Client : Opponent;
+            return (Player1.CanPlay ? Player1 : Player2.CanPlay ? Player2 : null);
         }
 
-
-        public abstract void Init(ExportedGame data);
-        public abstract void Init(string clientName, string opponentName);
-
-        protected void Client_OnBeginReceived(object sender, OthelloTCPClientArgs e)
+        public void Place(Tuple<char, int> coords)
         {
-            isClientTurn = true;
+            if (IsReady)
+                GetCurrentPlayer()?.Send(new PlayMoveOrder(coords));
         }
-
-        protected void Client_OnAwaitReceived(object sender, OthelloTCPClientArgs e)
-        {
-            isClientTurn = false;
-        }
-
-        protected abstract void Client_OnOpponentFound(object sender, OthelloTCPClientArgs e);
-
-        protected void Client_OnGameStartedReceived(object sender, OthelloTCPClientArgs e)
-        {
-            IsGameReady = true;
-        }
-
-        protected void Client_OnGameStateReceived(object sender, OthelloTCPClientArgs e)
-        {
-            GameState = e.GameState;
-        }
+        #endregion
     }
 }

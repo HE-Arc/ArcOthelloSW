@@ -1,67 +1,46 @@
-﻿using OthelloMillenniumClient.Classes;
-using OthelloMillenniumServer;
-using Tools;
+﻿using System;
 using Tools.Classes;
-using GameHandler = OthelloMillenniumClient.Classes.GameHandler;
 
-namespace OthelloMillenniumClient
+namespace OthelloMillenniumClient.Classes.GameHandlers
 {
-    /// <summary>
-    /// Classe wrapper entre l'interface de jeu et la partie communication avec le serveur
-    /// </summary>
     public class OnlineGameHandler : GameHandler
     {
         public OnlineGameHandler(BattleType battleType)
-            : base (battleType)
-        { }
-
-        public override void Init(ExportedGame data)
         {
-            return;
+            GameType = GameType.Online;
+            BattleType = battleType;
         }
 
         /// <summary>
-        /// Instanciate two clients
-        /// <para/>Send a search request
+        /// Register the client to the server
+        /// <para/>Make it available through Player1
         /// </summary>
-        public override void Init(string clientName, string opponentName = "")
+        /// <param name="client">Who to register</param>
+        public override void Register(Client client)
         {
-            switch (BattleType)
+            // Register client to the server
+            client.Register(GameType);
+
+            if (Player1 is null)
             {
-                case BattleType.AgainstAI:
-                    Client = new Client(PlayerType.Human, clientName);
-
-                    Client.OnBeginReceived += Client_OnBeginReceived;
-                    Client.OnAwaitReceived += Client_OnAwaitReceived;
-                    Client.OnGameStateReceived += Client_OnGameStateReceived;
-
-                    // Register client
-                    Client.Register(GameType.Online);
-
-                    // Send orders
-                    Client.Search(BattleType.AgainstAI);
-
-                    break;
-                case BattleType.AgainstPlayer:
-                    Client = new Client(PlayerType.Human, clientName);
-
-                    Client.OnBeginReceived += Client_OnBeginReceived;
-                    Client.OnAwaitReceived += Client_OnAwaitReceived;
-                    Client.OnGameStateReceived += Client_OnGameStateReceived;
-
-                    // Register client
-                    Client.Register(GameType.Online);
-
-                    // Send orders
-                    Client.Search(BattleType.AgainstPlayer);
-
-                    break;
+                Player1 = client;
+                Player1.OnGameStateReceived += GameStateUpdate;
+            }
+            else
+            {
+                throw new Exception("player has already been registred !");
             }
         }
 
-        protected override void Client_OnOpponentFound(object sender, OthelloTCPClientArgs e)
+        /// <summary>
+        /// Start the matchmaking process
+        /// </summary>
+        public override void Search()
         {
-            Opponent = sender as Client;
+            if (Player1 == null)
+                throw new Exception("Please register player first");
+
+            Player1.Search(BattleType);
         }
     }
 }

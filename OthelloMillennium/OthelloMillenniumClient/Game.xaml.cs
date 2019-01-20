@@ -165,30 +165,18 @@ namespace OthelloMillenniumClient
         {
             InitializeComponent();
 
-            ApplicationManager.Instance.CurrentGame.Client.OnGameStateReceived += OnReceiveGameState;
-
             //TODO SEGAN -> données stockées en dans
+            // ?? TODO BASTIEN : Reçues depuis les interfaces utilisateurs ?
             Pseudo1 = "TODO";
             Pseudo2 = "TODO";
             Image1 = "TODO";
             Image2 = "TODO";
 
-            //Todo
-            Inactive1 = false;
-            Inactive2 = !Inactive1;
+            Inactive1 = ApplicationManager.Instance.Player1.CanPlay;
+            Inactive2 = ApplicationManager.Instance.Player2.CanPlay;
 
-            //TODO SEGAN add start time in the following 
-            Time1 = FormatDoubleToTime(2300);
-            Time2 = FormatDoubleToTime(0);
-        }
-
-        private void OnReceiveGameState(object sender, OthelloTCPClientArgs e)
-        {
-            Inactive1 = e.GameState.PlayerTurn != 1;
-            Inactive1 = e.GameState.PlayerTurn != 2;
-
-            Time1 = FormatDoubleToTime(e.GameState.RemainingTimes.Item1);
-            Time2 = FormatDoubleToTime(e.GameState.RemainingTimes.Item2);
+            Time1 = FormatDoubleToTime(ApplicationManager.Instance.CurrentGame.GameState.RemainingTimes.Item1);
+            Time2 = FormatDoubleToTime(ApplicationManager.Instance.CurrentGame.GameState.RemainingTimes.Item2);
         }
 
         private string FormatDoubleToTime(double time)

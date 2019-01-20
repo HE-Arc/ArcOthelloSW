@@ -1,4 +1,5 @@
 using OthelloMillenniumClient.Classes;
+using OthelloMillenniumClient.Classes.GameHandlers;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,24 +16,26 @@ namespace OthelloMillenniumClient
     public partial class Gameboard : UserControl
     {
         private Button[,] listButtons;
-        private GameState gameState;
+
+        // is this gonna work? Dow we have an initial GameState?
+        /* Réponse : TODO BASTIEN
+         * Oui ça fonctionnera si le gameboard est appelé après que le client reçoive l'ordre StartOfTheGameOrder
+         * Car lors du démarrage d'une partie le serveur transmet l'état du gameBoard initial aux clients
+         */
+        public GameState GameState => ApplicationManager.Instance.CurrentGame.GameState;
 
         public Gameboard()
         {
             InitializeComponent();
-            //TODO SEGAN is this gonna work? Dow we have an initial GameState?
-            gameState = ApplicationManager.Instance.CurrentGame.GameState;
             Init();
-
-            ApplicationManager.Instance.CurrentGame.Client.OnGameStateReceived += OnReceiveGameState;
         }
 
         private void Init()
         {
             //TODO Bastien Clean of code for graphical interface
             //Create game interface
-            int width = gameState.Gameboard.GetLength(0);
-            int height = gameState.Gameboard.GetLength(1);
+            int width = GameState.Gameboard.GetLength(0);
+            int height = GameState.Gameboard.GetLength(1);
 
             listButtons = new Button[width, height];
 
@@ -158,13 +161,8 @@ namespace OthelloMillenniumClient
             Console.WriteLine("Call");
             Console.WriteLine(column.ToString(), row.ToString());
 
-            // Get the gamehandler
-            GameHandler gameHandler = ApplicationManager.Instance.CurrentGame;
-            Client currentPlayer = gameHandler.GetCurrentPlayer();
-
-            //TODO SEGAN Should'nt we put this in a function in ApplicationManager ?
             // Send the player new token location
-            currentPlayer.Send(new PlayMoveOrder(new Tuple<char, int>(column, row)));
+            ApplicationManager.Instance.CurrentGame.Place(new Tuple<char, int>(column, row));
         }
     }
 }

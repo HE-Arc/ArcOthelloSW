@@ -11,22 +11,25 @@ namespace OthelloMillenniumClient
     /// </summary>
     public class Client : OthelloTCPClient
     {
-        public event EventHandler<OthelloTCPClientArgs> OnBeginReceived;
-        public event EventHandler<OthelloTCPClientArgs> OnAwaitReceived;
-        public event EventHandler<OthelloTCPClientArgs> OnOpponentFoundReceived;
+        private event EventHandler<OthelloTCPClientArgs> OnOpponentFoundReceived;
+        public event EventHandler<OthelloTCPClientArgs> OnOpponentAvatarChanged;
         public event EventHandler<OthelloTCPClientArgs> OnGameStartedReceived;
 
         public PlayerType PlayerType { get; private set; }
         public string Name { get; private set; }
-
         public int AvatarID { get; private set; }
+        public bool CanPlay { get; private set; }
 
-        public Client(PlayerType type, string name, int avatarID)
+        /// <summary>
+        /// Try to retrive opponent name
+        /// </summary>
+        public string OpponentName => Properties["OpponentName"] as string;
+
+        public Client(PlayerType type, string name)
             : base()
         {
             PlayerType = type;
             Name = name;
-            AvatarID = avatarID;
 
             this.OnOrderReceived += Client_OnOrderReceived;
         }
@@ -36,13 +39,17 @@ namespace OthelloMillenniumClient
             switch(e.Order)
             {
                 case PlayerAwaitOrder order:
-                    OnAwaitReceived?.Invoke(this, e);
+                    CanPlay = false;
                     break;
                 case PlayerBeginOrder order:
-                    OnBeginReceived?.Invoke(this, e);
+                    CanPlay = true;
                     break;
                 case OpponentFoundOrder order:
+                    this.Properties.Add("OpponentName", (e.Order as OpponentFoundOrder).Opponent.Properties["Name"]);
                     OnOpponentFoundReceived?.Invoke(this, e);
+                    break;
+                case AvatarChangedOrder order:
+                    OnOpponentAvatarChanged?.Invoke(this, e);
                     break;
                 case StartOfTheGameOrder order:
                     OnGameStartedReceived?.Invoke(this, e);
@@ -74,7 +81,13 @@ namespace OthelloMillenniumClient
             }
 
             // Send a register request
-            this.Send(new RegisterOrder(PlayerType, Name, AvatarID));
+            this.Send(new RegisterOrder(PlayerType, Name));
+        }
+
+        public void ChangeAvatar(int avatarID)
+        {
+            AvatarID = avatarID;
+            this.Send(new AvatarChangedOrder(avatarID));
         }
 
         /// <summary>
@@ -97,7 +110,10 @@ namespace OthelloMillenniumClient
         /// <param name="column">column</param>
         public void Play(char row, int column)
         {
-            this.Send(new PlayMoveOrder(new Tuple<char, int>(row, column)));
+            if (CanPlay)
+                this.Send(new PlayMoveOrder(new Tuple<char, int>(row, column)));
+            else
+                throw new Exception("Not allowed to play !");
         }
     }
 }
