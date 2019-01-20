@@ -3,6 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using Tools;
 using Tools.Classes;
 
@@ -17,12 +18,17 @@ namespace OthelloMillenniumClient
         #region Consts
         private const int NB_ROW = 4;
         private const int NB_COLUMN = 5;
+        private readonly string[] IMAGES_PERSO = {"Snoke.png","Yoda.png","TheEmperor.png","Stormtrooper.png","Rey.png","R2-D2.png","Prog.png","Obi-Wan.png","MazKanata.png","Luke.png","Leia.png","KyloRen.png","K-2SO.png","HanSolo.png","Finn.png","DarkVader.png","Chewbacca.png","C-3PO.png","BobaFet.png","BB-8.png"};
+        private ScaleTransform flip = new ScaleTransform() { ScaleX = -1 };
+        private ScaleTransform noFlip = new ScaleTransform() { ScaleX = 1 };
 
         #endregion
 
         #region Attributes
         private int imageIdBlack;
         private int imageIdWhite;
+        private Selector whiteSelector;
+        private Selector blackSelector;
 
         #endregion
 
@@ -36,6 +42,9 @@ namespace OthelloMillenniumClient
 
                 Grid.SetRow(BackgroundBlack, location.Item1);
                 Grid.SetColumn(BackgroundBlack, location.Item2);
+                Grid.SetRow(blackSelector, location.Item1);
+                Grid.SetColumn(blackSelector, location.Item2);
+                blackSelector.RenderTransform = imageIdBlack % 2 == 0 ? flip : noFlip;
             }
         }
 
@@ -47,6 +56,9 @@ namespace OthelloMillenniumClient
                 Tuple<int, int> location = IdImage(imageIdWhite);
                 Grid.SetRow(BackgroundWhite, location.Item1);
                 Grid.SetColumn(BackgroundWhite, location.Item2);
+                Grid.SetRow(whiteSelector, location.Item1);
+                Grid.SetColumn(whiteSelector, location.Item2);
+                whiteSelector.RenderTransform = imageIdWhite % 2 == 0 ? flip : noFlip;
             }
         }
 
@@ -72,6 +84,7 @@ namespace OthelloMillenniumClient
         public PlayerPicker()
         {
             InitializeComponent();
+            Init();
 
             (Parent as Lobby).KeyDown += OnKeyDownHandler;
 
@@ -82,6 +95,59 @@ namespace OthelloMillenniumClient
             {
                 ApplicationManager.Instance.CurrentGame.Player1.OnOpponentAvatarChanged += OnAvatarChange;
             }
+        }
+
+        private void Init()
+        {
+            Thickness margin = new Thickness(10);
+            ScaleTransform scaleSymetry = new ScaleTransform();
+            scaleSymetry.ScaleX = -1;
+
+            int nb = 0;
+            for(int i = 0; i < NB_COLUMN; ++i)
+            {
+                for (int j = 0; j < NB_COLUMN; ++j)
+                {
+                    ImageDecorator image = new ImageDecorator()
+                    {
+                        Margin = margin,
+                        ImageSource = "/Images/" + IMAGES_PERSO[nb]
+                    };
+                    image.SetValue(Grid.RowProperty, 1);
+                    image.SetValue(Grid.ColumnProperty, 0);
+
+
+                    if (nb%2 == 0)
+                    {
+                        image.RenderTransformOrigin = new Point(0.5, 0.5);
+                        image.RenderTransform = scaleSymetry;
+                    }
+
+                    MainGrid.Children.Add(image);
+
+                    nb++;
+                }
+            }
+
+            whiteSelector = new Selector()
+            {
+                Color = "White",
+                RenderTransformOrigin = new Point(0.5, 0.5)
+            };
+
+            blackSelector = new Selector()
+            {
+                Color = "Black",
+                RenderTransformOrigin = new Point(0.5, 0.5)
+            };
+
+            //Add selectors
+            MainGrid.Children.Add(whiteSelector);
+            MainGrid.Children.Add(blackSelector);
+
+            //TODO SEGAN get initial player image id 
+            PlayerBlack = 0;
+            PlayerWhite = 19;
         }
 
         private void OnAvatarChange(object sender, OthelloTCPClientArgs e)

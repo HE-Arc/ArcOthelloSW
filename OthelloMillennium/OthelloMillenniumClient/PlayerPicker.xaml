@@ -7,7 +7,7 @@
     mc:Ignorable="d" 
     d:DesignHeight="640" d:DesignWidth="800">
 
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -22,31 +22,23 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <!--<Polygon Grid.Row="0" Points="0,-42 -28.5,0, 0,0" StrokeThickness="1" Stroke="#ffbe29" Fill="Black" Margin="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" />-->
-        <!--<Polygon Grid.Row="0" Points="0,42 28.5,0, 0,0" StrokeThickness="1" Stroke="#ffbe29" Fill="Black" Margin="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>-->
 
         <Rectangle x:Name="BackgroundBlack" Grid.Row="0" Grid.Column="0" Fill="black"/>
-        <Rectangle x:Name="BackgroundWhite" Grid.Row="3" Grid.Column="4" Fill="white"/>
-        <local:ImageDecorator Grid.Row="0" Grid.Column="0" Margin="10" x:Name="Yoda" ImageSource="Images/Yoda.png"/>
-        <local:ImageDecorator Grid.Row="0" Grid.Column="1" Margin="10" x:Name="BB_8" ImageSource="Images/BB-8.png" RenderTransformOrigin="0.5, 0.5"><local:ImageDecorator.RenderTransform><ScaleTransform ScaleX="-1"/></local:ImageDecorator.RenderTransform></local:ImageDecorator>
-        <local:ImageDecorator Grid.Row="0" Grid.Column="2" Margin="10" x:Name="BobaFet" ImageSource="Images/BobaFet.png" />
-        <local:ImageDecorator Grid.Row="0" Grid.Column="3" Margin="10" x:Name="C_3PO" ImageSource="Images/C-3PO.png"  RenderTransformOrigin="0.5, 0.5"><local:ImageDecorator.RenderTransform><ScaleTransform ScaleX="-1"/></local:ImageDecorator.RenderTransform></local:ImageDecorator>
-        <local:ImageDecorator Grid.Row="0" Grid.Column="4" Margin="10" x:Name="Chewbacca" ImageSource="Images/Chewbacca.png" />
-        <local:ImageDecorator Grid.Row="1" Grid.Column="0" Margin="10" x:Name="DarkVader" ImageSource="Images/DarkVader.png"  RenderTransformOrigin="0.5, 0.5"><local:ImageDecorator.RenderTransform><ScaleTransform ScaleX="-1"/></local:ImageDecorator.RenderTransform></local:ImageDecorator>
-        <local:ImageDecorator Grid.Row="1" Grid.Column="1" Margin="10" x:Name="Finn" ImageSource="Images/Finn.png" />
-        <local:ImageDecorator Grid.Row="1" Grid.Column="2" Margin="10" x:Name="HanSolo" ImageSource="Images/HanSolo.png"  RenderTransformOrigin="0.5, 0.5"><local:ImageDecorator.RenderTransform><ScaleTransform ScaleX="-1"/></local:ImageDecorator.RenderTransform></local:ImageDecorator>
-        <local:ImageDecorator Grid.Row="1" Grid.Column="3" Margin="10" x:Name="K_2SO" ImageSource="Images/K-2SO.png" />
-        <local:ImageDecorator Grid.Row="1" Grid.Column="4" Margin="10" x:Name="KyloRen" ImageSource="Images/KyloRen.png"  RenderTransformOrigin="0.5, 0.5"><local:ImageDecorator.RenderTransform><ScaleTransform ScaleX="-1"/></local:ImageDecorator.RenderTransform></local:ImageDecorator>
-        <local:ImageDecorator Grid.Row="2" Grid.Column="0" Margin="10" x:Name="Leia" ImageSource="Images/Leia.png" />
-        <local:ImageDecorator Grid.Row="2" Grid.Column="1" Margin="10" x:Name="Luke" ImageSource="Images/Luke.png"  RenderTransformOrigin="0.5, 0.5"><local:ImageDecorator.RenderTransform><ScaleTransform ScaleX="-1"/></local:ImageDecorator.RenderTransform></local:ImageDecorator>
-        <local:ImageDecorator Grid.Row="2" Grid.Column="2" Margin="10" x:Name="MazKanata" ImageSource="Images/MazKanata.png" />
-        <local:ImageDecorator Grid.Row="2" Grid.Column="3" Margin="10" x:Name="Obi_Wan" ImageSource="Images/Obi-Wan.png"  RenderTransformOrigin="0.5, 0.5"><local:ImageDecorator.RenderTransform><ScaleTransform ScaleX="-1"/></local:ImageDecorator.RenderTransform></local:ImageDecorator>
-        <local:ImageDecorator Grid.Row="2" Grid.Column="4" Margin="10" x:Name="Prog" ImageSource="Images/Prog.png" />
-        <local:ImageDecorator Grid.Row="3" Grid.Column="0" Margin="10" x:Name="R2_D2" ImageSource="Images/R2-D2.png"  RenderTransformOrigin="0.5, 0.5"><local:ImageDecorator.RenderTransform><ScaleTransform ScaleX="-1"/></local:ImageDecorator.RenderTransform></local:ImageDecorator>
-        <local:ImageDecorator Grid.Row="3" Grid.Column="1" Margin="10" x:Name="Rey" ImageSource="Images/Rey.png" />
-        <local:ImageDecorator Grid.Row="3" Grid.Column="2" Margin="10" x:Name="Snoke" ImageSource="Images/Snoke.png"  RenderTransformOrigin="0.5, 0.5"><local:ImageDecorator.RenderTransform><ScaleTransform ScaleX="-1"/></local:ImageDecorator.RenderTransform></local:ImageDecorator>
-        <local:ImageDecorator Grid.Row="3" Grid.Column="3" Margin="10" x:Name="Stormtrooper" ImageSource="Images/Stormtrooper.png" />
-        <local:ImageDecorator Grid.Row="3" Grid.Column="4" Margin="10" x:Name="TheEmperor" ImageSource="Images/TheEmperor.png"  RenderTransformOrigin="0.5, 0.5"><local:ImageDecorator.RenderTransform><ScaleTransform ScaleX="-1"/></local:ImageDecorator.RenderTransform></local:ImageDecorator>
+        <Rectangle x:Name="BackgroundWhite" Grid.Row="1" Grid.Column="0" Fill="white"/>
+
         
+        <local:ImageDecorator Grid.Row="1" Grid.Column="0" Margin="10" x:Name="Yoda" ImageSource="Images/Yoda.png"/>
+        
+        <Polygon Grid.Row="1" Points="0,-76 51,0, 0,0" StrokeThickness="0" Fill="White" Margin="9.75" VerticalAlignment="Bottom" />
+        <Polygon Grid.Row="1" Points="0,-60 40.5,0, 0,0" StrokeThickness="1" Stroke="#ffbe29" Margin="10" VerticalAlignment="Bottom" />
+        <Polygon Grid.Row="1" Points="0,76 -51,0, 0,0" StrokeThickness="0" Fill="White" Margin="9.75" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Polygon Grid.Row="1" Points="0,60 -40.5,0, 0,0" StrokeThickness="1" Stroke="#ffbe29" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+
+        <local:ImageDecorator Grid.Row="1" Grid.Column="1" Margin="10" ImageSource="Images/BB-8.png"/>
+        <local:Selector Grid.Column="2" Grid.Row="2" Color="White" RenderTransformOrigin="0.5, 0.5">
+            <local:Selector.RenderTransform>
+                <ScaleTransform ScaleX="-1"/>
+            </local:Selector.RenderTransform>
+        </local:Selector>
     </Grid>
 </UserControl>
