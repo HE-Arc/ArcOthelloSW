@@ -6,7 +6,11 @@
         xmlns:local="clr-namespace:OthelloMillenniumClient"
         mc:Ignorable="d"
         Title="Saloon" Height="450" Width="800">
-    <Grid>
+
+    <Grid x:Name="MainGrid">
+        <Grid.Background>
+            <ImageBrush ImageSource="/Images/Background.png" Stretch="UniformToFill"/>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -18,10 +22,14 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition Width="150px"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <local:PlayerPicker Grid.Column="1" Grid.Row="1" x:Name="PlayerPicker"></local:PlayerPicker>
-        <local:PlayerVisualiser Grid.Column="0" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerOne }"/>
-        <local:PlayerVisualiser Grid.Column="0" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerTwo }"/>
 
-        <Button Grid.Column="0" Grid.Row="0">Start game</Button>
+        <Viewbox Grid.Column="1" Grid.Row="1">
+            <local:PlayerPicker  x:Name="PlayerPicker" />
+        </Viewbox>
+
+        <local:PlayerVisualiserBlack x:Name="BlackPlayer" Grid.Column="0" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerBlack }" Margin="5"/>
+        <local:PlayerVisualiserWhite x:Name="WhitePlayer" Grid.Column="3" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerWhite }" Margin="5"/>
+
+        <Button Grid.Column="1" Grid.Row="0" Background="#ffbe29" Click="OnStartGame" Width="120" BorderThickness="0" Height="30" Content="Start game !"/>
     </Grid>
 </Window>

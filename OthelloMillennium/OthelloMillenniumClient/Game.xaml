@@ -31,10 +31,10 @@
         <Viewbox Grid.Column="2" Grid.Row="0" Grid.RowSpan="2">
             <local:Gameboard />
         </Viewbox>
-        <Viewbox  Grid.Row="0" Grid.Column="0" Margin="5">
+        <Viewbox  Grid.Row="0" Grid.Column="0" Margin="5" x:Name="BlackPlayer">
             <local:PlayerCardBlack Image="Images/BB-8.png" Pseudo="Ph0tonic" Time="12:123" Inactive="False"/>
         </Viewbox>
-        <Viewbox Grid.Row="1" Grid.Column="0" Margin="5">
+        <Viewbox Grid.Row="1" Grid.Column="0" Margin="5" x:Name="WhitePlayer">
             <local:PlayerCardWhite Image="Images/Snoke.png" Pseudo="Mearing" Time="12:123" Inactive="False"/>
         </Viewbox>
 

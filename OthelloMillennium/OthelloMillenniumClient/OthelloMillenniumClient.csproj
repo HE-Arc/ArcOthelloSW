@@ -79,6 +79,9 @@
     <Compile Include="Gameboard.xaml.cs">
       <DependentUpon>Gameboard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ImageDecorator.xaml.cs">
+      <DependentUpon>ImageDecorator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Menus\MenuOnlinePlayAs.xaml.cs">
       <DependentUpon>MenuOnlinePlayAs.xaml</DependentUpon>
     </Compile>
@@ -117,8 +120,11 @@
     <Compile Include="PlayerPicker.xaml.cs">
       <DependentUpon>PlayerPicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PlayerVisualiser.xaml.cs">
-      <DependentUpon>PlayerVisualiser.xaml</DependentUpon>
+    <Compile Include="PlayerVisualiserWhite.xaml.cs">
+      <DependentUpon>PlayerVisualiserWhite.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerVisualiserBlack.xaml.cs">
+      <DependentUpon>PlayerVisualiserBlack.xaml</DependentUpon>
     </Compile>
     <Compile Include="Lobby.xaml.cs">
       <DependentUpon>Lobby.xaml</DependentUpon>
@@ -131,6 +137,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Gameboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ImageDecorator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -194,7 +204,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PlayerVisualiser.xaml">
+    <Page Include="PlayerVisualiserWhite.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PlayerVisualiserBlack.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

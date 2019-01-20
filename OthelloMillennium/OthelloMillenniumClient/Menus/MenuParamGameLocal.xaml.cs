@@ -25,7 +25,7 @@ namespace OthelloMillenniumClient
         public UserControl player1;
         public UserControl player2;
         
-        public event Action<MenuParamGameLocal> ParamGameLocalEvent;
+        public event Action<MenuParamGameLocal> OnParamGameLocalEvent;
 
         public MenuParamGameLocal(PlayerType playerType, BattleType battleType)
         {
@@ -70,7 +70,7 @@ namespace OthelloMillenniumClient
             else
             {
                 //TODO trigger start event
-                ParamGameLocalEvent(this);
+                OnParamGameLocalEvent(this);
             }
         }
     }

@@ -1,5 +1,6 @@
 
-﻿using System;
+using OthelloMillenniumClient.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,30 +28,11 @@ namespace OthelloMillenniumClient
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void OnStartGame(object sender, RoutedEventArgs e)
         {
             //TODO Start game
-            
+            //TODO SEGAN Player is ready to start!!!
         }
 
-        private void OnKeyDownHandler(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Left)
-            {
-                
-            }
-            else if (e.Key == Key.Right)
-            {
-
-            }
-            else if (e.Key == Key.Up)
-            {
-
-            }
-            else if (e.Key == Key.Down)
-            {
-
-            }
-        }
     }
 }

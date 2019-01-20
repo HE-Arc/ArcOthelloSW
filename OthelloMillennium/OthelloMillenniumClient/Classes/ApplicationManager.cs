@@ -30,6 +30,7 @@ namespace OthelloMillenniumClient.Classes
         }
 
         private ApplicationManager() {
+            //TODO SEGAN We don't want to launch a local server if we're gonna play online!
             int port = StartLocalServer();
  
             // Test if server has been started
@@ -47,6 +48,7 @@ namespace OthelloMillenniumClient.Classes
         public Client Player2 => CurrentGame.Player2;
 
         #region Methods
+
         /// <summary>
         /// Start a local server
         /// </summary>
