@@ -1,4 +1,5 @@
 ﻿using OthelloMillenniumClient.Classes;
+using OthelloMillenniumClient.Classes.GameHandlers;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -116,80 +117,107 @@ namespace OthelloMillenniumClient
 
         public void OnParamLocal(MenuParamGameLocal menuParam)
         {
+            Client player1;
+            Client player2;
+
             //TODO Get two param
             if (playerType == PlayerType.Human)
             {
                 string pseudo = (menuParam.player1 as PlayerName).Pseudo;
-                //TODO SEGAN set name for player1
-                //WARNING ApplicationManager not created yet
-                // Maybe store this data in variables or call LaunchGame with params
+
+                // Create the player
+                player1 = new Client(playerType, pseudo);
             }
             else
             {
                 //TODO Get param if AI
                 throw new Exception("AI not supported yet");
-                // string pseudo = (menuParam.player1 as PlayerAI);
+
+                // TODO BASTIEN :corriger cette ligne voodoo
+                string pseudo = (menuParam.player1 as PlayerAI);
+
+                // Create the player
+                player1 = new Client(playerType, pseudo);
             }
 
             //TODO Get two param
             if (battleType == BattleType.AgainstPlayer)
             {
                 string pseudo = (menuParam.player2 as PlayerName).Pseudo;
-                //TODO SEGAN set name for player2
-                //WARNING ApplicationManager not created yet
-                // Maybe store this data in variables or call LaunchGame with params
+
+                // Create the player
+                player2 = new Client(playerType, pseudo);
             }
             else
             {
                 //TODO Get param if AI
                 throw new Exception("AI not supported yet");
-                // string ai = (menuParam.player1 as PlayerAI);
+
+                // TODO BASTIEN :corriger cette ligne voodoo
+                string pseudo = (menuParam.player2 as PlayerAI);
+
+                // Create the player
+                player2 = new Client(playerType, pseudo);
             }
-            
-            LaunchGame();
+
+            // Register clients to applicationManager
+            ApplicationManager.Instance.CurrentGame = new LocalGameHandler();
+            ApplicationManager.Instance.CurrentGame.Register(player1);
+            ApplicationManager.Instance.CurrentGame.Register(player2);
+
+            // TODO BASTIEN : peut-être à déplacer dans lobby ?
+            // Utiliser la méthode ChangeAvatar d'un client lors d'un clic depuis l'interface sur un avatar pour en informer l'opposant
+            StartMatchmaking();
         }
 
         public void OnParamOnline(MenuParamGameOnline menuParam)
         {
+            Client player1;
+
             //TODO Get two param
             if (playerType == PlayerType.Human)
             {
                 string pseudo = (menuParam.player as PlayerName).Pseudo;
-                //TODO SEGAN set name for player1
-                //WARNING ApplicationManager not created yet
-                // Maybe store this data in variables or call LaunchGame with params
+
+                // Create the player
+                player1 = new Client(playerType, pseudo);
             }
             else
             {
                 //TODO Get param if AI
                 throw new Exception("AI not supported yet");
-                // string ai = (menuParam.player1 as PlayerAI);
+
+                // TODO BASTIEN :corriger cette ligne voodoo
+                string pseudo = (menuParam.player1 as PlayerAI);
+
+                // Create the player
+                player1 = new Client(playerType, pseudo);
             }
 
-            LaunchGame();
+            // TODO BASTIEN : peut-être à déplacer dans lobby ?
+            // Utiliser la méthode ChangeAvatar d'un client lors d'un clic depuis l'interface sur un avatar pour en informer l'opposant
+
+            // Register clients to applicationManager
+            ApplicationManager.Instance.CurrentGame = new OnlineGameHandler(battleType);
+            ApplicationManager.Instance.CurrentGame.Register(player1);
+
+            StartMatchmaking();
         }
         
-        private void LaunchGame()
+        private void StartMatchmaking()
         {
-            //TODO SEGAN Add PlayerType in GameHandler
-            // a variable named playerType is available in this class
             try
             {
-                // Set a new gameHandler to the application manager (Can't be turned into ternary)
-                if (gameType == GameType.Local)
-                    ApplicationManager.Instance.CurrentGame = new LocalGameHandler(battleType);
-                else
-                    ApplicationManager.Instance.CurrentGame = new OnlineGameHandler(battleType);
-
-                // Start matchmaking
-                ApplicationManager.Instance.CurrentGame.Init();
+                ApplicationManager.Instance.CurrentGame.Search();
             }
             catch (Exception ex)
             {
                 Console.Error.WriteLine(ex.Message);
             }
 
-            //TODO SEGAN When matchmaking ok give some place to put windows changing code to go to lobby
+            // TODO SEGAN When matchmaking ok give some place to put windows changing code to go to lobby
+            // TODO BASTIEN : Utiliser ça ApplicationManager.Instance.CurrentGame.IsReady; pour savoir si c'est prêt ou non
+
         }
     }
 }

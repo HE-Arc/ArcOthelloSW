@@ -43,10 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Enums.cs" />
+    <Compile Include="Classes\ExportedGame.cs" />
     <Compile Include="Classes\GameState.cs" />
     <Compile Include="Classes\Order.cs" />
     <Compile Include="Classes\OthelloTCPClient.cs" />
-    <Compile Include="Classes\PlayerState.cs" />
     <Compile Include="Classes\Toolbox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

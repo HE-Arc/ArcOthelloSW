@@ -5,17 +5,68 @@ using Tools.Classes;
 
 namespace OthelloMillenniumClient
 {
+    /// <summary>
+    /// Wrapper of OthelloTCPClient
+    /// <para/>Client must register itself and then search a game
+    /// </summary>
     public class Client : OthelloTCPClient
     {
-        public event EventHandler<OthelloTCPClientArgs> OnBeginReceived;
-        public event EventHandler<OthelloTCPClientArgs> OnAwaitReceived;
-        public event EventHandler<OthelloTCPClientArgs> OnOpponentFoundReceived;
+        private event EventHandler<OthelloTCPClientArgs> OnOpponentFoundReceived;
+        public event EventHandler<OthelloTCPClientArgs> OnOpponentAvatarChanged;
         public event EventHandler<OthelloTCPClientArgs> OnGameStartedReceived;
 
-        public Client(PlayerType type, GameType gameType)
-            : base(type)
+        public PlayerType PlayerType { get; private set; }
+        public string Name { get; private set; }
+        public int AvatarID { get; private set; }
+        public bool CanPlay { get; private set; }
+
+        /// <summary>
+        /// Try to retrive opponent name
+        /// </summary>
+        public string OpponentName => Properties["OpponentName"] as string;
+
+        public Client(PlayerType type, string name)
+            : base()
         {
+            PlayerType = type;
+            Name = name;
+
             this.OnOrderReceived += Client_OnOrderReceived;
+        }
+
+        private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
+        {
+            switch(e.Order)
+            {
+                case PlayerAwaitOrder order:
+                    CanPlay = false;
+                    break;
+                case PlayerBeginOrder order:
+                    CanPlay = true;
+                    break;
+                case OpponentFoundOrder order:
+                    this.Properties.Add("OpponentName", (e.Order as OpponentFoundOrder).Opponent.Properties["Name"]);
+                    OnOpponentFoundReceived?.Invoke(this, e);
+                    break;
+                case AvatarChangedOrder order:
+                    OnOpponentAvatarChanged?.Invoke(this, e);
+                    break;
+                case StartOfTheGameOrder order:
+                    OnGameStartedReceived?.Invoke(this, e);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Connect to a server
+        /// </summary>
+        /// <param name="gameType"></param>
+        public void Register(GameType gameType)
+        {
+            if (this.TcpClient.Connected)
+            {
+                this.TcpClient.Close();
+            }
 
             switch (gameType)
             {
@@ -28,47 +79,27 @@ namespace OthelloMillenniumClient
                 default:
                     throw new Exception("Invalid gameType provided");
             }
+
+            // Send a register request
+            this.Send(new RegisterOrder(PlayerType, Name));
         }
 
-        private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
+        public void ChangeAvatar(int avatarID)
         {
-            switch(e.Order)
-            {
-                case PlayerAwaitOrder order:
-                    OnAwaitReceived?.Invoke(this, e);
-                    break;
-                case PlayerBeginOrder order:
-                    OnBeginReceived?.Invoke(this, e);
-                    break;
-                case OpponentFoundOrder order:
-                    OnOpponentFoundReceived?.Invoke(this, e);
-                    break;
-                case StartOfTheGameOrder order:
-                    OnGameStartedReceived?.Invoke(this, e);
-                    break;
-            }
+            AvatarID = avatarID;
+            this.Send(new AvatarChangedOrder(avatarID));
         }
 
         /// <summary>
-        /// Send a message to the binded server in order to register itself
+        /// Send a message in order to register itself
         /// </summary>
-        /// <param name="searchingFor">player type you're looking for</param>
-        public void Search(PlayerType searchingFor)
+        /// <param name="battleType"></param>
+        public void Search(BattleType battleType)
         {
-            switch(searchingFor)
+            if (this.TcpClient.Connected)
             {
-                case PlayerType.AI:
-                    this.Send(new SearchBattleAgainstAIOrder()
-                    {
-                        PlayerType = this.Type
-                    });
-                    break;
-                case PlayerType.Human:
-                    this.Send(new SearchBattleAgainstPlayerOrder()
-                    {
-                        PlayerType = this.Type
-                    });
-                    break;
+                // Send a request
+                this.Send(new SearchOrder(battleType == BattleType.AgainstAI ? PlayerType.AI : PlayerType.Human));
             }
         }
 
@@ -79,10 +110,10 @@ namespace OthelloMillenniumClient
         /// <param name="column">column</param>
         public void Play(char row, int column)
         {
-            this.Send(new PlayMoveOrder()
-            {
-                Coords = new Tuple<char, int>(row, column)
-            });
+            if (CanPlay)
+                this.Send(new PlayMoveOrder(new Tuple<char, int>(row, column)));
+            else
+                throw new Exception("Not allowed to play !");
         }
     }
 }

@@ -27,8 +27,8 @@ namespace OthelloMillenniumServer
 
         #region Attributes
         private int indexState;
-        private List<GameBoard> listGameState;
-        private Dictionary<Player, StoppableTimer> timeCounter = new Dictionary<Player, StoppableTimer>();
+        private List<GameBoard> listGameBoard;
+        private readonly Dictionary<Player, StoppableTimer> timeCounter = new Dictionary<Player, StoppableTimer>();
         private Tuple<int, int> scores;
         private Player winner;
 
@@ -45,11 +45,13 @@ namespace OthelloMillenniumServer
 
             //Init GameState
             indexState = 0;
-            listGameState = new List<GameBoard>();
-            listGameState.Add(GameBoard.CreateStartState());
+            listGameBoard = new List<GameBoard>
+            {
+                GameBoard.CreateStartState()
+            };
 
-            Assert.False(listGameState[indexState].GameEnded);
-            Assert.True(listGameState[indexState].LastPlayer == GameBoard.CellState.WHITE);
+            Assert.False(listGameBoard[indexState].GameEnded);
+            Assert.True(listGameBoard[indexState].LastPlayer == GameBoard.CellState.WHITE);
 
             if (BattleType == BattleType.AgainstPlayer)
             {
@@ -105,15 +107,15 @@ namespace OthelloMillenniumServer
             }
 
             GameBoard.CellState cellStatePlayer = PlayerToCellState(CurrentPlayerTurn);
-            listGameState[indexState].ValidateMove(coord, cellStatePlayer);
+            listGameBoard[indexState].ValidateMove(coord, cellStatePlayer);
 
             //Manage the case when we have made a moveback
-            if (indexState + 1 < listGameState.Count)
+            if (indexState + 1 < listGameBoard.Count)
             {
-                listGameState.RemoveRange(indexState+1, listGameState.Count-indexState-1);
+                listGameBoard.RemoveRange(indexState+1, listGameBoard.Count-indexState-1);
             }
 
-            listGameState.Add(listGameState[indexState].ApplyMove(coord, cellStatePlayer));
+            listGameBoard.Add(listGameBoard[indexState].ApplyMove(coord, cellStatePlayer));
             ++indexState;
 
             SwitchPlayer();
@@ -123,7 +125,7 @@ namespace OthelloMillenniumServer
             }
 
             //Manage end of the game
-            if (listGameState[indexState].GameEnded)
+            if (listGameBoard[indexState].GameEnded)
             {
                 EndGame();
             }
@@ -174,7 +176,7 @@ namespace OthelloMillenniumServer
                 throw new Exception("Action not allowed in Multiplayer game type");
             }
 
-            if (indexState < listGameState.Count - 1)
+            if (indexState < listGameBoard.Count - 1)
             {
                 ++indexState;
                 SwitchPlayer();
@@ -200,9 +202,9 @@ namespace OthelloMillenniumServer
         /// </summary>
         private void SwitchPlayer()
         {
-            GameBoard.CellState lastPlayer = listGameState[indexState].LastPlayer;
+            GameBoard.CellState lastPlayer = listGameBoard[indexState].LastPlayer;
             GameBoard.CellState nextPlayer = (GameBoard.CellState)((int)lastPlayer % 2 + 1);
-            CurrentPlayerTurn = (Player) (listGameState[indexState].PlayerCanPlay(nextPlayer) ? nextPlayer : lastPlayer);
+            CurrentPlayerTurn = (Player) (listGameBoard[indexState].PlayerCanPlay(nextPlayer) ? nextPlayer : lastPlayer);
         }
 
         /// <summary>
@@ -222,7 +224,7 @@ namespace OthelloMillenniumServer
 
         private void ComputeScore()
         {
-            GameBoard gameState = listGameState[indexState];
+            GameBoard gameState = listGameBoard[indexState];
             int maxScore = gameState.Board.GetLength(0) * gameState.Board.GetLength(1);
             
             if (BattleType == BattleType.AgainstPlayer && (timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 || timeCounter[Player.WhitePlayer].GetRemainingTime() == 0))
@@ -259,21 +261,37 @@ namespace OthelloMillenniumServer
         /// <returns>The game state</returns>
         public GameState Export()
         {
-            GameBoard.CellState[,] gameboard = listGameState[indexState].Board;
+            return Export(indexState);
+        }
+
+        private GameState Export(int index)
+        {
+            GameBoard.CellState[,] gameboard = listGameBoard[index].Board;
             int[,] board = new int[gameboard.GetLength(0), gameboard.GetLength(1)];
 
-            for (int i=0; i< gameboard.GetLength(0); ++i)
+            for (int i = 0; i < gameboard.GetLength(0); ++i)
             {
                 for (int j = 0; j < gameboard.GetLength(1); ++j)
                 {
-                    board[i,j] = (int)gameboard[i,j];
+                    board[i, j] = (int)gameboard[i, j];
                 }
             }
-            
-            List<Tuple<char, int>> possiblesMoves = listGameState[indexState].PossibleMoves(PlayerToCellState(CurrentPlayerTurn));
+
+            List<Tuple<char, int>> possiblesMoves = listGameBoard[index].PossibleMoves(PlayerToCellState(CurrentPlayerTurn));
             Tuple<long, long> remainingTimes = new Tuple<long, long>(timeCounter[Player.BlackPlayer].GetRemainingTime(), timeCounter[Player.WhitePlayer].GetRemainingTime());
-            
+
             return new GameState(GameEnded, (int)CurrentPlayerTurn, scores, board, possiblesMoves, remainingTimes, (int)winner);
+        }
+
+        public ExportedGame Save()
+        {
+            var listGameState = new List<GameState>(indexState);
+            for(int i = indexState; i >= 0; i--)
+            {
+                listGameState.Add(Export(i));
+            }
+
+            return new ExportedGame(BattleType, listGameState, CurrentPlayerTurn);
         }
     }
 }

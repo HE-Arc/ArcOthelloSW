@@ -1,54 +1,83 @@
-﻿using Tools;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Tools;
 using Tools.Classes;
-using GameHandler = OthelloMillenniumClient.Classes.GameHandler;
 
-namespace OthelloMillenniumClient
+namespace OthelloMillenniumClient.Classes.GameHandlers
 {
-    /// <summary>
-    /// Classe wrapper entre l'interface de jeu et la partie communication avec le serveur
-    /// </summary>
     public class LocalGameHandler : GameHandler
     {
-        public LocalGameHandler(BattleType battleType)
-            : base(battleType)
-        { }
-
-        public override void Init()
+        public LocalGameHandler()
         {
-            switch (this.BattleType)
+            GameType = GameType.Local;
+        }
+
+        /// <summary>
+        /// Register the client to the server
+        /// <para/>Make it available through Player1 or Player2
+        /// </summary>
+        /// <param name="client">Who to register</param>
+        public override void Register(Client client)
+        {
+            // Register client to the server
+            client.Register(GameType);
+
+            if (Player1 is null)
             {
-                case BattleType.AgainstAI:
-                    Client = new Client(PlayerType.Human, GameType.Local);
-                    Opponent = new Client(PlayerType.AI, GameType.Local);
-
-                    Client.OnBeginReceived += Client_OnBeginReceived;
-                    Client.OnAwaitReceived += Client_OnAwaitReceived;
-                    Client.OnGameStateReceived += Client_OnGameStateReceived;
-                    Opponent.OnGameStateReceived += Client_OnGameStateReceived;
-
-                    // Send orders
-                    Client.Search(PlayerType.AI);
-                    Opponent.Search(PlayerType.Human);
-
-                    break;
-                case BattleType.AgainstPlayer:
-                    Client = new Client(PlayerType.Human, GameType.Local);
-                    Opponent = new Client(PlayerType.Human, GameType.Local);
-
-                    Client.OnBeginReceived += Client_OnBeginReceived;
-                    Client.OnAwaitReceived += Client_OnAwaitReceived;
-                    Client.OnGameStateReceived += Client_OnGameStateReceived;
-
-                    // Send orders
-                    Client.Search(PlayerType.Human);
-                    Opponent.Search(PlayerType.Human);
-
-                    break;
+                Player1 = client;
+                Player1.OnGameStateReceived += GameStateUpdate;
+            }
+            else if (Player2 is null)
+            {
+                Player2 = client;
+                Player2.OnGameStateReceived += GameStateUpdate;
+            }
+            else
+            {
+                throw new Exception("2 players have already been registred !");
             }
         }
 
-        protected override void Client_OnOpponentFound(object sender, OthelloTCPClientArgs e)
+        /// <summary>
+        /// Start the matchmaking process
+        /// </summary>
+        public override void Search()
         {
+            if (Player1 == null | Player2 == null)
+                throw new Exception("Please register players first");
+
+            if (Player1.PlayerType == PlayerType.Human)
+            {
+                if(Player2.PlayerType == PlayerType.Human)
+                {
+                    Player1.Search(BattleType.AgainstPlayer);
+                    Player2.Search(BattleType.AgainstPlayer);
+                    BattleType = BattleType.AgainstPlayer;
+                }
+                else
+                {
+                    Player1.Search(BattleType.AgainstAI);
+                    Player2.Search(BattleType.AgainstPlayer);
+                    BattleType = BattleType.AgainstAI;
+                }
+            }
+            else
+            {
+                if (Player2.PlayerType == PlayerType.Human)
+                {
+                    Player1.Search(BattleType.AgainstPlayer);
+                    Player2.Search(BattleType.AgainstAI);
+                }
+                else
+                {
+                    Player1.Search(BattleType.AgainstAI);
+                    Player2.Search(BattleType.AgainstAI);
+                }
+                BattleType = BattleType.AgainstAI;
+            }
         }
     }
 }

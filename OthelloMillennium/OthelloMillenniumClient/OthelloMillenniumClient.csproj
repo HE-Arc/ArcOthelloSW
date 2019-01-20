@@ -69,10 +69,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Classes\GameHandlers\GameHandler.cs" />
-    <Compile Include="Classes\GameHandlers\LocalGameHandler.cs" />
-    <Compile Include="Classes\GameHandlers\OnlineGameHandler.cs" />
     <Compile Include="Classes\ApplicationManager.cs" />
+    <Compile Include="Classes\GameHandlers\GameHandler.cs" />
+    <Compile Include="Classes\GameHandlers\OnlineGameHandler.cs" />
+    <Compile Include="Classes\GameHandlers\LocalGameHandler.cs" />
     <Compile Include="Game.xaml.cs">
       <DependentUpon>Game.xaml</DependentUpon>
     </Compile>

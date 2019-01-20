@@ -52,7 +52,7 @@ namespace OthelloMillenniumServer
             Client2.Send(new WhiteAssignedOrder());
 
             // Is it an AI battle ? Init gameManager
-            if (Client1.Type == PlayerType.Human & Client2.Type == PlayerType.Human)
+            if ((PlayerType)Client1.Properties["PlayerType"] == PlayerType.Human & (PlayerType)Client2.Properties["PlayerType"] == PlayerType.Human)
                 this.GameManager = new GameManager(BattleType.AgainstPlayer);
             else
                 this.GameManager = new GameManager(BattleType.AgainstAI);
@@ -64,14 +64,11 @@ namespace OthelloMillenniumServer
             // Start the game
             GameManager.Start();
 
-            // Black Start
-            Client1.Send(new PlayerBeginOrder());
-            Client2.Send(new PlayerAwaitOrder());
+            // Send the gameboard's initial state
+            BroadcastGameboard();
 
-            // Send current gameState
-            var gs = GameManager.Export();
-            Client1.Send(gs);
-            Client2.Send(gs);
+            // Black Start
+            ScheduleGameplay();
 
             // React to clients orders
             Client1.OnOrderReceived += OnOrderReceived;
@@ -94,8 +91,30 @@ namespace OthelloMillenniumServer
             Client2.Send(new EndOfTheGameOrder());
 
             // Send the final state
-            Client1.Send(finalGameState);
-            Client2.Send(finalGameState);   
+            BroadcastGameboard(); 
+        }
+
+        // Send begin and await
+        private void ScheduleGameplay()
+        {
+            if ((Player)Client1.Properties["Color"] == GameManager.CurrentPlayerTurn)
+            {
+                Client1.Send(new PlayerBeginOrder());
+                Client2.Send(new PlayerAwaitOrder());
+            }
+            else
+            {
+                Client1.Send(new PlayerAwaitOrder());
+                Client2.Send(new PlayerBeginOrder());
+            }
+        }
+
+        // Send current gameState
+        private void BroadcastGameboard()
+        {
+            var gs = GameManager.Export();
+            Client1.Send(gs);
+            Client2.Send(gs);
         }
 
         private void OnOrderReceived(object s, OthelloTCPClientArgs e)
@@ -103,32 +122,86 @@ namespace OthelloMillenniumServer
             OthelloTCPClient sender = s as OthelloTCPClient;
             OthelloTCPClient opponent = sender == Client1 ? Client2 : Client1;
 
-            switch (e.Order)
+            if(e.Order is GetCurrentGameStateOrder currentGameStateOrder)
             {
-                case GetCurrentGameStateOrder order:
-                    // A client asked for the gameState, send it back to him
-                    sender.Send(GameManager.Export());
-                    break;
+                // A client asked for the gameState, send it back to him
+                sender.Send(GameManager.Export());
+            }
+            else if (e.Order is PlayMoveOrder playMoveOrder)
+            {
+                // Place a token on the board
+                GameManager.PlayMove(playMoveOrder.Coords, (Player)sender.Properties["Color"]);
 
-                case NextTurnOrder order:
-                    // Inform opponent that he can start to play.
-                    sender.Send(new PlayerAwaitOrder());
-                    opponent.Send(new PlayerBeginOrder());
-                    break;
+                // Get the new gameState
+                var gs = GameManager.Export();
 
-                case PlayMoveOrder order:
-                    GameManager.PlayMove(order.Coords, (Player)sender.Properties["Color"]);
+                // Send current gameState
+                BroadcastGameboard();
+
+                // Send being and await
+                ScheduleGameplay();
+
+            }
+            else if (e.Order is SaveOrder saveOrder)
+            {
+                try
+                {
+                    // Get gameStates
+                    var output = GameManager.Save();
+
+                    // Send the new gameState to the clients
+                    sender.Send(output);
+                }
+                catch
+                {
+                    sender.Send(new DeniedOrder());
+                }
+            }
+            else if (e.Order is UndoOrder undoOrder)
+            {
+                try
+                {
+                    // Goes one step back
+                    GameManager.MoveBack();
+
+                    // Get the new gameState
                     var gs = GameManager.Export();
 
                     // Send current gameState
-                    sender.Send(gs);
-                    opponent.Send(gs);
-                    break;
+                    BroadcastGameboard();
 
-                default:
-                    throw new Exception("Unknown order");
-                //TODO
+                    // Send being and await
+                    ScheduleGameplay();
+                }
+                catch
+                {
+                    sender.Send(new DeniedOrder());
+                }
+            }
+            else if (e.Order is RedoOrder redoOrder)
+            {
+                try
+                {
+                    // Goes one step back
+                    GameManager.MoveForward();
 
+                    // Get the new gameState
+                    var gs = GameManager.Export();
+
+                    // Send current gameState
+                    BroadcastGameboard();
+
+                    // Send being and await
+                    ScheduleGameplay();
+                }
+                catch
+                {
+                    sender.Send(new DeniedOrder());
+                }
+            }
+            else
+            {
+                sender.Send(new DeniedOrder());
             }
         }
     }

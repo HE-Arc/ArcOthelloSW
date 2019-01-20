@@ -22,6 +22,7 @@ namespace Tools.Classes
     {
         Human,
         AI,
+        Any,
 
         // Used only on the server side
         None,

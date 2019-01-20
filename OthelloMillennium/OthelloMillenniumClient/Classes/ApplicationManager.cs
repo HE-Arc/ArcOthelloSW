@@ -1,5 +1,5 @@
-﻿using System;
-using OthelloMillenniumServer;
+﻿using OthelloMillenniumClient.Classes.GameHandlers;
+using System;
 
 namespace OthelloMillenniumClient.Classes
 {
@@ -42,6 +42,9 @@ namespace OthelloMillenniumClient.Classes
 
         public GameHandler CurrentGame { get; set; }
 
+        public Client Player1 => CurrentGame.Player1;
+        public Client Player2 => CurrentGame.Player2;
+
         #region Methods
         /// <summary>
         /// Start a local server
@@ -51,13 +54,13 @@ namespace OthelloMillenniumClient.Classes
             try
             {
                 int port = (new Random()).Next(49152, 65535);
-                TCPServer.Port = port;
-                TCPServer.Instance.StartListening();
+                OthelloMillenniumServer.TCPServer.Port = port;
+                OthelloMillenniumServer.TCPServer.Instance.StartListening();
                 return port;
             }
             catch(Exception ex)
             {
-                Toolbox.LogError(ex);
+                OthelloMillenniumServer.Toolbox.LogError(ex);
                 return -1;
             }
         }
