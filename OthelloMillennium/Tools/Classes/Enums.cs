@@ -11,8 +11,8 @@ namespace Tools.Classes
         [EnumMember]
         Online,
     }
+
     [DataContract]
-    [Serializable]
     public enum BattleType
     {
         [EnumMember]
