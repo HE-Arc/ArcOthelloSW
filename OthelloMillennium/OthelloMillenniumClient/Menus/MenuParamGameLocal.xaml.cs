@@ -22,8 +22,10 @@ namespace OthelloMillenniumClient
     public partial class MenuParamGameLocal : UserControl
     {
 
-        UserControl player1;
-        UserControl player2;
+        public UserControl player1;
+        public UserControl player2;
+        
+        public event Action<MenuParamGameLocal> ParamGameLocalEvent;
 
         public MenuParamGameLocal(PlayerType playerType, BattleType battleType)
         {
@@ -58,7 +60,7 @@ namespace OthelloMillenniumClient
             MainGrid.Children.Add(player2);
         }
 
-        private void OnValidate()
+        private void OnValidate(object sender, System.Windows.RoutedEventArgs e)
         {
             if(!(player1 as Validable).IsValid() || !(player2 as Validable).IsValid())
             {
@@ -68,6 +70,7 @@ namespace OthelloMillenniumClient
             else
             {
                 //TODO trigger start event
+                ParamGameLocalEvent(this);
             }
         }
     }

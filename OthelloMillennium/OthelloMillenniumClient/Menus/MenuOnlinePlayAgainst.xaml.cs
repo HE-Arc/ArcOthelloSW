@@ -24,7 +24,7 @@ namespace OthelloMillenniumClient
 
         public event Action<BattleType> BattleTypeEvent;
 
-        public void RaiseHumanEvent(object sender, System.Windows.RoutedEventArgs e)
+        public void RaiseHumanEvent(object sender, RoutedEventArgs e)
         {
             // Your logic
             if (BattleTypeEvent != null)
@@ -33,7 +33,7 @@ namespace OthelloMillenniumClient
             }
         }
 
-        public void RaiseAiEvent(object sender, System.Windows.RoutedEventArgs e)
+        public void RaiseAiEvent(object sender, RoutedEventArgs e)
         {
             // Your logic
             if (BattleTypeEvent != null)

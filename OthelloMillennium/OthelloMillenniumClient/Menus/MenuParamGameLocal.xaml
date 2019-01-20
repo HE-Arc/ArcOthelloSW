@@ -15,6 +15,6 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Launch game!" Background="#ffbe29" BorderThickness="0" VerticalAlignment="Bottom" HorizontalAlignment="Center"  Width="140" Height="40" Margin="0,0,0,35" FontSize="18"/>
+        <Button Grid.Row="4" Click="OnValidate" Grid.Column="0" Grid.ColumnSpan="2" Content="Launch game!" Background="#ffbe29" BorderThickness="0" VerticalAlignment="Bottom" HorizontalAlignment="Center"  Width="140" Height="40" Margin="0,0,0,35" FontSize="18"/>
     </Grid>
 </UserControl>

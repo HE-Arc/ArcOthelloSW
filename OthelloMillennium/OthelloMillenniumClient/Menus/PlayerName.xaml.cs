@@ -22,7 +22,6 @@ namespace OthelloMillenniumClient
     {
 
         #region Properties
-
         public string Pseudo
         {
             get => (string)GetValue(PropertyPseudo);

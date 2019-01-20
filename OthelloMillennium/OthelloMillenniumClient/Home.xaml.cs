@@ -107,7 +107,7 @@ namespace OthelloMillenniumClient
         {
             this.battleType = battleType;
 
-            MenuParamGameOnline paramGame = new MenuParamGameOnline();
+            MenuParamGameOnline paramGame = new MenuParamGameOnline(playerType);
             //paramGame.BattleTypeEvent += OnPlayAgainst;
             //TODO Event
 
@@ -115,16 +115,55 @@ namespace OthelloMillenniumClient
             
         }
 
-        public void OnParamLocal()
+        public void OnParamLocal(MenuParamGameLocal menuParam)
         {
+            //TODO Get two param
+            if (playerType == PlayerType.Human)
+            {
+                string pseudo = (menuParam.player1 as PlayerName).Pseudo;
+                //TODO Segan set name for player1
+            }
+            else
+            {
+                //TODO Get param if AI
+                throw new Exception("AI not supported yet");
+                // string pseudo = (menuParam.player1 as PlayerAI);
+            }
+
+            //TODO Get two param
+            if (battleType == BattleType.AgainstPlayer)
+            {
+                string pseudo = (menuParam.player2 as PlayerName).Pseudo;
+                //TODO Segan set name for player2
+            }
+            else
+            {
+                //TODO Get param if AI
+                throw new Exception("AI not supported yet");
+                // string ai = (menuParam.player1 as PlayerAI);
+            }
+            
             LaunchGame();
         }
 
-        public void OnParamOnline()
+        public void OnParamOnline(MenuParamGameOnline menuParam)
         {
+            //TODO Get two param
+            if (playerType == PlayerType.Human)
+            {
+                string pseudo = (menuParam.player as PlayerName).Pseudo;
+                //TODO Segan set name for player1
+            }
+            else
+            {
+                //TODO Get param if AI
+                throw new Exception("AI not supported yet");
+                // string ai = (menuParam.player1 as PlayerAI);
+            }
+
             LaunchGame();
         }
-
+        
         private void LaunchGame()
         {
             try

@@ -21,8 +21,10 @@ namespace OthelloMillenniumClient
     /// </summary>
     public partial class MenuParamGameOnline : UserControl
     {
-        UserControl player;
-        
+        public UserControl player;
+
+        public event Action<MenuParamGameOnline> ParamGameOnlineEvent;
+
         public MenuParamGameOnline(PlayerType playerType)
         {
             InitializeComponent();
@@ -42,7 +44,7 @@ namespace OthelloMillenniumClient
             MainGrid.Children.Add(player);
         }
 
-        private void OnValidate()
+        private void OnValidate(object sender, System.Windows.RoutedEventArgs e)
         {
             if (!(player as Validable).IsValid())
             {
@@ -51,7 +53,7 @@ namespace OthelloMillenniumClient
             }
             else
             {
-                //TODO trigger start event
+                ParamGameOnlineEvent(this);
             }
         }
     }
