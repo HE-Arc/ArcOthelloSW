@@ -98,6 +98,12 @@
     <Compile Include="Menus\MenuOnlinePlayAgainst.xaml.cs">
       <DependentUpon>MenuOnlinePlayAgainst.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Menus\PlayerAI.xaml.cs">
+      <DependentUpon>PlayerAI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Menus\PlayerName.xaml.cs">
+      <DependentUpon>PlayerName.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PlayerCardBlack.xaml.cs">
       <DependentUpon>PlayerCardBlack.xaml</DependentUpon>
     </Compile>
@@ -155,6 +161,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Menus\MenuOnlinePlayAgainst.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Menus\PlayerAI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Menus\PlayerName.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
