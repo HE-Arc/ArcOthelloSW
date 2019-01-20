@@ -26,59 +26,13 @@ namespace OthelloMillenniumClient
         public Lobby()
         {
             InitializeComponent();
-
-
-            //TODO in case of online make local player on the left
-            if (ApplicationManager.Instance.CurrentGame.GameType == Tools.Classes.GameType.Online)
-            {
-                //TODO SEGAN -> if we play the White
-                if (false)
-                {
-                    Grid.SetColumn(WhitePlayer, 0);
-                    Grid.SetColumn(BlackPlayer, 2);
-
-                    //TODO Key binding with white player
-                }
-                else
-                {
-                    //TODO Key Binding with Black Player
-                }
-            }
-            else
-            {
-                //TODO double binding
-
-                //TODO ASDW Binding with BlackPlayer
-
-                //TODO Right/Left/Up/Down Binding with BlackPlayer
-            }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void OnStartGame(object sender, RoutedEventArgs e)
         {
             //TODO Start game
             //TODO SEGAN Player is ready to start!!!
         }
 
-        private void OnKeyDownHandler(object sender, KeyEventArgs e)
-        {
-            //TODO
-            if (e.Key == Key.Left)
-            {
-                
-            }
-            else if (e.Key == Key.Right)
-            {
-
-            }
-            else if (e.Key == Key.Up)
-            {
-
-            }
-            else if (e.Key == Key.Down)
-            {
-
-            }
-        }
     }
 }

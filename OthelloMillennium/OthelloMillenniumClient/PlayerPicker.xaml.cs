@@ -2,6 +2,9 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using Tools;
+using Tools.Classes;
 
 namespace OthelloMillenniumClient
 {
@@ -11,33 +14,36 @@ namespace OthelloMillenniumClient
     public partial class PlayerPicker : UserControl
     {
 
+        private const int NB_ROW = 4;
+        private const int NB_COLUMN = 5;
+
         #region Attributes
-        private Tuple<int, int> playerBlack;
-        private Tuple<int, int> playerWhite;
+        private int imageIdBlack;
+        private int imageIdWhite;
 
         #endregion
 
         #region Properties
-        public Tuple<int, int> PlayerBlack
+        public int PlayerBlack
         {
-            get => playerBlack;
+            get => imageIdBlack;
             set {
-                playerBlack = value;
+                imageIdBlack = value % (NB_ROW * NB_COLUMN);
+                Tuple<int, int> location = IdImage(imageIdBlack);
 
-                // TODO BASTIEN : peut-être à déplacer dans lobby ?
-                // Utiliser la méthode ChangeAvatar d'un client lors d'un clic depuis l'interface sur un avatar pour en informer l'opposant
-                Grid.SetRow(BackgroundBlack, value.Item1);
-                Grid.SetColumn(BackgroundBlack, value.Item2);
+                Grid.SetRow(BackgroundBlack, location.Item1);
+                Grid.SetColumn(BackgroundBlack, location.Item2);
             }
         }
 
-        public Tuple<int, int> PlayerWhite
+        public int PlayerWhite
         {
-            get => playerWhite;
+            get => imageIdWhite;
             set {
-                playerWhite = value;
-                Grid.SetRow(BackgroundWhite, value.Item1);
-                Grid.SetColumn(BackgroundWhite, value.Item2);
+                imageIdWhite = value % (NB_ROW*NB_COLUMN);
+                Tuple<int, int> location = IdImage(imageIdWhite);
+                Grid.SetRow(BackgroundWhite, location.Item1);
+                Grid.SetColumn(BackgroundWhite, location.Item2);
             }
         }
 
@@ -64,21 +70,116 @@ namespace OthelloMillenniumClient
         {
             InitializeComponent();
 
-            PlayerWhite = new Tuple<int, int>(3, 4);
+            (Parent as Lobby).KeyDown += OnKeyDownHandler;
 
             DataContext = this;
 
-            //ApplicationManager.Instance.CurrentGame.Player1.ChangeAvatar
+            //If we are not in local, add listener on opponent avatar change
+            if(ApplicationManager.Instance.CurrentGame.GameType == GameType.Online)
+            {
+                ApplicationManager.Instance.CurrentGame.Player1.OnOpponentAvatarChanged += OnAvatarChange;
+            }
         }
 
-        private void Rectangle_GiveFeedback(object sender, GiveFeedbackEventArgs e)
+        private void OnAvatarChange(object sender, OthelloTCPClientArgs e)
         {
-
+            //TODO SEGAN Which color is the opponent?
+            if (true) // IF WHITE
+            {
+                PlayerWhite = 0; //TODO SEGAN New ID Image
+            }
+            else
+            {
+                PlayerBlack = 0; //TODO SEGAN New ID Image
+            }
         }
 
-        // TODO Change selector image + different image for selectorOne and Two
+        private void OnKeyDownHandler(object sender, KeyEventArgs e)
+        {
+            if(ApplicationManager.Instance.CurrentGame.GameType == GameType.Online)
+            {
+                //Mode online, wasd et les touches flèchés
+                //TODO SEGAN IF We are black -> change following if statement
+                if (true)
+                {
+                    int newId = ManageKeyUpLeftDownRight(e.Key, ManageKeyWASD(e.Key, PlayerWhite));
+                    if(newId != PlayerWhite)
+                    {
+                        PlayerWhite = newId;
 
-        // Add Binding
+                        //TODO SEGAN Change avatar for player WHITE
 
+                    }
+                }
+                else
+                {
+                    int newId = ManageKeyUpLeftDownRight(e.Key, ManageKeyWASD(e.Key, PlayerBlack));
+                    if (newId != PlayerBlack)
+                    {
+                        PlayerBlack = newId;
+
+                        //TODO SEGAN Change avatar for player Black
+
+                    }
+                }
+                int player = true ? PlayerWhite : PlayerBlack;
+            }
+            else
+            {
+                //Mode local, wasd pour le joueur à droite et et touches flèchés pour le joueur à gauche
+                PlayerBlack = ManageKeyWASD(e.Key, PlayerBlack);
+                PlayerWhite = ManageKeyUpLeftDownRight(e.Key, PlayerWhite);
+            }
+        }
+
+        private int ManageKeyWASD(Key key, int player)
+        {
+            switch (key)
+            {
+                case Key.A:
+                    player--;
+                    break;
+                case Key.S:
+                    player += NB_COLUMN;
+                    break;
+                case Key.D:
+                    player++;
+                    break;
+                case Key.W:
+                    player -= NB_COLUMN;
+                    break;
+            }
+            return player;
+        }
+
+        private int ManageKeyUpLeftDownRight(Key key, int player)
+        {
+            switch (key)
+            {
+                case Key.Left:
+                    player--;
+                    break;
+                case Key.Right:
+                    player += NB_COLUMN;
+                    break;
+                case Key.Down:
+                    player++;
+                    break;
+                case Key.Up:
+                    player -= NB_COLUMN;
+                    break;
+            }
+            return player;
+        }
+
+        private int IdImage(Tuple<int, int> player)
+        {
+            return (player.Item1 * NB_COLUMN) + (player.Item2 % (NB_ROW * NB_COLUMN));
+        }
+
+        private Tuple<int, int> IdImage(int id)
+        {
+            return new Tuple<int, int>((id / NB_COLUMN) - (id % NB_COLUMN), id% NB_COLUMN);
+        }
     }
 }
