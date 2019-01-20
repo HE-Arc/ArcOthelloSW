@@ -107,10 +107,10 @@ namespace OthelloMillenniumClient
                     ImageDecorator image = new ImageDecorator()
                     {
                         Margin = margin,
-                        ImageSource = "/Images/" + IMAGES_PERSO[nb]
+                        ImageSource = "Images/" + IMAGES_PERSO[nb]
                     };
-                    image.SetValue(Grid.RowProperty, 1);
-                    image.SetValue(Grid.ColumnProperty, 0);
+                    image.SetValue(Grid.ColumnProperty, i);
+                    image.SetValue(Grid.RowProperty, j);
 
 
                     if (nb%2 == 0)
