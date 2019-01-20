@@ -158,7 +158,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Classes\Client.cs" />
     <Compile Include="Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
       <SubType>Code</SubType>

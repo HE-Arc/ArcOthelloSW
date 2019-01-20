@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Tools;
 using Tools.Classes;
+using Color = System.Windows.Media.Color;
 
 namespace OthelloMillenniumClient
 {
@@ -130,7 +131,7 @@ namespace OthelloMillenniumClient
             }
         }
 
-        private void OnReceiveGameState(object sender, OthelloTCPClientArgs e)
+        private void OnReceiveGameState(object sender, OthelloTCPClientGameStateArgs e)
         {
             //Update grid with played tokens
             int[,] gameboard = e.GameState.Gameboard;

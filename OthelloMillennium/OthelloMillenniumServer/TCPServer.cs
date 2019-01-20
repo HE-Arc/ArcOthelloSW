@@ -64,7 +64,7 @@ namespace OthelloMillenniumServer
                             var newConnection = listener.AcceptTcpClient();
 
                             // PlayerType will be fetched during the register method inside the matchmaking
-                            var client = new OthelloTCPClient();
+                            var client = new Client(PlayerType.None, "unknown");
                             client.Bind(newConnection);
 
                             // Will be used once to listen what type of game the player is searching
@@ -103,20 +103,17 @@ namespace OthelloMillenniumServer
 
         private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
         {
-            OthelloTCPClient client = sender as OthelloTCPClient;
-
-            if(e.Order is RegisterOrder order)
+            if (sender is OthelloTCPClient othelloTCPClient)
             {
-                // Register client to the Matchmaker
-                Matchmaker.Instance.RegisterNewClient(client, order);
+                if (e.Order is RegisterOrder order)
+                {
+                    // Register client to the Matchmaker
+                    Matchmaker.Instance.RegisterNewClient(othelloTCPClient, order);
 
-                // TCPServer should only listen once per new connection
-                // It will just listen to know how to annouce the new client to the matchmaker
-                client.OnOrderReceived -= Client_OnOrderReceived;
-            }
-            else
-            {
-                client.Send(new DeniedOrder() { });
+                    // TCPServer should only listen once per new connection
+                    // It will just listen to know how to annouce the new client to the matchmaker
+                    othelloTCPClient.OnOrderReceived -= Client_OnOrderReceived;
+                }
             }
         }
 

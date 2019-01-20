@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tools.Classes
+﻿namespace Tools.Classes
 {
     public enum GameType
     {
@@ -28,9 +22,9 @@ namespace Tools.Classes
         None,
     }
 
-    public enum Player
+    public enum Color
     { // Values have been choosen to fit GameState.CellState
-        BlackPlayer = 1,
-        WhitePlayer = 2
+        Black = 1,
+        White = 2
     }
 }

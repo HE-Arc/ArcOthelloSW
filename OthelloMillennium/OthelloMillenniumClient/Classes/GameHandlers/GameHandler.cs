@@ -23,7 +23,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         #endregion
 
         #region Events
-        protected void GameStateUpdate(object sender, OthelloTCPClientArgs e)
+        protected void GameStateUpdate(object sender, OthelloTCPClientGameStateArgs e)
         {
             IsReady = true;
             GameState = e.GameState;

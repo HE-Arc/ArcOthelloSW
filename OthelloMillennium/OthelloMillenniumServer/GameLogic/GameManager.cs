@@ -11,9 +11,9 @@ namespace OthelloMillenniumServer
     {
         #region Internal Classes
         
-        private static GameBoard.CellState PlayerToCellState(Player player)
+        private static GameBoard.CellState PlayerToCellState(Color Color)
         {
-            return player == Player.BlackPlayer ? GameBoard.CellState.BLACK : GameBoard.CellState.WHITE;
+            return Color == Color.Black ? GameBoard.CellState.BLACK : GameBoard.CellState.WHITE;
         }
 
         #endregion
@@ -21,16 +21,16 @@ namespace OthelloMillenniumServer
         #region Properties
         public bool GameEnded { get; private set; }
         public BattleType BattleType { get; private set; }
-        public Player CurrentPlayerTurn { get; private set; }
+        public Color CurrentPlayerTurn { get; private set; }
 
         #endregion
 
         #region Attributes
         private int indexState;
         private List<GameBoard> listGameBoard;
-        private readonly Dictionary<Player, StoppableTimer> timeCounter = new Dictionary<Player, StoppableTimer>();
+        private readonly Dictionary<Color, StoppableTimer> timeCounter = new Dictionary<Color, StoppableTimer>();
         private Tuple<int, int> scores;
-        private Player winner;
+        private Color winner;
 
         #endregion
 
@@ -55,14 +55,14 @@ namespace OthelloMillenniumServer
 
             if (BattleType == BattleType.AgainstPlayer)
             {
-                timeCounter = new Dictionary<Player, StoppableTimer>()
+                timeCounter = new Dictionary<Color, StoppableTimer>()
                 {
-                    { Player.BlackPlayer, new StoppableTimer(Settings.TimePerPlayer) },
-                    { Player.WhitePlayer, new StoppableTimer(Settings.TimePerPlayer) }
+                    { Color.Black, new StoppableTimer(Settings.TimePerPlayer) },
+                    { Color.White, new StoppableTimer(Settings.TimePerPlayer) }
                 };
             }
 
-            CurrentPlayerTurn = Player.BlackPlayer;
+            CurrentPlayerTurn = Color.Black;
 
             ComputeScore();
         }
@@ -80,7 +80,7 @@ namespace OthelloMillenniumServer
             //We start the counter
             if (BattleType == BattleType.AgainstPlayer)
             {
-                timeCounter[Player.BlackPlayer].Start();
+                timeCounter[Color.Black].Start();
             }
         }
 
@@ -89,16 +89,16 @@ namespace OthelloMillenniumServer
         /// </summary>
         /// <param name="coord"></param>
         /// <param name="isPlayerOne"></param>
-        public void PlayMove(Tuple<char, int> coord, Player player)
+        public void PlayMove(Tuple<char, int> coord, Color Color)
         {
             if (GameEnded)
             {
                 throw new Exception("Game ended");
             }
 
-            if (player != CurrentPlayerTurn)
+            if (Color != CurrentPlayerTurn)
             {
-                throw new Exception("Invalid player turn");
+                throw new Exception("Invalid Color turn");
             }
 
             if (BattleType == BattleType.AgainstPlayer)
@@ -198,13 +198,13 @@ namespace OthelloMillenniumServer
         }
 
         /// <summary>
-        /// Switch the current player
+        /// Switch the current Color
         /// </summary>
         private void SwitchPlayer()
         {
             GameBoard.CellState lastPlayer = listGameBoard[indexState].LastPlayer;
             GameBoard.CellState nextPlayer = (GameBoard.CellState)((int)lastPlayer % 2 + 1);
-            CurrentPlayerTurn = (Player) (listGameBoard[indexState].PlayerCanPlay(nextPlayer) ? nextPlayer : lastPlayer);
+            CurrentPlayerTurn = (Color) (listGameBoard[indexState].PlayerCanPlay(nextPlayer) ? nextPlayer : lastPlayer);
         }
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace OthelloMillenniumServer
             
             timeCounter[CurrentPlayerTurn].Stop();
             ComputeScore();
-            winner = scores.Item1 > scores.Item2 ? Player.BlackPlayer : Player.WhitePlayer;
+            winner = scores.Item1 > scores.Item2 ? Color.Black : Color.White;
 
             EventHandler<GameState> handler = OnGameFinished;
             handler(this, Export());
@@ -227,29 +227,29 @@ namespace OthelloMillenniumServer
             GameBoard gameState = listGameBoard[indexState];
             int maxScore = gameState.Board.GetLength(0) * gameState.Board.GetLength(1);
             
-            if (BattleType == BattleType.AgainstPlayer && (timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 || timeCounter[Player.WhitePlayer].GetRemainingTime() == 0))
+            if (BattleType == BattleType.AgainstPlayer && (timeCounter[Color.Black].GetRemainingTime() == 0 || timeCounter[Color.White].GetRemainingTime() == 0))
             {
-                //One player is out of time
-                scores = timeCounter[Player.BlackPlayer].GetRemainingTime() == 0 ? new Tuple<int, int>(0, maxScore) : new Tuple<int, int>(maxScore, 0);
+                //One Color is out of time
+                scores = timeCounter[Color.Black].GetRemainingTime() == 0 ? new Tuple<int, int>(0, maxScore) : new Tuple<int, int>(maxScore, 0);
             }
             else
             {
-                // Get nb token per player
+                // Get nb token per Color
                 (int black, int white) = (gameState.GetNbToken(GameBoard.CellState.BLACK), gameState.GetNbToken(GameBoard.CellState.WHITE));
 
                 if (!GameEnded || gameState.GetNbToken(GameBoard.CellState.EMPTY) == 0)
                 {
-                    // Default Count number of token for each player
+                    // Default Count number of token for each Color
                     scores = new Tuple<int, int>(black, white);
                 }
                 else if (black == 0 || white == 0)
                 {
-                    //Eradication of a player
+                    //Eradication of a Color
                     scores = black == 0 ? new Tuple<int, int>(0, maxScore) : new Tuple<int, int>(maxScore, 0);
                 }
                 else
                 {
-                    // No player can move
+                    // No Color can move
                     scores = black > white ? new Tuple<int, int>(maxScore - white, white) : new Tuple<int, int>(black, maxScore - black);
                 }
             }
@@ -278,7 +278,7 @@ namespace OthelloMillenniumServer
             }
 
             List<Tuple<char, int>> possiblesMoves = listGameBoard[index].PossibleMoves(PlayerToCellState(CurrentPlayerTurn));
-            Tuple<long, long> remainingTimes = new Tuple<long, long>(timeCounter[Player.BlackPlayer].GetRemainingTime(), timeCounter[Player.WhitePlayer].GetRemainingTime());
+            Tuple<long, long> remainingTimes = new Tuple<long, long>(timeCounter[Color.Black].GetRemainingTime(), timeCounter[Color.White].GetRemainingTime());
 
             return new GameState(GameEnded, (int)CurrentPlayerTurn, scores, board, possiblesMoves, remainingTimes, (int)winner);
         }

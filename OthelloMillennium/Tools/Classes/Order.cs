@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Tools.Classes
@@ -9,13 +8,10 @@ namespace Tools.Classes
     {
         public Order() { }
 
-        public Dictionary<string, object> Properties { get; private set; } = new Dictionary<string, object>();
-
         protected Order(SerializationInfo info, StreamingContext context)
         {
             if (info == null)
                 throw new ArgumentNullException("info");
-            Properties = (Dictionary<string, object>)info.GetValue("Properties", typeof(Dictionary<string, object>));
         }
 
         public abstract string GetAcronym();
@@ -27,9 +23,11 @@ namespace Tools.Classes
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("Properties", Properties);
+
         }
     }
+
+    #region Handshake
 
     [Serializable]
     public class RegisterOrder : Order
@@ -68,36 +66,23 @@ namespace Tools.Classes
     }
 
     [Serializable]
-    public class AvatarChangedOrder : Order
+    public class RegisterSuccessfulOrder : Order
     {
-        public int AvatarID { get; private set; }
-
-        public AvatarChangedOrder(int avatarID)
-        {
-            AvatarID = avatarID;
-        }
-
-        protected AvatarChangedOrder(SerializationInfo info, StreamingContext context)
+        protected RegisterSuccessfulOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
-        {
-            AvatarID = (int)info.GetValue("AvatarID", typeof(int));
-        }
+        { }
 
         public override string GetAcronym()
         {
-            return "ACO";
+            return "RS";
         }
 
         public override string GetDefinition()
         {
-            return "Inform an avatar's selection change";
+            return "Inform current player that he has been registred successfully";
         }
 
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-            info.AddValue("AvatarID", AvatarID);
-        }
+        public RegisterSuccessfulOrder() { }
     }
 
     [Serializable]
@@ -135,31 +120,12 @@ namespace Tools.Classes
     }
 
     [Serializable]
-    public class RegisterSuccessfulOrder : Order
-    {
-        protected RegisterSuccessfulOrder(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        { }
-
-        public override string GetAcronym()
-        {
-            return "RS";
-        }
-
-        public override string GetDefinition()
-        {
-            return "Inform current player that he has been registred successfully";
-        }
-
-        public RegisterSuccessfulOrder() { }
-    }
-
-    [Serializable]
     public class OpponentFoundOrder : Order
     {
         public OthelloTCPClient Opponent { get; private set; }
 
-        public OpponentFoundOrder(OthelloTCPClient opponent) {
+        public OpponentFoundOrder(OthelloTCPClient opponent)
+        {
             Opponent = opponent;
         }
 
@@ -186,84 +152,101 @@ namespace Tools.Classes
         }
     }
 
+    #endregion
+
+    #region GameLogic
+
     [Serializable]
-    public class StartOfTheGameOrder : Order
+    public class ReadyOrder : Order
     {
-        protected StartOfTheGameOrder(SerializationInfo info, StreamingContext context)
+        protected ReadyOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         { }
 
         public override string GetAcronym()
         {
-            return "SG";
+            return "RO";
         }
 
         public override string GetDefinition()
         {
-            return "Inform current player that the game has started";
+            return "Inform the gameHandler that the player is ready";
         }
 
-        public StartOfTheGameOrder() { }
+        public ReadyOrder() { }
     }
 
     [Serializable]
-    public class EndOfTheGameOrder : Order
+    public class GameStartedOrder : Order
     {
-        protected EndOfTheGameOrder(SerializationInfo info, StreamingContext context)
+        protected GameStartedOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         { }
 
         public override string GetAcronym()
         {
-            return "EG";
+            return "GSO";
         }
 
         public override string GetDefinition()
         {
-            return "Inform current player that the has ended";
+            return "Inform the player that the game started";
         }
 
-        public EndOfTheGameOrder() { }
+        public GameStartedOrder() { }
     }
 
     [Serializable]
-    public class BlackAssignedOrder : Order
+    public class GameEndedOrder : Order
     {
-        protected BlackAssignedOrder(SerializationInfo info, StreamingContext context)
+        protected GameEndedOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         { }
 
         public override string GetAcronym()
         {
-            return "BA";
+            return "GEO";
         }
 
         public override string GetDefinition()
         {
-            return "Inform current player that the color has been assigned to him";
+            return "Inform current player that the game has ended";
         }
 
-        public BlackAssignedOrder() { }
+        public GameEndedOrder() { }
     }
 
     [Serializable]
-    public class WhiteAssignedOrder : Order
+    public class PlayMoveOrder : Order
     {
-        protected WhiteAssignedOrder(SerializationInfo info, StreamingContext context)
+        public Tuple<char, int> Coords { get; set; }
+
+        public PlayMoveOrder(Tuple<char, int> coords)
+        {
+            Coords = coords;
+        }
+
+        protected PlayMoveOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
-        { }
+        {
+            Coords = (Tuple<char, int>)info.GetValue("Coords", typeof(Tuple<char, int>));
+        }
 
         public override string GetAcronym()
         {
-            return "WA";
+            return "PM"; // ExampleOrder
         }
 
         public override string GetDefinition()
         {
-            return "Inform current player that the color white has been assigned to him";
+            return "Contains coords where the player want to place an othello's game piece";
         }
 
-        public WhiteAssignedOrder() { }
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue("Coords", Coords);
+        }
     }
 
     [Serializable]
@@ -306,25 +289,113 @@ namespace Tools.Classes
         public PlayerAwaitOrder() { }
     }
 
+    #endregion
+
+    #region Synchronization
+
     [Serializable]
-    public class PlayerStateOrder : Order
+    public class GetDataOrder : Order
     {
-        protected PlayerStateOrder(SerializationInfo info, StreamingContext context)
+        public GetDataOrder() { }
+
+        protected GetDataOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         { }
 
         public override string GetAcronym()
         {
-            return "PS";
+            return "GDO";
         }
 
         public override string GetDefinition()
         {
-            return "Ask for the current player state";
+            return "Ask the server for data's";
+        }
+    }
+
+    [Serializable]
+    public class GetCurrentGameStateOrder : Order
+    {
+        protected GetCurrentGameStateOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
+        public override string GetAcronym()
+        {
+            return "GCGS";
         }
 
-        public PlayerStateOrder() { }
+        public override string GetDefinition()
+        {
+            return "Ask the server for the current gameState";
+        }
+
+        public GetCurrentGameStateOrder() { }
     }
+
+    #region Opponent
+
+    /// <summary>
+    /// Client send this whenever it changes his datas
+    /// </summary>
+    [Serializable]
+    public class OpponentDataChangedOrder : Order
+    {
+        public Data Data { get; private set; }
+
+        public OpponentDataChangedOrder(Data data)
+        {
+            Data = data;
+        }
+
+        protected OpponentDataChangedOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            Data = (Data)info.GetValue("Data", typeof(Data));
+        }
+
+        public override string GetAcronym()
+        {
+            return "ODCO";
+        }
+
+        public override string GetDefinition()
+        {
+            return "Opponent Data changed";
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue("Data", Data);
+        }
+    }
+
+    [Serializable]
+    public class GetOpponentDataOrder : Order
+    {
+        public GetOpponentDataOrder() { }
+
+        protected GetOpponentDataOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
+        public override string GetAcronym()
+        {
+            return "GODO";
+        }
+
+        public override string GetDefinition()
+        {
+            return "Ask the server for opponent's data";
+        }
+    }
+
+    #endregion
+
+    #endregion
+
+    #region TCP
 
     [Serializable]
     public class OpponentDisconnectedOrder : Order
@@ -366,25 +437,9 @@ namespace Tools.Classes
         public OpponentConnectionLostOrder() { }
     }
 
-    [Serializable]
-    public class GetCurrentGameStateOrder : Order
-    {
-        protected GetCurrentGameStateOrder(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        { }
+    #endregion
 
-        public override string GetAcronym()
-        {
-            return "GCGS"; // ExampleOrder
-        }
-
-        public override string GetDefinition()
-        {
-            return "Ask the server for the current gameState";
-        }
-
-        public GetCurrentGameStateOrder() { }
-    }
+    #region GameManager
 
     [Serializable]
     public class SaveOrder : Order
@@ -466,6 +521,8 @@ namespace Tools.Classes
         public RedoOrder() { }
     }
 
+    #endregion
+
     [Serializable]
     public class DeniedOrder : Order
     {
@@ -485,60 +542,4 @@ namespace Tools.Classes
 
         public DeniedOrder() { }
     }
-
-    [Serializable]
-    public class PlayMoveOrder : Order
-    {
-        public Tuple<char, int> Coords { get; set; }
-
-        public PlayMoveOrder(Tuple<char, int> coords) {
-            Coords = coords;
-        }
-
-        protected PlayMoveOrder(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            Coords = (Tuple<char, int>)info.GetValue("Coords", typeof(Tuple<char, int>));
-        }
-
-        public override string GetAcronym()
-        {
-            return "PM"; // ExampleOrder
-        }
-
-        public override string GetDefinition()
-        {
-            return "Contains coords where the player want to place an othello's game piece";
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-            info.AddValue("Coords", Coords);
-        }
-    }
-
-    #region Example
-    /*
-    public class Order : IOrder
-    {
-        public override string GetAcronym()
-        {
-            return "EO"; // ExampleOrder
-        }
-
-        public override string GetDefinition()
-        {
-            return "Example";
-        }
-
-        public int GetLength()
-        {
-            return System.Text.Encoding.ASCII.GetByteCount(GetAcronym());
-        }
-
-        public Order() { }
-    }
-    */
-    #endregion
 }

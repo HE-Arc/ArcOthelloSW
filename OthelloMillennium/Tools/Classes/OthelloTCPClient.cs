@@ -1,6 +1,5 @@
 ﻿using OthelloMillenniumServer;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
@@ -17,18 +16,18 @@ namespace Tools
 
         // Informations
         public TcpClient TcpClient { get; private set; }
-        public Dictionary<string, object> Properties { get; private set; } = new Dictionary<string, object>();
 
         // Events
         public event EventHandler<OthelloTCPClientArgs> OnOrderReceived;
-        public event EventHandler<OthelloTCPClientArgs> OnGameStateReceived;
-        public event EventHandler<OthelloTCPClientArgs> OnSaveReceived;
+        public event EventHandler<OthelloTCPClientDataArgs> OnDataReceived;
+        public event EventHandler<OthelloTCPClientGameStateArgs> OnGameStateReceived;
+        public event EventHandler<OthelloTCPClientSaveArgs> OnSaveReceived;
         public event EventHandler<EventArgs> OnConnectionLost;
 
         /// <summary>
         /// Basic constructor, start to listen for orders
         /// </summary>
-        public OthelloTCPClient()
+        protected OthelloTCPClient()
         {
             // Listener task
             listenerTask = new Task(() =>
@@ -44,12 +43,24 @@ namespace Tools
                     {
                         if (TcpClient.Connected)
                         {
-                            if (Receive() is Order order && !string.IsNullOrEmpty(order.GetAcronym()))
-                                OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs() { Order = order });
-                            if (Receive() is GameState gameState)
-                                OnGameStateReceived?.Invoke(this, new OthelloTCPClientArgs() { GameState = gameState });
-                            if (Receive() is ExportedGame save)
-                                OnSaveReceived?.Invoke(this, new OthelloTCPClientArgs() { Save = save });
+                            var streamOutput = Receive();
+
+                            if (streamOutput is Order order && !string.IsNullOrEmpty(order.GetAcronym()))
+                            {
+                                OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs(order));
+                            }
+                            else if (streamOutput is GameState gameState)
+                            {
+                                OnGameStateReceived?.Invoke(this, new OthelloTCPClientGameStateArgs(gameState));
+                            }
+                            else if (streamOutput is Data data)
+                            {
+                                OnDataReceived?.Invoke(this, new OthelloTCPClientDataArgs(data));
+                            }
+                            else if (streamOutput is ExportedGame exportedGame)
+                            {
+                                OnSaveReceived?.Invoke(this, new OthelloTCPClientSaveArgs(exportedGame));
+                            }
                         }
 
                         // Wait before reading again
@@ -147,10 +158,43 @@ namespace Tools
         }
     }
 
-    public class OthelloTCPClientArgs
+    public class OthelloTCPClientDataArgs
     {
-        public Order Order { get; set; }
+        public Data Data { get; private set; }
+
+        public OthelloTCPClientDataArgs(Data opponentData)
+        {
+            Data = opponentData;
+        }
+    }
+
+    public class OthelloTCPClientSaveArgs
+    {
+        public ExportedGame ExportedGame { get; private set; }
+
+        public OthelloTCPClientSaveArgs(ExportedGame exportedGame)
+        {
+            ExportedGame = exportedGame;
+        }
+    }
+
+    public class OthelloTCPClientGameStateArgs
+    {
         public GameState GameState { get; set; }
-        public ExportedGame Save { get; set; }
+
+        public OthelloTCPClientGameStateArgs(GameState gameState)
+        {
+            GameState = gameState;
+        }
+    }
+
+    public class OthelloTCPClientArgs : EventArgs
+    {
+        public Order Order { get; private set; }
+
+        public OthelloTCPClientArgs(Order order)
+        {
+            Order = order;
+        }
     }
 }

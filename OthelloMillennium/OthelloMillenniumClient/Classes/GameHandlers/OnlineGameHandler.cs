@@ -1,4 +1,5 @@
 ﻿using System;
+using Tools;
 using Tools.Classes;
 
 namespace OthelloMillenniumClient.Classes.GameHandlers

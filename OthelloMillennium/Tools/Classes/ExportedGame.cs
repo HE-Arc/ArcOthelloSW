@@ -9,11 +9,11 @@ namespace Tools.Classes
     {
         public List<GameState> GameStates { get; private set; }
 
-        public Player CurrentPlayer { get; private set; }
+        public Color CurrentPlayer { get; private set; }
 
         public BattleType BattleType { get; private set; }
 
-        public ExportedGame(BattleType battleType, List<GameState> gameStates, Player currentPlayer)
+        public ExportedGame(BattleType battleType, List<GameState> gameStates, Color currentPlayer)
         {
             BattleType = battleType;
             GameStates = gameStates;
@@ -24,7 +24,7 @@ namespace Tools.Classes
         {
             BattleType = (BattleType)info.GetValue("BattleType", typeof(BattleType));
             GameStates = (List<GameState>)info.GetValue("GameStates", typeof(List<GameState>));
-            CurrentPlayer = (Player)info.GetValue("CurrentPlayer", typeof(Player));
+            CurrentPlayer = (Color)info.GetValue("CurrentPlayer", typeof(Color));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
