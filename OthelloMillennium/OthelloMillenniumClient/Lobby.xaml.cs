@@ -35,6 +35,7 @@ namespace OthelloMillenniumClient
 
         private void OnKeyDownHandler(object sender, KeyEventArgs e)
         {
+            //TODO
             if (e.Key == Key.Left)
             {
                 

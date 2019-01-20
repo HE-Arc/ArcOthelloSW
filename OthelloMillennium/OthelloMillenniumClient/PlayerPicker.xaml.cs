@@ -22,8 +22,8 @@ namespace OthelloMillenniumClient
             get => playerOne;
             set {
                 playerOne = value;
-                Grid.SetRow(SelectorPlayer1, value.Item1);
-                Grid.SetColumn(SelectorPlayer1, value.Item2);
+                Grid.SetRow(BackgroundBlack, value.Item1);
+                Grid.SetColumn(BackgroundBlack, value.Item2);
             }
         }
 
@@ -32,8 +32,8 @@ namespace OthelloMillenniumClient
             get => playerTwo;
             set {
                 playerTwo = value;
-                Grid.SetRow(SelectorPlayer2, value.Item1);
-                Grid.SetColumn(SelectorPlayer2, value.Item2);
+                Grid.SetRow(BackgroundWhite, value.Item1);
+                Grid.SetColumn(BackgroundWhite, value.Item2);
             }
         }
 
@@ -64,6 +64,11 @@ namespace OthelloMillenniumClient
             PlayerTwo = new Tuple<int, int>(3, 4);
 
             DataContext = this;
+        }
+
+        private void Rectangle_GiveFeedback(object sender, GiveFeedbackEventArgs e)
+        {
+
         }
 
         // TODO Change selector image + different image for selectorOne and Two

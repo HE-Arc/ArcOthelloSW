@@ -18,7 +18,11 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition Width="150px"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <local:PlayerPicker Grid.Column="1" Grid.Row="1" x:Name="PlayerPicker"></local:PlayerPicker>
+
+        <Viewbox Grid.Column="1" Grid.Row="1">
+            <local:PlayerPicker  x:Name="PlayerPicker" />
+        </Viewbox>
+        
         <local:PlayerVisualiser Grid.Column="0" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerOne }"/>
         <local:PlayerVisualiser Grid.Column="0" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerTwo }"/>
 
