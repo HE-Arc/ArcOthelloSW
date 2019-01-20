@@ -14,12 +14,13 @@ namespace OthelloMillenniumClient
     /// </summary>
     public partial class Gameboard : UserControl
     {
-        private Button[,] buttons;
+        private Button[,] listButtons;
         private GameState gameState;
 
         public Gameboard()
         {
             InitializeComponent();
+            //TODO SEGAN is this gonna work? Dow we have an initial GameState?
             gameState = ApplicationManager.Instance.CurrentGame.GameState;
             Init();
 
@@ -28,12 +29,12 @@ namespace OthelloMillenniumClient
 
         private void Init()
         {
+            //TODO Bastien Clean of code for graphical interface
             //Create game interface
-            //TODO change
             int width = gameState.Gameboard.GetLength(0);
             int height = gameState.Gameboard.GetLength(1);
 
-            buttons = new Button[width, height];
+            listButtons = new Button[width, height];
 
             Grid grid = MainGrid;
             SolidColorBrush brushYellow = new SolidColorBrush(Color.FromArgb(0xFF, 0xFC, 0xB0, 0x01));
@@ -119,8 +120,8 @@ namespace OthelloMillenniumClient
                         Style = styleBlack
                     };
                     button.Click += OnCellClick;
-
-                    buttons[i, j] = button;
+                    
+                    listButtons[i, j] = button;
                     grid.Children.Add(button);
                 }
             }
@@ -136,7 +137,7 @@ namespace OthelloMillenniumClient
                 {
                     if (gameboard[i, j] > 0)
                     {
-                        buttons[i, j].Style = e.GameState.Gameboard[i, j] == 1 ? this.Resources["circle-black"] as Style : this.Resources["circle-white"] as Style;
+                        listButtons[i, j].Style = e.GameState.Gameboard[i, j] == 1 ? this.Resources["circle-black"] as Style : this.Resources["circle-white"] as Style;
                     }
                 }
             }
@@ -146,7 +147,7 @@ namespace OthelloMillenniumClient
             {
                 int i = move.Item1 - 65;
                 int j = move.Item2;
-                buttons[i, j].Style = this.Resources["circle-grey"] as Style;
+                listButtons[i, j].Style = this.Resources["circle-grey"] as Style;
             }
         }
 

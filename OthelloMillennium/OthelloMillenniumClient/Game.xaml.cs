@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Tools;
 
+
 namespace OthelloMillenniumClient
 {
     /// <summary>
