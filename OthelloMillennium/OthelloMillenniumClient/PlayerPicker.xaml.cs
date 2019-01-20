@@ -14,8 +14,11 @@ namespace OthelloMillenniumClient
     public partial class PlayerPicker : UserControl
     {
 
+        #region Consts
         private const int NB_ROW = 4;
         private const int NB_COLUMN = 5;
+
+        #endregion
 
         #region Attributes
         private int imageIdBlack;
@@ -100,7 +103,7 @@ namespace OthelloMillenniumClient
             {
                 //Mode online, wasd et les touches flèchés
                 //TODO SEGAN IF We are black -> change following if statement
-                if (true)
+                if (true)//CODE IN HERE
                 {
                     int newId = ManageKeyUpLeftDownRight(e.Key, ManageKeyWASD(e.Key, PlayerWhite));
                     if(newId != PlayerWhite)
@@ -108,7 +111,7 @@ namespace OthelloMillenniumClient
                         PlayerWhite = newId;
 
                         //TODO SEGAN Change avatar for player WHITE
-
+                        //CODE HERE
                     }
                 }
                 else
@@ -119,16 +122,32 @@ namespace OthelloMillenniumClient
                         PlayerBlack = newId;
 
                         //TODO SEGAN Change avatar for player Black
-
+                        //CODE HERE
                     }
                 }
-                int player = true ? PlayerWhite : PlayerBlack;
             }
             else
             {
                 //Mode local, wasd pour le joueur à droite et et touches flèchés pour le joueur à gauche
                 PlayerBlack = ManageKeyWASD(e.Key, PlayerBlack);
-                PlayerWhite = ManageKeyUpLeftDownRight(e.Key, PlayerWhite);
+
+                int newId = ManageKeyWASD(e.Key, PlayerBlack);
+                if (newId != PlayerWhite)
+                {
+                    PlayerWhite = newId;
+
+                    //TODO SEGAN Change avatar for player WHITE
+                    //CODE HERE
+                }
+
+                newId = ManageKeyUpLeftDownRight(e.Key, PlayerWhite);
+                if (newId != PlayerBlack)
+                {
+                    PlayerBlack = newId;
+
+                    //TODO SEGAN Change avatar for player Black
+                    //CODE HERE
+                }
             }
         }
 
