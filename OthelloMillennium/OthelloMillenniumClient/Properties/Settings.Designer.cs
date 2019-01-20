@@ -22,29 +22,5 @@ namespace OthelloMillenniumClient.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.0.0.0")]
-        public string OnlineHostname {
-            get {
-                return ((string)(this["OnlineHostname"]));
-            }
-            set {
-                this["OnlineHostname"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("65432")]
-        public int OnlinePort {
-            get {
-                return ((int)(this["OnlinePort"]));
-            }
-            set {
-                this["OnlinePort"] = value;
-            }
-        }
     }
 }

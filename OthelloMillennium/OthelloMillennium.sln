@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OthelloMillenniumClient", "OthelloMillenniumClient\OthelloMillenniumClient.csproj", "{2F0C304E-C3D2-49EA-84B9-5D92141C0E37}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OthelloMillenniumServer", "OthelloMillenniumServer\OthelloMillenniumServer.csproj", "{A1D5D4CC-2E56-4520-9BC6-33AE118AE9B9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OthelloMillenniumServer.Tests", "OthelloMillenniumServer.Tests\OthelloMillenniumServer.Tests.csproj", "{8852CD7E-2FD1-41A7-8145-1B9E7EBB9C9E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools", "Tools\Tools.csproj", "{0D689054-0E76-4CAF-A8F0-EA621E32ADA8}"
@@ -14,6 +12,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientTest", "ClientTest\ClientTest.csproj", "{5BBFFA09-C8A7-48CF-A3A4-3C403A415C2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPageTransitions", "WpfPageTransitions\WpfPageTransitions.csproj", "{22A46D61-1D40-43A9-802C-B9D43DADD9EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OthelloMillenniumServer", "OthelloMillenniumServer\OthelloMillenniumServer.csproj", "{AE7945BE-8562-47FA-965F-76F8BED87F6E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +25,6 @@ Global
 		{2F0C304E-C3D2-49EA-84B9-5D92141C0E37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F0C304E-C3D2-49EA-84B9-5D92141C0E37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F0C304E-C3D2-49EA-84B9-5D92141C0E37}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A1D5D4CC-2E56-4520-9BC6-33AE118AE9B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1D5D4CC-2E56-4520-9BC6-33AE118AE9B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1D5D4CC-2E56-4520-9BC6-33AE118AE9B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1D5D4CC-2E56-4520-9BC6-33AE118AE9B9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8852CD7E-2FD1-41A7-8145-1B9E7EBB9C9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8852CD7E-2FD1-41A7-8145-1B9E7EBB9C9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8852CD7E-2FD1-41A7-8145-1B9E7EBB9C9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{22A46D61-1D40-43A9-802C-B9D43DADD9EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22A46D61-1D40-43A9-802C-B9D43DADD9EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22A46D61-1D40-43A9-802C-B9D43DADD9EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE7945BE-8562-47FA-965F-76F8BED87F6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE7945BE-8562-47FA-965F-76F8BED87F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE7945BE-8562-47FA-965F-76F8BED87F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE7945BE-8562-47FA-965F-76F8BED87F6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

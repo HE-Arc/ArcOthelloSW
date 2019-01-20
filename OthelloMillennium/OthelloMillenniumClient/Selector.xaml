@@ -7,9 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="160" d:DesignWidth="160">
     <Grid>
-        <Polygon Grid.Row="1" Grid.Column="1" Points="0,-76 -51,0, 0,0" StrokeThickness="0" Fill="{ Binding Color }" Margin="9.75" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
-        <Polygon Grid.Row="1" Grid.Column="1" Points="0,-60 -40.5,0, 0,0" StrokeThickness="1" Stroke="#ffbe29" Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
-        <Polygon Grid.Row="1" Grid.Column="1" Points="0,76 51,0, 0,0" StrokeThickness="0" Fill="{ Binding Color }" Margin="9.75" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Polygon Grid.Row="1" Grid.Column="1" Points="0,60 40.5,0, 0,0" StrokeThickness="1" Stroke="#ffbe29" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Polygon Grid.Row="1" Grid.Column="1" Points="0,-76 51,0, 0,0" StrokeThickness="0" Fill="{ Binding Color }" Margin="9.75" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+        <Polygon Grid.Row="1" Grid.Column="1" Points="0,-60 40.5,0, 0,0" StrokeThickness="1" Stroke="#ffbe29" Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+        <Polygon Grid.Row="1" Grid.Column="1" Points="0,76 -51,0, 0,0" StrokeThickness="0" Fill="{ Binding Color }" Margin="9.75" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Polygon Grid.Row="1" Grid.Column="1" Points="0,60 -40.5,0, 0,0" StrokeThickness="1" Stroke="#ffbe29" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Top"/>
     </Grid>
 </UserControl>

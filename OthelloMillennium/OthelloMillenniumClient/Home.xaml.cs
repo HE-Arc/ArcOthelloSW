@@ -1,9 +1,9 @@
 ﻿using OthelloMillenniumClient.Classes;
 using OthelloMillenniumClient.Classes.GameHandlers;
 using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using Tools;
 using Tools.Classes;
 using WpfPageTransitions;
 

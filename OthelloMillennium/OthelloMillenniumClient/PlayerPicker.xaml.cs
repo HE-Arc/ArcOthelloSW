@@ -3,7 +3,6 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using Tools;
 using Tools.Classes;
 
@@ -19,8 +18,8 @@ namespace OthelloMillenniumClient
         private const int NB_ROW = 4;
         private const int NB_COLUMN = 5;
         private readonly string[] IMAGES_PERSO = {"Snoke.png","Yoda.png","TheEmperor.png","Stormtrooper.png","Rey.png","R2-D2.png","Prog.png","Obi-Wan.png","MazKanata.png","Luke.png","Leia.png","KyloRen.png","K-2SO.png","HanSolo.png","Finn.png","DarkVader.png","Chewbacca.png","C-3PO.png","BobaFet.png","BB-8.png"};
-        private ScaleTransform flip = new ScaleTransform() { ScaleX = -1 };
-        private ScaleTransform noFlip = new ScaleTransform() { ScaleX = 1 };
+        private System.Windows.Media.ScaleTransform flip = new System.Windows.Media.ScaleTransform() { ScaleX = -1 };
+        private System.Windows.Media.ScaleTransform noFlip = new System.Windows.Media.ScaleTransform() { ScaleX = 1 };
 
         #endregion
 
@@ -93,15 +92,14 @@ namespace OthelloMillenniumClient
             //If we are not in local, add listener on opponent avatar change
             if(ApplicationManager.Instance.CurrentGame.GameType == GameType.Online)
             {
-                ApplicationManager.Instance.CurrentGame.Player1.OnOpponentAvatarChanged += OnAvatarChange;
+                ApplicationManager.Instance.CurrentGame.Player1.OnOpponentDataChanged += OnOpponentDataChange;
+                ApplicationManager.Instance.CurrentGame.Player2.OnOpponentDataChanged += OnOpponentDataChange;
             }
         }
-
+        
         private void Init()
         {
             Thickness margin = new Thickness(10);
-            ScaleTransform scaleSymetry = new ScaleTransform();
-            scaleSymetry.ScaleX = -1;
 
             int nb = 0;
             for(int i = 0; i < NB_COLUMN; ++i)
@@ -120,7 +118,7 @@ namespace OthelloMillenniumClient
                     if (nb%2 == 0)
                     {
                         image.RenderTransformOrigin = new Point(0.5, 0.5);
-                        image.RenderTransform = scaleSymetry;
+                        image.RenderTransform = flip;
                     }
 
                     MainGrid.Children.Add(image);
@@ -149,35 +147,91 @@ namespace OthelloMillenniumClient
             PlayerBlack = 0;
             PlayerWhite = 19;
         }
-
-        private void OnAvatarChange(object sender, OthelloTCPClientArgs e)
+        
+        /// <summary>
+        /// Try to get client from the sender
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns>the client</returns>
+        private Client GetClientFromSender(object sender)
         {
-            //TODO SEGAN Which color is the opponent?
-            if (true) // IF WHITE
+            if (sender is Client s)
             {
-                PlayerWhite = 0; //TODO SEGAN New ID Image
+                if (s.Color == ApplicationManager.Instance.Player1.Color)
+                {
+                    return ApplicationManager.Instance.Player1;
+                }
+                else
+                {
+                    return ApplicationManager.Instance.Player2;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Try to get opponent from the client
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns>the client</returns>
+        private Client GetOpponentFromClient(Client client)
+        {
+            if (client.Equals(ApplicationManager.Instance.Player1))
+            {
+                return ApplicationManager.Instance.Player2;
             }
             else
             {
-                PlayerBlack = 0; //TODO SEGAN New ID Image
+                return ApplicationManager.Instance.Player1;
+            }
+        }
+
+        /// <summary>
+        /// Try to get opponent from color
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns>the client</returns>
+        private Client GetClientFromColor(Color color)
+        {
+            if (ApplicationManager.Instance.Player1.Color == color)
+            {
+                return ApplicationManager.Instance.Player1;
+            }
+            else
+            {
+                return ApplicationManager.Instance.Player2;
+            }
+        }
+
+        private void OnOpponentDataChange(object sender, OthelloTCPClientArgs e)
+        {
+            if (e.Order is OpponentDataChangedOrder order)
+            {
+                if (order.Data.Color == Color.White)
+                {
+                    PlayerWhite = order.Data.AvatarID;
+                }
+                else
+                {
+                    PlayerBlack = order.Data.AvatarID;
+                }
             }
         }
 
         private void OnKeyDownHandler(object sender, KeyEventArgs e)
         {
-            if(ApplicationManager.Instance.CurrentGame.GameType == GameType.Online)
+            if (ApplicationManager.Instance.CurrentGame.GameType == GameType.Online)
             {
-                //Mode online, wasd et les touches flèchés
-                //TODO SEGAN IF We are black -> change following if statement
-                if (true)//CODE IN HERE
+                // Mode online, wasd et les touches flèchés
+                if (ApplicationManager.Instance.Player1.Color == Color.White)
                 {
                     int newId = ManageKeyUpLeftDownRight(e.Key, ManageKeyWASD(e.Key, PlayerWhite));
                     if(newId != PlayerWhite)
                     {
                         PlayerWhite = newId;
 
-                        //TODO SEGAN Change avatar for player WHITE
-                        //CODE HERE
+                        // Will inform the opponent of the change too
+                        ApplicationManager.Instance.Player1.AvatarID = newId;
                     }
                 }
                 else
@@ -187,8 +241,8 @@ namespace OthelloMillenniumClient
                     {
                         PlayerBlack = newId;
 
-                        //TODO SEGAN Change avatar for player Black
-                        //CODE HERE
+                        // Will inform the opponent of the change too
+                        ApplicationManager.Instance.Player1.AvatarID = newId;
                     }
                 }
             }
@@ -202,8 +256,8 @@ namespace OthelloMillenniumClient
                 {
                     PlayerWhite = newId;
 
-                    //TODO SEGAN Change avatar for player WHITE
-                    //CODE HERE
+                    // Will inform the opponent of the change too
+                    GetClientFromColor(Color.White).AvatarID = newId;
                 }
 
                 newId = ManageKeyUpLeftDownRight(e.Key, PlayerWhite);
@@ -211,8 +265,8 @@ namespace OthelloMillenniumClient
                 {
                     PlayerBlack = newId;
 
-                    //TODO SEGAN Change avatar for player Black
-                    //CODE HERE
+                    // Will inform the opponent of the change too
+                    GetClientFromColor(Color.Black).AvatarID = newId;
                 }
             }
         }

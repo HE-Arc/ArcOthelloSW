@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OthelloMillenniumClient"
-             xmlns:Common="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
+             xmlns:Common="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
              mc:Ignorable="d" Height="220" Width="150"
              Background="White">
 
