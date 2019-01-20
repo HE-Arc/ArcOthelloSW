@@ -43,7 +43,7 @@ namespace Tools.Classes
         protected RegisterOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            PlayerType = (PlayerType)info.GetValue("PlayerType", typeof(PlayerType));
+            PlayerType = (PlayerType)info.GetValue("PlayerType", typeof(int));
             Name = (string)info.GetValue("Name", typeof(string));
         }
 
@@ -60,7 +60,7 @@ namespace Tools.Classes
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
-            info.AddValue("PlayerType", PlayerType);
+            info.AddValue("PlayerType", (int)PlayerType);
             info.AddValue("Name", Name);
         }
     }
@@ -99,7 +99,7 @@ namespace Tools.Classes
         protected SearchOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            OpponentType = (PlayerType)info.GetValue("OpponentType", typeof(PlayerType));
+            OpponentType = (PlayerType)info.GetValue("OpponentType", typeof(int));
         }
 
         public override string GetAcronym()
@@ -115,7 +115,7 @@ namespace Tools.Classes
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
-            info.AddValue("OpponentType", OpponentType);
+            info.AddValue("OpponentType", (int)OpponentType);
         }
     }
 
