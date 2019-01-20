@@ -13,7 +13,7 @@
         </Grid.RowDefinitions>
         <Rectangle Grid.Row="0" Fill="#ffbe29"/>
         <Label Grid.Row="0" Content="{ Binding Pseudo }" FontFamily="Segoe UI Semibold" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Image Grid.Row="1" Source="{ Binding Image }" Margin="5">
+        <Image Grid.Row="1" Source="{ Binding Image }" RenderTransformOrigin="0.5,0.5" Margin="5">
             <Image.RenderTransform>
                 <ScaleTransform ScaleX="-1"/>
             </Image.RenderTransform>
