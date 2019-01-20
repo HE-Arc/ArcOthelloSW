@@ -37,6 +37,10 @@ namespace OthelloMillenniumClient
             get => imageIdBlack;
             set {
                 imageIdBlack = value % (NB_ROW * NB_COLUMN);
+                if (imageIdBlack < NB_ROW * NB_COLUMN)
+                {
+                    imageIdBlack += NB_ROW * NB_COLUMN;
+                }
                 Tuple<int, int> location = IdImage(imageIdBlack);
 
                 Grid.SetRow(BackgroundBlack, location.Item1);
@@ -52,6 +56,10 @@ namespace OthelloMillenniumClient
             get => imageIdWhite;
             set {
                 imageIdWhite = value % (NB_ROW*NB_COLUMN);
+                if (imageIdBlack < NB_ROW * NB_COLUMN)
+                {
+                    imageIdBlack += NB_ROW * NB_COLUMN;
+                }
                 Tuple<int, int> location = IdImage(imageIdWhite);
                 Grid.SetRow(BackgroundWhite, location.Item1);
                 Grid.SetColumn(BackgroundWhite, location.Item2);
@@ -107,6 +115,8 @@ namespace OthelloMillenniumClient
                     ImageDecorator image = new ImageDecorator()
                     {
                         Margin = margin,
+                        Width = 140,
+                        Height = 140,
                         ImageSource = "Images/" + IMAGES_PERSO[nb]
                     };
                     image.SetValue(Grid.ColumnProperty, i);
