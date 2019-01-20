@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Tools.Classes;
 
 namespace Tools
@@ -8,8 +10,10 @@ namespace Tools
     /// </summary>
     public class Client : OthelloTCPClient
     {
+        public event EventHandler<OthelloTCPClientArgs> OnRegisterSuccessful;
         public event EventHandler<OthelloTCPClientArgs> OnOpponentDataChanged;
         public event EventHandler<OthelloTCPClientArgs> OnGameStartedReceived;
+        public event EventHandler<OthelloTCPClientArgs> OnGameReadyReceived;
 
         #region Attributes
 
@@ -17,6 +21,9 @@ namespace Tools
         private PlayerType playerType;
         private Color color;
         private int avatarID;
+
+        // Locked semaphore
+        private Semaphore semaphoreSearch = new Semaphore(0, 1);
 
         #endregion
 
@@ -102,6 +109,12 @@ namespace Tools
             // Respond to order
             OnOrderReceived += Client_OnOrderReceived;
             OnDataReceived += Client_OnDataReceived;
+            OnRegisterSuccessful += Client_OnRegisterSuccessful;
+        }
+
+        private void Client_OnRegisterSuccessful(object sender, OthelloTCPClientArgs e)
+        {
+            semaphoreSearch.Release();
         }
 
         private void Client_OnDataReceived(object sender, OthelloTCPClientDataArgs e)
@@ -118,7 +131,11 @@ namespace Tools
             switch (e.Order)
             {
                 case GetDataOrder order:
-                    Send(new Data(PlayerType, Color, Name, AvatarID));
+                    Send(GenerateData());
+                    break;
+
+                case RegisterSuccessfulOrder order:
+                    OnRegisterSuccessful?.Invoke(this, e);
                     break;
 
                 case OpponentDataChangedOrder order:
@@ -128,7 +145,14 @@ namespace Tools
                 case GameStartedOrder order:
                     OnGameStartedReceived?.Invoke(this, e);
                     break;
+
+                case GameReadyOrder order:
+                    OnGameReadyReceived?.Invoke(this, e);
+                    break;
             }
+
+            // TOREMOVE
+            Console.Error.WriteLine(e.Order.GetAcronym());
         }
 
         /// <summary>
@@ -136,7 +160,11 @@ namespace Tools
         /// </summary>
         private void Synchronize()
         {
-            Send(new Data(PlayerType, Color, Name, AvatarID));
+            if (TcpClient != null && TcpClient.Connected)
+            {
+                // TODO FIX ENUM
+                //Send(GenerateData());
+            }
         }
 
         /// <summary>
@@ -145,10 +173,8 @@ namespace Tools
         /// <param name="gameType"></param>
         public void Register(GameType gameType)
         {
-            if (TcpClient.Connected)
-            {
-                TcpClient.Close();
-            }
+            // If connected close the connection
+            TcpClient?.Close();
 
             switch (gameType)
             {
@@ -183,6 +209,8 @@ namespace Tools
         {
             if (TcpClient.Connected)
             {
+                semaphoreSearch.WaitOne();
+
                 // Send a request
                 Send(new SearchOrder(battleType == BattleType.AgainstAI ? PlayerType.AI : PlayerType.Human));
             }
@@ -197,6 +225,15 @@ namespace Tools
             {
                 Send(new ReadyOrder());
             }
+        }
+
+        /// <summary>
+        /// Generate a data package
+        /// </summary>
+        /// <returns>returns it</returns>
+        public Data GenerateData()
+        {
+            return new Data(PlayerType, Color, Name, AvatarID);
         }
 
         /// <summary>

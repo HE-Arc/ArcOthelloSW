@@ -19,8 +19,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         /// <param name="client">Who to register</param>
         public override void Register(Client client)
         {
-            // Register client to the server
-            client.Register(GameType);
+            base.Register(client);
 
             if (Player1 is null)
             {

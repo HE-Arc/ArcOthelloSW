@@ -10,7 +10,6 @@ namespace OthelloMillenniumServer
     public class TCPServer
     {
         
-
         #region Singleton
         private static readonly object padlock = new object();
         private static TCPServer instance = null;

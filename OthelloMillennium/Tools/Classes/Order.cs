@@ -122,22 +122,22 @@ namespace Tools.Classes
     [Serializable]
     public class OpponentFoundOrder : Order
     {
-        public OthelloTCPClient Opponent { get; private set; }
+        public Data OpponentData { get; private set; }
 
-        public OpponentFoundOrder(OthelloTCPClient opponent)
+        public OpponentFoundOrder(Data opponentData)
         {
-            Opponent = opponent;
+            OpponentData = opponentData;
         }
 
         protected OpponentFoundOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            Opponent = (OthelloTCPClient)info.GetValue("Opponent", typeof(OthelloTCPClient));
+            OpponentData = (Data)info.GetValue("OpponentData", typeof(Data));
         }
 
         public override string GetAcronym()
         {
-            return "OF";
+            return "OFO";
         }
 
         public override string GetDefinition()
@@ -148,7 +148,7 @@ namespace Tools.Classes
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
-            info.AddValue("Opponent", Opponent);
+            info.AddValue("OpponentData", OpponentData);
         }
     }
 
@@ -174,6 +174,26 @@ namespace Tools.Classes
         }
 
         public ReadyOrder() { }
+    }
+
+    [Serializable]
+    public class GameReadyOrder : Order
+    {
+        protected GameReadyOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
+        public override string GetAcronym()
+        {
+            return "GRO";
+        }
+
+        public override string GetDefinition()
+        {
+            return "Inform the player that the game is ready";
+        }
+
+        public GameReadyOrder() { }
     }
 
     [Serializable]

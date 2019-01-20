@@ -94,12 +94,14 @@ namespace OthelloMillenniumServer
         {
             Board = cellState;
             LastPlayer = cellStatePlayer;
-            cellStateCount = new Dictionary<CellState, int>();
+            cellStateCount = new Dictionary<CellState, int>
+            {
 
-            // Init scores
-            cellStateCount.Add(CellState.BLACK, 0);
-            cellStateCount.Add(CellState.WHITE, 0);
-            cellStateCount.Add(CellState.EMPTY, 0);
+                // Init scores
+                { CellState.BLACK, 0 },
+                { CellState.WHITE, 0 },
+                { CellState.EMPTY, 0 }
+            };
 
             // Calculate scores, counting the empty allow to know how many cells are empty
             foreach (CellState cell in Board)

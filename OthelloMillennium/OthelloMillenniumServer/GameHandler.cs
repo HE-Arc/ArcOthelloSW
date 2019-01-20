@@ -54,6 +54,9 @@ namespace OthelloMillenniumServer
             else
                 GameManager = new GameManager(BattleType.AgainstAI);
 
+            Client1.Send(new GameReadyOrder());
+            Client2.Send(new GameReadyOrder());
+
             // React to clients orders
             Client1.OnOrderReceived += OnOrderReceived;
             Client2.OnOrderReceived += OnOrderReceived;

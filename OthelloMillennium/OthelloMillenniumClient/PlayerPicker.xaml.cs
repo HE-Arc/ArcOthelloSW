@@ -104,7 +104,7 @@ namespace OthelloMillenniumClient
             int nb = 0;
             for(int i = 0; i < NB_COLUMN; ++i)
             {
-                for (int j = 0; j < NB_COLUMN; ++j)
+                for (int j = 0; j < NB_ROW; ++j)
                 {
                     ImageDecorator image = new ImageDecorator()
                     {
@@ -318,7 +318,7 @@ namespace OthelloMillenniumClient
 
         private Tuple<int, int> IdImage(int id)
         {
-            return new Tuple<int, int>((id / NB_COLUMN) - (id % NB_COLUMN), id% NB_COLUMN);
+            return new Tuple<int, int>((id / NB_COLUMN), id % NB_COLUMN);
         }
     }
 }
