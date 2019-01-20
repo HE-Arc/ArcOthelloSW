@@ -265,14 +265,16 @@ namespace OthelloMillenniumClient
                     // Will inform the opponent of the change too
                     GetClientFromColor(Color.Black).AvatarID = newId;
                 }
-
-                newId = ManageKeyUpLeftDownRight(e.Key, PlayerWhiteImageId);
-                if (newId != PlayerWhiteImageId)
+                else
                 {
-                    PlayerWhiteImageId = newId;
+                    newId = ManageKeyUpLeftDownRight(e.Key, PlayerWhiteImageId);
+                    if (newId != PlayerWhiteImageId)
+                    {
+                        PlayerWhiteImageId = newId;
 
-                    // Will inform the opponent of the change too
-                    GetClientFromColor(Color.White).AvatarID = newId;
+                        // Will inform the opponent of the change too
+                        GetClientFromColor(Color.White).AvatarID = newId;
+                    }
                 }
             }
         }
