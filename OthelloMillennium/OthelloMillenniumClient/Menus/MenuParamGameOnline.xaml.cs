@@ -23,7 +23,7 @@ namespace OthelloMillenniumClient
     {
         public UserControl player;
 
-        public event Action<MenuParamGameOnline> ParamGameOnlineEvent;
+        public event Action<MenuParamGameOnline> OnParamGameOnlineEvent;
 
         public MenuParamGameOnline(PlayerType playerType)
         {
@@ -53,7 +53,7 @@ namespace OthelloMillenniumClient
             }
             else
             {
-                ParamGameOnlineEvent(this);
+                OnParamGameOnlineEvent(this);
             }
         }
     }

@@ -6,6 +6,18 @@
         xmlns:local="clr-namespace:OthelloMillenniumClient"
         mc:Ignorable="d"
         Title="Saloon" Height="450" Width="800">
+    
+    <Window.InputBindings>
+        <KeyBinding Gesture="Right" Command="SaveAs"/>
+        <KeyBinding Gesture="Left" Command="Open"/>
+        <KeyBinding Gesture="Up" Command="New"/>
+        <KeyBinding Gesture="Down" Command="Undo"/>
+        <KeyBinding Key="A" Command="SaveAs"/>
+        <KeyBinding Key="s" Command="Open"/>
+        <KeyBinding Key="D" Command="New"/>
+        <KeyBinding Key="W" Command="Undo"/>
+    </Window.InputBindings>
+    
     <Grid x:Name="MainGrid">
         <Grid.Background>
             <ImageBrush ImageSource="/Images/Background.png" Stretch="UniformToFill"/>
@@ -26,8 +38,8 @@
             <local:PlayerPicker  x:Name="PlayerPicker" />
         </Viewbox>
         
-        <local:PlayerVisualiserBlack Grid.Column="0" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerBlack }" Margin="5"/>
-        <local:PlayerVisualiserWhite Grid.Column="3" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerWhite }" Margin="5"/>
+        <local:PlayerVisualiserBlack x:Name="BlackPlayer" Grid.Column="0" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerBlack }" Margin="5"/>
+        <local:PlayerVisualiserWhite x:Name="WhitePlayer" Grid.Column="3" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerWhite }" Margin="5"/>
 
         <Button Grid.Column="0" Grid.Row="0">Start game</Button>
     </Grid>

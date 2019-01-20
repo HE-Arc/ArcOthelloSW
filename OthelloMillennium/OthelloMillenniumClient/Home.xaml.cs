@@ -90,7 +90,9 @@ namespace OthelloMillenniumClient
             this.battleType = data.Item2;
 
             MenuParamGameLocal paramGame = new MenuParamGameLocal(playerType, battleType);
-            //TODO Event
+            paramGame.OnParamGameLocalEvent += OnParamLocal;
+
+            pageTransitionControl.ShowPage(paramGame);
         }
 
         private void OnPlayAs(PlayerType playerType)
@@ -109,8 +111,7 @@ namespace OthelloMillenniumClient
             this.battleType = battleType;
 
             MenuParamGameOnline paramGame = new MenuParamGameOnline(playerType);
-            //paramGame.BattleTypeEvent += OnPlayAgainst;
-            //TODO Event
+            paramGame.OnParamGameOnlineEvent += OnParamOnline;
 
             pageTransitionControl.ShowPage(paramGame);
         }

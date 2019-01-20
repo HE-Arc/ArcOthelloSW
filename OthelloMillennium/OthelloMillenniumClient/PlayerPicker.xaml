@@ -48,6 +48,5 @@
         <local:ImageDecorator Grid.Row="3" Grid.Column="3" Margin="10" x:Name="Stormtrooper" ImageSource="Images/Stormtrooper.png" />
         <local:ImageDecorator Grid.Row="3" Grid.Column="4" Margin="10" x:Name="TheEmperor" ImageSource="Images/TheEmperor.png"  RenderTransformOrigin="0.5, 0.5"><local:ImageDecorator.RenderTransform><ScaleTransform ScaleX="-1"/></local:ImageDecorator.RenderTransform></local:ImageDecorator>
         
-        
     </Grid>
 </UserControl>
