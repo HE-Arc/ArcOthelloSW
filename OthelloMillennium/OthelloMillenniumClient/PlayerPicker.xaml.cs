@@ -85,8 +85,6 @@ namespace OthelloMillenniumClient
             InitializeComponent();
             Init();
 
-            (Parent as Lobby).KeyDown += OnKeyDownHandler;
-
             DataContext = this;
 
             //If we are not in local, add listener on opponent avatar change
@@ -104,7 +102,7 @@ namespace OthelloMillenniumClient
             int nb = 0;
             for(int i = 0; i < NB_COLUMN; ++i)
             {
-                for (int j = 0; j < NB_COLUMN; ++j)
+                for (int j = 0; j < NB_ROW; ++j)
                 {
                     ImageDecorator image = new ImageDecorator()
                     {
@@ -218,7 +216,7 @@ namespace OthelloMillenniumClient
             }
         }
 
-        private void OnKeyDownHandler(object sender, KeyEventArgs e)
+        public void OnKeyDownHandler(object sender, KeyEventArgs e)
         {
             if (ApplicationManager.Instance.CurrentGame.GameType == GameType.Online)
             {
@@ -318,7 +316,7 @@ namespace OthelloMillenniumClient
 
         private Tuple<int, int> IdImage(int id)
         {
-            return new Tuple<int, int>((id / NB_COLUMN) - (id % NB_COLUMN), id% NB_COLUMN);
+            return new Tuple<int, int>((id / NB_COLUMN), id % NB_COLUMN);
         }
     }
 }

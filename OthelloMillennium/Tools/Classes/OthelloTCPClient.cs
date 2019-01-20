@@ -13,6 +13,7 @@ namespace Tools
     public class OthelloTCPClient
     {
         private Task listenerTask;
+        private object padlock = new object();
 
         // Informations
         public TcpClient TcpClient { get; private set; }
@@ -116,18 +117,22 @@ namespace Tools
         /// <param name="obj">What to transfer</param>
         public void Send(ISerializable obj)
         {
-            try
+            lock (padlock)
             {
-                var stream = TcpClient.GetStream();
-                if (stream.CanWrite)
+                try
                 {
-                    BinaryFormatter binaryFmt = new BinaryFormatter();
-                    binaryFmt.Serialize(stream, obj);
+                    var stream = TcpClient.GetStream();
+                    if (stream.CanWrite)
+                    {
+                        BinaryFormatter binaryFmt = new BinaryFormatter();
+                        binaryFmt.Serialize(stream, obj);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Toolbox.LogError(ex);
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine("Error while writing into socket");
+                    Toolbox.LogError(ex);
+                }
             }
         }
 
@@ -137,24 +142,28 @@ namespace Tools
         /// <returns>Deserialized object</returns>
         private object Receive()
         {
-            try
+            lock (padlock)
             {
-                var stream = TcpClient.GetStream();
-                var streamReader = new StreamReader(stream);
-
-                if (stream.CanRead)
+                try
                 {
-                    BinaryFormatter binaryFmt = new BinaryFormatter();
-                    return binaryFmt.Deserialize(stream);
-                }
-            }
-            catch (Exception ex)
-            {
-                Toolbox.LogError(ex);
-            }
+                    var stream = TcpClient.GetStream();
+                    var streamReader = new StreamReader(stream);
 
-            // Nothing could be read
-            return null;
+                    if (stream.CanRead)
+                    {
+                        BinaryFormatter binaryFmt = new BinaryFormatter();
+                        return binaryFmt.Deserialize(stream);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine("Error while reading from socket");
+                    Toolbox.LogError(ex);
+                }
+
+                // Nothing could be read
+                return null;
+            }
         }
     }
 

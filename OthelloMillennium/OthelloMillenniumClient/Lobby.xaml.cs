@@ -17,6 +17,9 @@ namespace OthelloMillenniumClient
 
             // Will listen for a gameStarted event
             ApplicationManager.Instance.Player1.OnGameStartedReceived += OnGameStartedReceived;
+
+            // Bind key event to playerpicker
+            this.KeyDown += PlayerPicker.OnKeyDownHandler;
         }
 
         private void OnGameStartedReceived(object sender, OthelloTCPClientArgs e)
@@ -29,10 +32,12 @@ namespace OthelloMillenniumClient
 
         private void SwitchToGameboard()
         {
-            //Switch to the windows Game
-            Game game = new Game();
-            game.Show();
-            this.Close();
+           Application.Current.Dispatcher.Invoke((Action)delegate {
+               //Switch to the windows Game
+               Game game = new Game();
+               game.Show();
+               this.Close();
+           });
         }
 
         private void OnStartGame(object sender, RoutedEventArgs e)

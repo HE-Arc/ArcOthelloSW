@@ -1,6 +1,8 @@
 ﻿using OthelloMillenniumClient.Classes;
 using OthelloMillenniumClient.Classes.GameHandlers;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Tools;
@@ -156,12 +158,17 @@ namespace OthelloMillenniumClient
                 //player2 = new Client(playerType, pseudo);
             }
 
-            // Register clients to applicationManager
-            ApplicationManager.Instance.CurrentGame = new LocalGameHandler();
-            ApplicationManager.Instance.CurrentGame.Register(player1);
-            ApplicationManager.Instance.CurrentGame.Register(player2);
+            new Thread(() =>
+            {
+                // Register clients to applicationManager
+                ApplicationManager.Instance.CurrentGame = new LocalGameHandler();
+                ApplicationManager.Instance.CurrentGame.OnGameReady += OnGameReady;
+                ApplicationManager.Instance.CurrentGame.Register(player1);
+                ApplicationManager.Instance.CurrentGame.Register(player2);
 
-            StartMatchmaking();
+                // TODO AVOID BUTTON SPAM
+                StartMatchmaking();
+            }).Start();
         }
 
         public void OnParamOnline(MenuParamGameOnline menuParam)
@@ -186,12 +193,17 @@ namespace OthelloMillenniumClient
                 // Create the player
                 //player1 = new Client(playerType, pseudo);
             }
+            
+            new Thread(() =>
+            {
+                // Register clients to applicationManager
+                ApplicationManager.Instance.CurrentGame = new LocalGameHandler();
+                ApplicationManager.Instance.CurrentGame.OnGameReady += OnGameReady;
+                ApplicationManager.Instance.CurrentGame.Register(player1);
 
-            // Register clients to applicationManager
-            ApplicationManager.Instance.CurrentGame = new OnlineGameHandler(battleType);
-            ApplicationManager.Instance.CurrentGame.Register(player1);
-
-            StartMatchmaking();
+                // TODO AVOID BUTTON SPAM
+                StartMatchmaking();
+            }).Start();
         }
         
         private void StartMatchmaking()
@@ -204,18 +216,15 @@ namespace OthelloMillenniumClient
             {
                 Console.Error.WriteLine(ex.Message);
             }
-
-            //ApplicationManager.Instance.CurrentGame.IsReady += OnGameReady();
-            // TODO SEGAN When matchmaking ok give some place to put windows changing code to go to lobby
-            // TODO BASTIEN : Utiliser ça ApplicationManager.Instance.CurrentGame.IsReady; pour savoir si c'est prêt ou non
-
         }
 
-        private void OnGameReady()
+        private void OnGameReady(object sender, OthelloTCPClientArgs e)
         {
-            Lobby lobby = new Lobby();
-            lobby.Show();
-            this.Close();
+            Application.Current.Dispatcher.Invoke((Action)delegate {
+                Lobby lobby = new Lobby();
+                lobby.Show();
+                this.Close();
+            });
         }
     }
 }

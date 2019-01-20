@@ -11,22 +11,33 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         public BattleType BattleType { get; protected set; }
 
         public GameState GameState { get; protected set; } = null;
-        public bool IsReady { get; protected set; } = false;
 
         public Client Player1 { get; protected set; } = null;
         public Client Player2 { get; protected set; } = null;
+
+        public event EventHandler<OthelloTCPClientArgs> OnGameReady;
         #endregion
 
         #region Abstract methods
-        public abstract void Register(Client client);
+        public virtual void Register(Client client)
+        {
+            // Register client to the server
+            client.Register(GameType);
+            client.OnGameReadyReceived += GameReadyReceived;
+            client.OnGameStateReceived += GameStateUpdate;
+        }
         public abstract void Search();
         #endregion
 
         #region Events
         protected void GameStateUpdate(object sender, OthelloTCPClientGameStateArgs e)
         {
-            IsReady = true;
             GameState = e.GameState;
+        }
+
+        private void GameReadyReceived(object sender, OthelloTCPClientArgs e)
+        {
+            OnGameReady?.Invoke(this, e);
         }
         #endregion
 
@@ -43,8 +54,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 
         public void Place(Tuple<char, int> coords)
         {
-            if (IsReady)
-                GetCurrentPlayer()?.Send(new PlayMoveOrder(coords));
+            GetCurrentPlayer()?.Send(new PlayMoveOrder(coords));
         }
         #endregion
     }

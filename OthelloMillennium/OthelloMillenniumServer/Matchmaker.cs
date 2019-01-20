@@ -8,6 +8,17 @@ using Tools.Classes;
 
 namespace OthelloMillenniumServer
 {
+    // Used as a workaround
+    internal class Container
+    {
+        public PlayerType PlayerType { get; set; }
+
+        public Container(PlayerType playerType)
+        {
+            PlayerType = playerType;
+        }
+    }
+
     public class Matchmaker
     {
         #region Singleton
@@ -39,51 +50,59 @@ namespace OthelloMillenniumServer
         #region Attributes
         private readonly HashSet<GameHandler> matches = new HashSet<GameHandler>();
         private readonly HashSet<Client> registratedClients = new HashSet<Client>();
-        private readonly Dictionary<Client, PlayerType> searchingClients = new Dictionary<Client, PlayerType>();
+        private readonly Dictionary<Client, Container> searchingClients = new Dictionary<Client, Container>();
         #endregion
 
         private void StartMatchmaking()
         {
-            try
+            if (TCPServer.Instance.Running)
             {
-                if (TCPServer.Instance.Running)
+                Task binderThread = new Task(() =>
                 {
-                    Task binderThread = new Task(() =>
+                    while (TCPServer.Instance.Running)
                     {
-                        while (TCPServer.Instance.Running)
+                        lock (padlock)
                         {
+                            List<Client> clientsToRemove = new List<Client>();
                             foreach (var kv in searchingClients)
                             {
                                 Client client = kv.Key;
-                                PlayerType opponentType = kv.Value;
+                                PlayerType opponentType = kv.Value.PlayerType;
 
-                                if (SearchOpponent(client, opponentType) is Client opponent)
+                                if (SearchOpponent(client, opponentType) is Client opponent && searchingClients[opponent].PlayerType != PlayerType.None)
                                 {
                                     // Start a new match
                                     StartNewMatch(client, opponent);
 
                                     // Remove the two from the registredClients
-                                    searchingClients.Remove(client);
-                                    searchingClients.Remove(opponent);
+                                    clientsToRemove.Add(client);
+                                    clientsToRemove.Add(opponent);
+
+                                    // Switch opponentType to None in order to prevent binding with these
+                                    // It has to be done like this since C# does not allow a modification on the list being iterated
+                                    searchingClients[client].PlayerType = PlayerType.None;
+                                    searchingClients[opponent].PlayerType = PlayerType.None;
                                 }
                             }
 
-                            // Sleep for 1 second
-                            Thread.Sleep(1000);
+                            // Remove clients
+                            foreach (Client client in clientsToRemove)
+                            {
+                                searchingClients.Remove(client);
+                            }
                         }
-                    });
 
-                    // Start the binding process
-                    binderThread.Start();
-                }
-                else
-                {
-                    throw new Exception("Matchmaking already started !");
-                }
+                        // Sleep for 1 second
+                        Thread.Sleep(1000);
+                    }
+                });
+
+                // Start the binding process
+                binderThread.Start();
             }
-            catch (Exception ex)
+            else
             {
-                Toolbox.LogError(ex);
+                throw new Exception("Matchmaking already started !");
             }
         }
 
@@ -124,11 +143,9 @@ namespace OthelloMillenniumServer
 
         private void StartNewMatch(Client client1, Client client2)
         {
-            Console.WriteLine("Starting match");
-
             // Informs clients that an opponent has be found
-            client1.Send(new OpponentFoundOrder(client2));
-            client2.Send(new OpponentFoundOrder(client1));
+            client1.Send(new OpponentFoundOrder(client2.GenerateData()));
+            client2.Send(new OpponentFoundOrder(client1.GenerateData()));
 
             // GameManager will now handle clients and put them as InGame
             var match = new GameHandler(client1, client2);
@@ -177,10 +194,15 @@ namespace OthelloMillenniumServer
             if (!IsKnown(othelloTCPClient))
             {
                 Client client = new Client(playerType, name);
-                registratedClients.Add(client);
 
                 // React to searchOrder
                 client.OnOrderReceived += Client_OnOrderReceived;
+
+                // Bind the socket
+                client.Bind(othelloTCPClient.TcpClient);
+
+                // Add the client to the dictionnary
+                registratedClients.Add(client);
 
                 // Informs the client that he is now known to the server
                 client.Send(new RegisterSuccessfulOrder());
@@ -200,7 +222,7 @@ namespace OthelloMillenniumServer
                 if(IsKnown(client))
                 {
                     registratedClients.Remove(client);
-                    searchingClients.Add(client, order.OpponentType);
+                    searchingClients.Add(client, new Container(order.OpponentType));
 
                     // Disconnect this function
                     client.OnOrderReceived -= Client_OnOrderReceived;
@@ -248,6 +270,7 @@ namespace OthelloMillenniumServer
             }
             catch (Exception ex)
             {
+                Console.Error.WriteLine("Error while registring client");
                 Toolbox.LogError(ex);
             }
 
