@@ -11,8 +11,6 @@ namespace OthelloMillenniumClient
     /// </summary>
     public partial class Lobby : Window
     {
-        //TODO Event key press
-
         public Lobby()
         {
             InitializeComponent();
@@ -31,7 +29,10 @@ namespace OthelloMillenniumClient
 
         private void SwitchToGameboard()
         {
-            // TODO Bastien
+            //Switch to the windows Game
+            Game game = new Game();
+            game.Show();
+            this.Close();
         }
 
         private void OnStartGame(object sender, RoutedEventArgs e)
