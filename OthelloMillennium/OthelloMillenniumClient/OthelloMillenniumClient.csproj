@@ -98,12 +98,19 @@
     <Compile Include="Menus\MenuOnlinePlayAgainst.xaml.cs">
       <DependentUpon>MenuOnlinePlayAgainst.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Menus\MenuParamGameLocal.xaml.cs">
+      <DependentUpon>MenuParamGameLocal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Menus\MenuParamGameOnline.xaml.cs">
+      <DependentUpon>MenuParamGameOnline.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Menus\PlayerAI.xaml.cs">
       <DependentUpon>PlayerAI.xaml</DependentUpon>
     </Compile>
     <Compile Include="Menus\PlayerName.xaml.cs">
       <DependentUpon>PlayerName.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Menus\Validable.cs" />
     <Compile Include="PlayerCardBlack.xaml.cs">
       <DependentUpon>PlayerCardBlack.xaml</DependentUpon>
     </Compile>
@@ -161,6 +168,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Menus\MenuOnlinePlayAgainst.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Menus\MenuParamGameLocal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Menus\MenuParamGameOnline.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -330,6 +345,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\AI_orange.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\download.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

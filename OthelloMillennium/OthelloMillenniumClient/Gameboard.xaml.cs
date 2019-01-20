@@ -23,7 +23,7 @@ namespace OthelloMillenniumClient
             gameState = ApplicationManager.Instance.CurrentGame.GameState;
             Init();
 
-            //ApplicationManager.Instance.CurrentGame.GetClient().OnGameStateReceived += OnReceiveGameState;
+            ApplicationManager.Instance.CurrentGame.Client.OnGameStateReceived += OnReceiveGameState;
         }
 
         private void Init()
@@ -161,7 +161,7 @@ namespace OthelloMillenniumClient
             GameHandler gameHandler = ApplicationManager.Instance.CurrentGame;
             Client currentPlayer = gameHandler.GetCurrentPlayer();
 
-            //TODO: SEGAN Remove logic from the view
+            //TODO SEGAN Should'nt we put this in a function in ApplicationManager ?
 
             // Generate a new order
             var playOrder = new PlayMoveOrder()
