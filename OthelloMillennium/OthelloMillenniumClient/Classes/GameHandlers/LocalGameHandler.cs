@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OthelloMillenniumServer;
+using System;
 using Tools;
 using Tools.Classes;
 
@@ -9,6 +10,12 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         public LocalGameHandler()
         {
             GameType = GameType.Local;
+
+            // Test if server has been started
+            if (StartLocalServer() < 0)
+            {
+                throw new Exception($"Unable to start server on port {TCPServer.Instance.Port}");
+            }
         }
 
         /// <summary>
@@ -73,6 +80,26 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                     Player2.Search(BattleType.AgainstAI);
                 }
                 BattleType = BattleType.AgainstAI;
+            }
+        }
+
+        /// <summary>
+        /// Start a local server
+        /// </summary>
+        /// <returns>Port where server is listening or -1 if it failed</returns>
+        private int StartLocalServer()
+        {
+            try
+            {
+                int port = (new Random()).Next(49152, 65535);
+                TCPServer.Instance.Port = port;
+                TCPServer.Instance.StartListening();
+                return port;
+            }
+            catch (Exception ex)
+            {
+                Toolbox.LogError(ex);
+                return -1;
             }
         }
     }

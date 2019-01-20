@@ -165,7 +165,6 @@ namespace OthelloMillenniumClient
         {
             InitializeComponent();
 
-            //TODO SEGAN -> données stockées en dans
             // ?? TODO BASTIEN : Reçues depuis les interfaces utilisateurs ?
             Pseudo1 = "TODO";
             Pseudo2 = "TODO";

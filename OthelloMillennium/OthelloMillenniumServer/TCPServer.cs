@@ -9,7 +9,7 @@ namespace OthelloMillenniumServer
 {
     public class TCPServer
     {
-        public static int Port { get; set; } = 65432;
+        
 
         #region Singleton
         private static readonly object padlock = new object();
@@ -30,12 +30,15 @@ namespace OthelloMillenniumServer
             }
         }
 
-        private TCPServer() { }
+        private TCPServer() {
+            listener = new TcpListener(IPAddress.Any, Port);
+        }
         #endregion
 
         #region Properties
-        private readonly TcpListener listener = new TcpListener(IPAddress.Any, Port);
+        private readonly TcpListener listener; 
         public bool Running { get; private set; }
+        public int Port { get; set; } = Tools.Properties.Settings.Default.OnlinePort;
         #endregion
 
         public bool StartListening()

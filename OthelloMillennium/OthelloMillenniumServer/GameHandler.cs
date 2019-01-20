@@ -29,8 +29,6 @@ namespace OthelloMillenniumServer
         /// </summary>
         public BattleType GameType => GameManager.BattleType;
 
-        public event EventHandler<GameHandlerArgs> OnGameReady;
-
         private bool client1Ready = false;
         private bool client2Ready = false;
 

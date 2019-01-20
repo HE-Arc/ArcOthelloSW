@@ -1,18 +1,7 @@
 
 using OthelloMillenniumClient.Classes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
 
 namespace OthelloMillenniumClient
 {
@@ -30,8 +19,10 @@ namespace OthelloMillenniumClient
 
         private void OnStartGame(object sender, RoutedEventArgs e)
         {
-            //TODO Start game
-            //TODO SEGAN Player is ready to start!!!
+            ApplicationManager.Instance.Player1.Ready();
+
+            // Will be used if the game is local
+            ApplicationManager.Instance.Player2?.Ready();
         }
 
     }

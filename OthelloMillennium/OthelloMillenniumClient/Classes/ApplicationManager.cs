@@ -29,17 +29,7 @@ namespace OthelloMillenniumClient.Classes
             }
         }
 
-        private ApplicationManager() {
-            //TODO SEGAN We don't want to launch a local server if we're gonna play online!
-            int port = StartLocalServer();
- 
-            // Test if server has been started
-            if (port < 0)
-            {
-                throw new Exception($"Unable to start server on port {port}");
-            }
-
-        }
+        private ApplicationManager() {}
         #endregion
 
         public GameHandler CurrentGame { get; set; }
@@ -48,25 +38,6 @@ namespace OthelloMillenniumClient.Classes
         public Client Player2 => CurrentGame.Player2;
 
         #region Methods
-
-        /// <summary>
-        /// Start a local server
-        /// </summary>
-        /// <returns>Port where server is listening or -1 if it failed</returns>
-        private int StartLocalServer() {
-            try
-            {
-                int port = (new Random()).Next(49152, 65535);
-                OthelloMillenniumServer.TCPServer.Port = port;
-                OthelloMillenniumServer.TCPServer.Instance.StartListening();
-                return port;
-            }
-            catch(Exception ex)
-            {
-                OthelloMillenniumServer.Toolbox.LogError(ex);
-                return -1;
-            }
-        }
 
         public void SetCurrentHMI() { }
         #endregion
