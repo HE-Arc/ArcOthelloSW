@@ -6,10 +6,10 @@
 		xmlns:pageTransitions="clr-namespace:WpfPageTransitions;assembly=WpfPageTransitions"
         xmlns:local="clr-namespace:OthelloMillenniumClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="Othello Millenium" Height="450" Width="800"
         ResizeMode="NoResize">
-    <Grid>
-        <Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
             <RowDefinition Height="1.2*"/>
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
@@ -23,5 +23,6 @@
         <pageTransitions:PageTransition Grid.Row="0" Grid.RowSpan="2" Name="pageTransitionControl" TransitionType="SlideAndFade" />
 
         <Label Grid.Row="1" Content="© 2019 Segan Salomon &amp; Bastien Wermeille" Foreground="#282828" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="10"/>
+
     </Grid>
 </Window>

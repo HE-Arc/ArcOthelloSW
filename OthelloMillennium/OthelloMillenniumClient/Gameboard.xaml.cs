@@ -1,4 +1,4 @@
-﻿using OthelloMillenniumClient.Classes;
+using OthelloMillenniumClient.Classes;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,23 +15,24 @@ namespace OthelloMillenniumClient
     public partial class Gameboard : UserControl
     {
         private Button[,] listButtons;
-        //private GameState gameState;
+        private GameState gameState;
 
         public Gameboard()
         {
             InitializeComponent();
-            //gameState = ApplicationManager.Instance.CurrentGame.GameState;
+            //TODO SEGAN is this gonna work? Dow we have an initial GameState?
+            gameState = ApplicationManager.Instance.CurrentGame.GameState;
             Init();
 
-            //ApplicationManager.Instance.CurrentGame.GetClient().OnGameStateReceived += OnReceiveGameState;
+            ApplicationManager.Instance.CurrentGame.Client.OnGameStateReceived += OnReceiveGameState;
         }
 
         private void Init()
         {
+            //TODO Bastien Clean of code for graphical interface
             //Create game interface
-            //TODO change
-            int width = 9;// gameState.Gameboard.GetLength(0);
-            int height = 7;// gameState.Gameboard.GetLength(1);
+            int width = gameState.Gameboard.GetLength(0);
+            int height = gameState.Gameboard.GetLength(1);
 
             listButtons = new Button[width, height];
 
@@ -161,6 +162,7 @@ namespace OthelloMillenniumClient
             GameHandler gameHandler = ApplicationManager.Instance.CurrentGame;
             Client currentPlayer = gameHandler.GetCurrentPlayer();
 
+            //TODO SEGAN Should'nt we put this in a function in ApplicationManager ?
             // Send the player new token location
             currentPlayer.Send(new PlayMoveOrder(new Tuple<char, int>(column, row)));
         }
