@@ -163,7 +163,7 @@ namespace Tools
             if (TcpClient != null && TcpClient.Connected)
             {
                 // TODO FIX ENUM
-                //Send(GenerateData());
+                Send(GenerateData());
             }
         }
 
@@ -190,15 +190,6 @@ namespace Tools
 
             // Send a register request
             Send(new RegisterOrder(PlayerType, Name));
-        }
-
-        /// <summary>
-        /// Send a order to inform an avatar change
-        /// </summary>
-        /// <param name="avatarID">id of the avatar</param>
-        public void ChangeAvatar(int avatarID)
-        {
-            AvatarID = avatarID;
         }
 
         /// <summary>

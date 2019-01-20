@@ -16,6 +16,8 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         public Client Player2 { get; protected set; } = null;
 
         public event EventHandler<OthelloTCPClientArgs> OnGameReady;
+
+        private int gameReadyReceivedCount = 0;
         #endregion
 
         #region Abstract methods
@@ -37,7 +39,15 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 
         protected void GameReadyReceived(object sender, OthelloTCPClientArgs e)
         {
-            OnGameReady?.Invoke(this, e);
+            if(GameType == GameType.Online)
+                OnGameReady?.Invoke(this, e);
+            else
+            {
+                if(gameReadyReceivedCount > 0)
+                    OnGameReady?.Invoke(this, e);
+            }
+
+            gameReadyReceivedCount += 1;
         }
         #endregion
 

@@ -34,9 +34,6 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             else if (Player2 is null)
             {
                 Player2 = client;
-
-                // Avoid saloon duplication
-                client.OnGameReadyReceived -= GameReadyReceived;
             }
             else
             {
