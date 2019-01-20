@@ -69,7 +69,6 @@ namespace OthelloMillenniumClient
             }
             else
             {
-                //TODO trigger start event
                 OnParamGameLocalEvent(this);
             }
         }

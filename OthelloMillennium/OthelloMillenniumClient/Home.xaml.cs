@@ -129,17 +129,15 @@ namespace OthelloMillenniumClient
             }
             else
             {
-                //TODO Get param if AI
+                //TODO Implement param AI
                 throw new Exception("AI not supported yet");
 
-                // TODO BASTIEN :corriger cette ligne voodoo
                 //string pseudo = (menuParam.player1 as PlayerAI);
 
                 // Create the player
                 //player1 = new Client(playerType, pseudo);
             }
 
-            //TODO Get two param
             if (battleType == BattleType.AgainstPlayer)
             {
                 string pseudo = (menuParam.player2 as PlayerName).Pseudo;
@@ -149,10 +147,9 @@ namespace OthelloMillenniumClient
             }
             else
             {
-                //TODO Get param if AI
+                //TODO Implement param AI
                 throw new Exception("AI not supported yet");
 
-                // TODO BASTIEN :corriger cette ligne voodoo
                 //string pseudo = (menuParam.player2 as PlayerAI);
 
                 // Create the player
@@ -164,8 +161,6 @@ namespace OthelloMillenniumClient
             ApplicationManager.Instance.CurrentGame.Register(player1);
             ApplicationManager.Instance.CurrentGame.Register(player2);
 
-            // TODO BASTIEN : peut-être à déplacer dans lobby ?
-            // Utiliser la méthode ChangeAvatar d'un client lors d'un clic depuis l'interface sur un avatar pour en informer l'opposant
             StartMatchmaking();
         }
 
@@ -191,9 +186,6 @@ namespace OthelloMillenniumClient
                 // Create the player
                 //player1 = new Client(playerType, pseudo);
             }
-
-            // TODO BASTIEN : peut-être à déplacer dans lobby ?
-            // Utiliser la méthode ChangeAvatar d'un client lors d'un clic depuis l'interface sur un avatar pour en informer l'opposant
 
             // Register clients to applicationManager
             ApplicationManager.Instance.CurrentGame = new OnlineGameHandler(battleType);

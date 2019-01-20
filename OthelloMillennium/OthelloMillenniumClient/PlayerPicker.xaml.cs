@@ -32,7 +32,7 @@ namespace OthelloMillenniumClient
         #endregion
 
         #region Properties
-        public int PlayerBlack
+        public int PlayerBlackImageId
         {
             get => imageIdBlack;
             set {
@@ -47,7 +47,7 @@ namespace OthelloMillenniumClient
             }
         }
 
-        public int PlayerWhite
+        public int PlayerWhiteImageId
         {
             get => imageIdWhite;
             set {
@@ -144,8 +144,8 @@ namespace OthelloMillenniumClient
             MainGrid.Children.Add(blackSelector);
 
             //TODO SEGAN get initial player image id 
-            PlayerBlack = 0;
-            PlayerWhite = 19;
+            PlayerBlackImageId = 0;
+            PlayerWhiteImageId = 19;
         }
         
         /// <summary>
@@ -209,11 +209,11 @@ namespace OthelloMillenniumClient
             {
                 if (order.Data.Color == Color.White)
                 {
-                    PlayerWhite = order.Data.AvatarID;
+                    PlayerWhiteImageId = order.Data.AvatarID;
                 }
                 else
                 {
-                    PlayerBlack = order.Data.AvatarID;
+                    PlayerBlackImageId = order.Data.AvatarID;
                 }
             }
         }
@@ -225,10 +225,10 @@ namespace OthelloMillenniumClient
                 // Mode online, wasd et les touches flèchés
                 if (ApplicationManager.Instance.Player1.Color == Color.White)
                 {
-                    int newId = ManageKeyUpLeftDownRight(e.Key, ManageKeyWASD(e.Key, PlayerWhite));
-                    if(newId != PlayerWhite)
+                    int newId = ManageKeyUpLeftDownRight(e.Key, ManageKeyWASD(e.Key, PlayerWhiteImageId));
+                    if(newId != PlayerWhiteImageId)
                     {
-                        PlayerWhite = newId;
+                        PlayerWhiteImageId = newId;
 
                         // Will inform the opponent of the change too
                         ApplicationManager.Instance.Player1.AvatarID = newId;
@@ -236,10 +236,10 @@ namespace OthelloMillenniumClient
                 }
                 else
                 {
-                    int newId = ManageKeyUpLeftDownRight(e.Key, ManageKeyWASD(e.Key, PlayerBlack));
-                    if (newId != PlayerBlack)
+                    int newId = ManageKeyUpLeftDownRight(e.Key, ManageKeyWASD(e.Key, PlayerBlackImageId));
+                    if (newId != PlayerBlackImageId)
                     {
-                        PlayerBlack = newId;
+                        PlayerBlackImageId = newId;
 
                         // Will inform the opponent of the change too
                         ApplicationManager.Instance.Player1.AvatarID = newId;
@@ -249,21 +249,21 @@ namespace OthelloMillenniumClient
             else
             {
                 //Mode local, wasd pour le joueur à droite et et touches flèchés pour le joueur à gauche
-                PlayerBlack = ManageKeyWASD(e.Key, PlayerBlack);
+                PlayerBlackImageId = ManageKeyWASD(e.Key, PlayerBlackImageId);
 
-                int newId = ManageKeyWASD(e.Key, PlayerBlack);
-                if (newId != PlayerWhite)
+                int newId = ManageKeyWASD(e.Key, PlayerBlackImageId);
+                if (newId != PlayerWhiteImageId)
                 {
-                    PlayerWhite = newId;
+                    PlayerWhiteImageId = newId;
 
                     // Will inform the opponent of the change too
                     GetClientFromColor(Color.White).AvatarID = newId;
                 }
 
-                newId = ManageKeyUpLeftDownRight(e.Key, PlayerWhite);
-                if (newId != PlayerBlack)
+                newId = ManageKeyUpLeftDownRight(e.Key, PlayerWhiteImageId);
+                if (newId != PlayerBlackImageId)
                 {
-                    PlayerBlack = newId;
+                    PlayerBlackImageId = newId;
 
                     // Will inform the opponent of the change too
                     GetClientFromColor(Color.Black).AvatarID = newId;

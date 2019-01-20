@@ -29,6 +29,8 @@ namespace OthelloMillenniumClient
         {
             InitializeComponent();
             Init();
+
+            DataContext = this;
         }
 
         private void Init()
