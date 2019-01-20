@@ -108,7 +108,7 @@ namespace Tools
 
         public void Bind(TcpClient tcpClient)
         {
-            this.TcpClient = tcpClient;
+            TcpClient = tcpClient;
         }
 
         /// <summary>
