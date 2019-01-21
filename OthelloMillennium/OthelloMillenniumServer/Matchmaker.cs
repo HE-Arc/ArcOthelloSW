@@ -212,13 +212,11 @@ namespace OthelloMillenniumServer
                     // Informs the client that he is now known to the server
                     client.Send(new RegisterSuccessfulOrder());
 
-                return true;
+                    return true;
+                }
             }
-            else
-            {
-                Console.Error.WriteLine("Duplicate call for matchmaking with SingleClient");
-                return false;
-            }
+            Console.Error.WriteLine("Duplicate call for matchmaking with SingleClient");
+            return false;
         }
 
         private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
