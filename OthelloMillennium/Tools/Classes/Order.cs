@@ -430,7 +430,7 @@ namespace Tools
 
         public override string GetAcronym()
         {
-            return "OACO";
+            return "OAC";
         }
 
         public override string GetDefinition()

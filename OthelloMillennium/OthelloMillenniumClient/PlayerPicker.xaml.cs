@@ -102,31 +102,32 @@ namespace OthelloMillenniumClient
             if(ApplicationManager.Instance.CurrentGame.GameType == GameType.Online)
             {
                 ApplicationManager.Instance.CurrentGame.Player1.OnOpponentAvatarChanged += OnOpponentAvatarChange;
-                ApplicationManager.Instance.CurrentGame.Player2.OnOpponentAvatarChanged += OnOpponentAvatarChange;
+                //ApplicationManager.Instance.CurrentGame.Player2.OnOpponentAvatarChanged += OnOpponentAvatarChange;
             }
         }
         
         private void Init()
         {
             Thickness margin = new Thickness(10);
+            Point origin = new Point(0.5, 0.5);
 
             int nb = 0;
-            for (int j = 0; j < NB_ROW; ++j)
+            for (int i = 0; i < NB_ROW; ++i)
             {
-                for(int i = 0; i < NB_COLUMN; ++i)
+                for(int j = 0; j < NB_COLUMN; ++j)
                 {
                     ImageDecorator image = new ImageDecorator()
                     {
                         Margin = margin,
                         Width = 140,
                         Height = 140,
-                        ImageSource = "Images/" + IMAGES_PERSO[nb],
-                        RenderTransformOrigin = new Point(0.5, 0.5),
+                        ImageSource = IMAGE_FOLDER + IMAGES_PERSO[nb],
+                        RenderTransformOrigin = origin,
                         RenderTransform = (nb % 2 == 0) ? flip : noFlip
                     };
 
-                    image.SetValue(Grid.ColumnProperty, i);
-                    image.SetValue(Grid.RowProperty, j);
+                    image.SetValue(Grid.RowProperty, i);
+                    image.SetValue(Grid.ColumnProperty, j);
                     
                     MainGrid.Children.Add(image);
 
@@ -137,13 +138,13 @@ namespace OthelloMillenniumClient
             whiteSelector = new Selector()
             {
                 Color = "White",
-                RenderTransformOrigin = new Point(0.5, 0.5)
+                RenderTransformOrigin = origin
             };
 
             blackSelector = new Selector()
             {
                 Color = "Black",
-                RenderTransformOrigin = new Point(0.5, 0.5)
+                RenderTransformOrigin = origin
             };
 
             //Add selectors
@@ -151,8 +152,9 @@ namespace OthelloMillenniumClient
             MainGrid.Children.Add(blackSelector);
 
             //TODO SEGAN get initial player image id 
-            PlayerBlackImageId = 0;
-            PlayerWhiteImageId = 19;
+            Console.WriteLine(GetClientFromColor(Color.Black).AvatarID + "", " ids ", GetClientFromColor(Color.Black).AvatarID);
+            PlayerBlackImageId = GetClientFromColor(Color.Black).AvatarID;
+            PlayerWhiteImageId = GetClientFromColor(Color.White).AvatarID;
         }
         
         /// <summary>
@@ -231,51 +233,61 @@ namespace OthelloMillenniumClient
         {
             if (ApplicationManager.Instance.CurrentGame.GameType == GameType.Online)
             {
-                // Mode online, wasd et les touches flèchés
-                if (ApplicationManager.Instance.Player1.Color == Color.White)
-                {
-                    int newId = ManageKeyUpLeftDownRight(e.Key, ManageKeyWASD(e.Key, PlayerWhiteImageId));
-                    if(newId != PlayerWhiteImageId)
-                    {
-                        PlayerWhiteImageId = newId;
+                OnKeyDownOnline(e.Key);
+            }
+            else
+            {
+                OnKeyDownLocal(e.Key);
+            }
+        }
 
-                        // Will inform the opponent of the change too
-                        ApplicationManager.Instance.Player1.AvatarID = newId;
-                    }
-                }
-                else
+        private void OnKeyDownOnline(Key key)
+        {
+            // Mode online, wasd et les touches flèchés
+            if (ApplicationManager.Instance.Player1.Color == Color.White)
+            {
+                int newId = ManageKeyUpLeftDownRight(key, ManageKeyWASD(key, PlayerWhiteImageId));
+                if (newId != PlayerWhiteImageId)
                 {
-                    int newId = ManageKeyUpLeftDownRight(e.Key, ManageKeyWASD(e.Key, PlayerBlackImageId));
-                    if (newId != PlayerBlackImageId)
-                    {
-                        PlayerBlackImageId = newId;
+                    PlayerWhiteImageId = newId;
 
-                        // Will inform the opponent of the change too
-                        ApplicationManager.Instance.Player1.AvatarID = newId;
-                    }
+                    // Will inform the opponent of the change too
+                    ApplicationManager.Instance.Player1.AvatarID = PlayerWhiteImageId;
                 }
             }
             else
             {
-                //Mode local, wasd pour le joueur à droite et et touches flèchés pour le joueur à gauche
-                int newId = ManageKeyWASD(e.Key, PlayerBlackImageId);
+                int newId = ManageKeyUpLeftDownRight(key, ManageKeyWASD(key, PlayerBlackImageId));
                 if (newId != PlayerBlackImageId)
                 {
                     PlayerBlackImageId = newId;
 
                     // Will inform the opponent of the change too
-                    GetClientFromColor(Color.Black).AvatarID = newId;
+                    ApplicationManager.Instance.Player1.AvatarID = PlayerBlackImageId;
                 }
-                else
-                {
-                    newId = ManageKeyUpLeftDownRight(e.Key, PlayerWhiteImageId);
-                    if (newId != PlayerWhiteImageId)
-                    {
-                        PlayerWhiteImageId = newId;
+            }
+        }
 
-                        // Will inform the opponent of the change too
-                        GetClientFromColor(Color.White).AvatarID = newId;
-                    }
+        private void OnKeyDownLocal(Key key)
+        {
+            //Mode local, wasd pour le joueur à droite et et touches flèchés pour le joueur à gauche
+            int newId = ManageKeyWASD(key, PlayerBlackImageId);
+            if (newId != PlayerBlackImageId)
+            {
+                PlayerBlackImageId = newId;
+
+                // Will inform the opponent of the change too
+                GetClientFromColor(Color.Black).AvatarID = PlayerBlackImageId;
+            }
+            else
+            {
+                newId = ManageKeyUpLeftDownRight(key, PlayerWhiteImageId);
+                if (newId != PlayerWhiteImageId)
+                {
+                    PlayerWhiteImageId = newId;
+
+                    // Will inform the opponent of the change too
+                    GetClientFromColor(Color.White).AvatarID = PlayerWhiteImageId;
                 }
             }
         }

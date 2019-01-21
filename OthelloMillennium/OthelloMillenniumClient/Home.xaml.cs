@@ -25,6 +25,7 @@ namespace OthelloMillenniumClient
         private MenuLocalBattleType menuLocalBattleType;
         private MenuOnlinePlayAs menuOnlinePlayAs;
         private MenuOnlinePlayAgainst menuOnlinePlayAgainst;
+        private Semaphore lockWindow = new Semaphore(1, 1);
 
         public MainWindow()
         {
@@ -219,11 +220,14 @@ namespace OthelloMillenniumClient
 
         private void OnGameReady(object sender, OthelloTCPClientArgs e)
         {
-            Application.Current.Dispatcher.Invoke((Action)delegate {
-                Lobby lobby = new Lobby();
-                lobby.Show();
-                this.Close();
-            });
+            if (lockWindow.WaitOne(0))
+            {
+                Application.Current.Dispatcher.Invoke((Action)delegate {
+                    Lobby lobby = new Lobby();
+                    lobby.Show();
+                    Close();
+                });
+            }
         }
     }
 }

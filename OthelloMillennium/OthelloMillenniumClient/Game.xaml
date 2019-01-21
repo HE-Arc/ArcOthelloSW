@@ -25,7 +25,7 @@
 
         <Rectangle Grid.Column="1"  Grid.Row="0"  Grid.RowSpan="2" Height="405" Width="66" Fill="#60b5b5b7" VerticalAlignment="Top" HorizontalAlignment="Center"/>
         <Rectangle Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" Height="156" Fill="#60b5b5b7" Width="66" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
-        <Label Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" x:Name="score1" Content="12" Foreground="#b5b5b7" Width="66" VerticalAlignment="Top" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" Height="440"/>
+        <Label Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" x:Name="score1" Content="12" Foreground="#b5b5b7" Width="66" VerticalAlignment="Top" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" Height="285" Margin="1.6,0,1.2,0"/>
         <Label Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" x:Name="score" Content="12" Foreground="#b5b5b7" Width="66" VerticalAlignment="Bottom" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" Height="156"/>
 
         <Viewbox Grid.Column="2" Grid.Row="0" Grid.RowSpan="2">
