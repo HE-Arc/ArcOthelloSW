@@ -191,17 +191,9 @@ namespace OthelloMillenniumServer
                     // A client asked for the gameState, send it back to him
                     sender.Send(GameManager.Export());
                 }
-                else if (e.Order is GetDataOrder getDataOrder)
+                else if (e.Order is AvatarChangedOrder avatarChangedOrder)
                 {
-                    sender.Send(new Data(sender.PlayerType, sender.Color, sender.Name, sender.AvatarID));
-                }
-                else if (e.Order is GetOpponentDataOrder getOpponentDataOrder)
-                {
-                    sender.Send(new Data(opponent.PlayerType, opponent.Color, opponent.Name, opponent.AvatarID));
-                }
-                else if (e.Order is OpponentDataChangedOrder opponentDataChangedOrder)
-                {
-                    opponent.Send(opponentDataChangedOrder.Data);
+                    opponent.Send(new OpponentAvatarChangedOrder(avatarChangedOrder.AvatarID));
                 }
                 else if (e.Order is SaveOrder saveOrder)
                 {

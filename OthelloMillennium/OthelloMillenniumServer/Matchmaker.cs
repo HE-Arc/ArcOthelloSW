@@ -146,8 +146,8 @@ namespace OthelloMillenniumServer
             lock (padlock)
             {
                 // Informs clients that an opponent has be found
-                client1.Send(new OpponentFoundOrder(client2.GenerateData()));
-                client2.Send(new OpponentFoundOrder(client1.GenerateData()));
+                client1.Send(new OpponentFoundOrder(client2.Name));
+                client2.Send(new OpponentFoundOrder(client1.Name));
 
                 // GameManager will now handle clients and put them as InGame
                 var match = new GameHandler(client1, client2);

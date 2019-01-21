@@ -10,7 +10,7 @@ namespace Tools
     public class Client : OthelloTCPClient
     {
         public event EventHandler<OthelloTCPClientArgs> OnRegisterSuccessful;
-        public event EventHandler<OthelloTCPClientArgs> OnOpponentDataChanged;
+        public event EventHandler<OthelloTCPClientArgs> OnOpponentAvatarChanged;
         public event EventHandler<OthelloTCPClientArgs> OnGameStartedReceived;
         public event EventHandler<OthelloTCPClientArgs> OnGameReadyReceived;
 
@@ -43,13 +43,12 @@ namespace Tools
             set
             {
                 name = value;
-                Synchronize();
             }
         }
 
         /// <summary>
-        /// Get : get the PlayerType binded
-        /// Set : set the PlayerType and inform the server of the change
+        /// Get : get the PlayerType
+        /// Set : set the PlayerType
         /// </summary>
         public PlayerType PlayerType
         {
@@ -60,13 +59,12 @@ namespace Tools
             set
             {
                 playerType = value;
-                Synchronize();
             }
         }
 
         /// <summary>
-        /// Get : get the Color binded
-        /// Set : set the Color and inform the server of the change
+        /// Get : get the Color
+        /// Set : set the Color
         /// </summary>
         public Color Color
         {
@@ -77,7 +75,6 @@ namespace Tools
             set
             {
                 color = value;
-                Synchronize();
             }
         }
 
@@ -93,7 +90,7 @@ namespace Tools
             set
             {
                 avatarID = value;
-                Synchronize();
+                Send(new AvatarChangedOrder(avatarID));
             }
         }
 
@@ -107,7 +104,6 @@ namespace Tools
 
             // Respond to order
             OnOrderReceived += Client_OnOrderReceived;
-            OnDataReceived += Client_OnDataReceived;
             OnRegisterSuccessful += Client_OnRegisterSuccessful;
         }
 
@@ -116,29 +112,21 @@ namespace Tools
             semaphoreSearch.Release();
         }
 
-        private void Client_OnDataReceived(object sender, OthelloTCPClientDataArgs e)
-        {
-            AvatarID = e.Data.AvatarID;
-            Color = (Color)e.Data.Color;
-
-            // Inform opponent that this client's data has changed
-            Send(new OpponentDataChangedOrder(e.Data));
-        }
-
         private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
         {
             switch (e.Order)
             {
-                case GetDataOrder order:
-                    Send(GenerateData());
+                case OpponentAvatarChangedOrder order:
+                    OnOpponentAvatarChanged?.Invoke(this, e);
                     break;
 
                 case RegisterSuccessfulOrder order:
                     OnRegisterSuccessful?.Invoke(this, e);
                     break;
 
-                case OpponentDataChangedOrder order:
-                    OnOpponentDataChanged?.Invoke(this, e);
+                // Used by the server
+                case AvatarChangedOrder order:
+                    avatarID = order.AvatarID;
                     break;
 
                 case GameStartedOrder order:
@@ -152,18 +140,6 @@ namespace Tools
 
             // TODO REMOVE
             Console.Error.WriteLine(e.Order.GetAcronym());
-        }
-
-        /// <summary>
-        /// Whenever a property is changed this method is called
-        /// </summary>
-        private void Synchronize()
-        {
-            if (TcpClient != null && TcpClient.Connected)
-            {
-                // TODO FIXME
-                // Send(GenerateData());
-            }
         }
 
         /// <summary>
@@ -197,13 +173,10 @@ namespace Tools
         /// <param name="battleType"></param>
         public void Search(BattleType battleType)
         {
-            if (TcpClient.Connected)
-            {
-                semaphoreSearch.WaitOne();
+            semaphoreSearch.WaitOne();
 
-                // Send a request
-                Send(new SearchOrder(battleType == BattleType.AgainstAI ? PlayerType.AI : PlayerType.Human));
-            }
+            // Send a request
+            Send(new SearchOrder(battleType == BattleType.AgainstAI ? PlayerType.AI : PlayerType.Human));
         }
 
         /// <summary>
@@ -211,20 +184,7 @@ namespace Tools
         /// </summary>
         public void Ready()
         {
-            //TODO SGAN Check
-            if (TcpClient.Connected)
-            {
-                Send(new ReadyOrder());
-            }
-        }
-
-        /// <summary>
-        /// Generate a data package
-        /// </summary>
-        /// <returns>returns it</returns>
-        public Data GenerateData()
-        {
-            return new Data(PlayerType, Color, Name, AvatarID);
+            Send(new ReadyOrder());
         }
 
         /// <summary>

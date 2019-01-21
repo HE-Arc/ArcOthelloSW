@@ -17,10 +17,7 @@ namespace Tools
         public abstract string GetAcronym();
         public abstract string GetDefinition();
 
-        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            //Nothing
-        }
+        public abstract void GetObjectData(SerializationInfo info, StreamingContext context);
     }
 
     #region Handshake
@@ -39,8 +36,8 @@ namespace Tools
         protected RegisterRequestOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            PlayerType = (int)info.GetValue("PlayerType", typeof(int));
-            Name = (string)info.GetValue("Name", typeof(string));
+            PlayerType = info.GetInt32("PlayerType");
+            Name = info.GetString("Name");
         }
 
         public override string GetAcronym()
@@ -77,6 +74,9 @@ namespace Tools
             return "Inform current player that he has been registred successfully";
         }
 
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
+
         public RegisterSuccessfulOrder() { }
     }
 
@@ -94,7 +94,7 @@ namespace Tools
         protected SearchOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            OpponentType = (int)info.GetValue("OpponentType", typeof(int));
+            OpponentType = info.GetInt32("OpponentType");
         }
 
         public override string GetAcronym()
@@ -116,17 +116,17 @@ namespace Tools
     [Serializable]
     public class OpponentFoundOrder : Order
     {
-        public Data OpponentData { get; private set; }
+        public string OpponentName { get; private set; }
 
-        public OpponentFoundOrder(Data opponentData)
+        public OpponentFoundOrder(string opponentName)
         {
-            OpponentData = opponentData;
+            OpponentName = opponentName;
         }
 
         protected OpponentFoundOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            OpponentData = (Data)info.GetValue("OpponentData", typeof(Data));
+            OpponentName = info.GetString("OpponentName");
         }
 
         public override string GetAcronym()
@@ -141,7 +141,7 @@ namespace Tools
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("OpponentData", OpponentData);
+            info.AddValue("OpponentName", OpponentName);
         }
     }
 
@@ -166,6 +166,9 @@ namespace Tools
             return "Inform the gameHandler that the player is ready";
         }
 
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
+
         public ReadyOrder() { }
     }
 
@@ -185,6 +188,9 @@ namespace Tools
         {
             return "Inform the player that the game is ready";
         }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
 
         public GameReadyOrder() { }
     }
@@ -206,6 +212,9 @@ namespace Tools
             return "Inform the player that the game started";
         }
 
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
+
         public GameStartedOrder() { }
     }
 
@@ -225,6 +234,9 @@ namespace Tools
         {
             return "Inform current player that the game has ended";
         }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
 
         public GameEndedOrder() { }
     }
@@ -247,7 +259,7 @@ namespace Tools
 
         public override string GetAcronym()
         {
-            return "PM"; // ExampleOrder
+            return "PM";
         }
 
         public override string GetDefinition()
@@ -278,6 +290,9 @@ namespace Tools
             return "Inform current player that he begins";
         }
 
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
+
         public PlayerBeginOrder() { }
     }
 
@@ -298,32 +313,15 @@ namespace Tools
             return "Inform current player that he has to await his turn";
         }
 
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
+
         public PlayerAwaitOrder() { }
     }
 
     #endregion
 
     #region Synchronization
-
-    [Serializable]
-    public class GetDataOrder : Order
-    {
-        public GetDataOrder() { }
-
-        protected GetDataOrder(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        { }
-
-        public override string GetAcronym()
-        {
-            return "GDO";
-        }
-
-        public override string GetDefinition()
-        {
-            return "Ask the server for data's";
-        }
-    }
 
     [Serializable]
     public class GetCurrentGameStateOrder : Order
@@ -342,7 +340,45 @@ namespace Tools
             return "Ask the server for the current gameState";
         }
 
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
+
         public GetCurrentGameStateOrder() { }
+    }
+
+    /// <summary>
+    /// Client send this whenever it changes his datas
+    /// </summary>
+    [Serializable]
+    public class AvatarChangedOrder : Order
+    {
+        public int AvatarID { get; private set; }
+
+        public AvatarChangedOrder(int avatarID)
+        {
+            AvatarID = avatarID;
+        }
+
+        protected AvatarChangedOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            AvatarID = info.GetInt32("AvatarID");
+        }
+
+        public override string GetAcronym()
+        {
+            return "OACO";
+        }
+
+        public override string GetDefinition()
+        {
+            return "Client changed his avatar";
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("AvatarID", AvatarID);
+        }
     }
 
     #region Opponent
@@ -351,54 +387,34 @@ namespace Tools
     /// Client send this whenever it changes his datas
     /// </summary>
     [Serializable]
-    public class OpponentDataChangedOrder : Order
+    public class OpponentAvatarChangedOrder : Order
     {
-        public Data Data { get; private set; }
+        public int AvatarID { get; private set; }
 
-        public OpponentDataChangedOrder(Data data)
+        public OpponentAvatarChangedOrder(int avatarID)
         {
-            Data = data;
+            AvatarID = avatarID;
         }
 
-        protected OpponentDataChangedOrder(SerializationInfo info, StreamingContext context)
+        protected OpponentAvatarChangedOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            Data = (Data)info.GetValue("Data", typeof(Data));
+            AvatarID = info.GetInt32("AvatarID");
         }
 
         public override string GetAcronym()
         {
-            return "ODCO";
+            return "OACO";
         }
 
         public override string GetDefinition()
         {
-            return "Opponent Data changed";
+            return "Opponent changed his avatar";
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("Data", Data);
-        }
-    }
-
-    [Serializable]
-    public class GetOpponentDataOrder : Order
-    {
-        public GetOpponentDataOrder() { }
-
-        protected GetOpponentDataOrder(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        { }
-
-        public override string GetAcronym()
-        {
-            return "GODO";
-        }
-
-        public override string GetDefinition()
-        {
-            return "Ask the server for opponent's data";
+            info.AddValue("AvatarID", AvatarID);
         }
     }
 
@@ -425,6 +441,9 @@ namespace Tools
             return "Inform current player that the opponent has disconnected";
         }
 
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
+
         public OpponentDisconnectedOrder() { }
     }
 
@@ -444,6 +463,9 @@ namespace Tools
         {
             return "Inform current player that the opponent has lost connection with the server";
         }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
 
         public OpponentConnectionLostOrder() { }
     }
@@ -469,6 +491,9 @@ namespace Tools
             return "Ask the server to save the game";
         }
 
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
+
         public SaveOrder() { }
     }
 
@@ -490,6 +515,9 @@ namespace Tools
         {
             return "Ask the server to load the game";
         }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
     }
 
     [Serializable]
@@ -508,6 +536,9 @@ namespace Tools
         {
             return "Ask the server to undo the last move";
         }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
 
         public UndoOrder() { }
     }
@@ -528,6 +559,9 @@ namespace Tools
         {
             return "Ask the server to redo the last move";
         }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
 
         public RedoOrder() { }
     }
@@ -550,6 +584,9 @@ namespace Tools
         {
             return "inform the player that this action is denied";
         }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        { }
 
         public DeniedOrder() { }
     }
