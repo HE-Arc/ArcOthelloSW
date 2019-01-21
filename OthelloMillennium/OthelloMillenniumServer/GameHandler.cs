@@ -36,17 +36,23 @@ namespace OthelloMillenniumServer
         {
             // Init Client 1
             Client1 = black;
-            Client1.Color = Color.Black;
-            Client1.AvatarID = 0;
-
+            
             // Init Client 2
             Client2 = white;
-            Client2.Color = Color.White;
-            Client2.AvatarID = 19;
-
+            
             // Watch for connection issues
             Client1.OnConnectionLost += Client_OnConnectionLost;
             Client2.OnConnectionLost += Client_OnConnectionLost;
+
+            // React to clients orders
+            Client1.OnOrderReceived += OnOrderReceived;
+            Client2.OnOrderReceived += OnOrderReceived;
+
+            // Update clients
+            Client1.Color = Color.Black;
+            Client1.AvatarID = 0;
+            Client2.Color = Color.White;
+            Client2.AvatarID = 19;
 
             // Init gameManager
             //TODO SEGAN Th following lines are broken, I on't need BattleType but GameType
@@ -57,10 +63,6 @@ namespace OthelloMillenniumServer
 
             Client1.Send(new GameReadyOrder());
             Client2.Send(new GameReadyOrder());
-
-            // React to clients orders
-            Client1.OnOrderReceived += OnOrderReceived;
-            Client2.OnOrderReceived += OnOrderReceived;
         }
 
         /// <summary>
@@ -197,6 +199,10 @@ namespace OthelloMillenniumServer
                 else if (e.Order is GetOpponentDataOrder getOpponentDataOrder)
                 {
                     sender.Send(new Data(opponent.PlayerType, opponent.Color, opponent.Name, opponent.AvatarID));
+                }
+                else if (e.Order is OpponentDataChangedOrder opponentDataChangedOrder)
+                {
+                    opponent.Send(opponentDataChangedOrder.Data);
                 }
                 else if (e.Order is SaveOrder saveOrder)
                 {
