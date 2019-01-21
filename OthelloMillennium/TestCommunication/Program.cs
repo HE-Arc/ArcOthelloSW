@@ -16,24 +16,19 @@ namespace TestCommunication
 
             client1.OnGameStartedReceived += OnGameStartedReceived;
 
-            // Init the game
-            new Task(() =>
-            {
-                // Register clients to applicationManager
-                ApplicationManager.Instance.CurrentGame = new LocalGameHandler();
-                ApplicationManager.Instance.CurrentGame.OnGameReady += OnGameReady;
+            // Register clients to applicationManager
+            ApplicationManager.Instance.CurrentGame = new LocalGameHandler();
+            ApplicationManager.Instance.CurrentGame.OnGameReady += OnGameReady;
 
-                ApplicationManager.Instance.CurrentGame.Register(client1);
-                ApplicationManager.Instance.CurrentGame.Register(client2);
+            ApplicationManager.Instance.CurrentGame.Register(client1);
+            ApplicationManager.Instance.CurrentGame.Register(client2);
 
-                // TODO AVOID BUTTON SPAM
-                ApplicationManager.Instance.CurrentGame.Search();
+            // TODO AVOID BUTTON SPAM
+            ApplicationManager.Instance.CurrentGame.Search();
 
-                // Register clients to applicationManager
-                ApplicationManager.Instance.CurrentGame.Player1.Ready();
-                ApplicationManager.Instance.CurrentGame.Player2.Ready();
-
-            }).Start();
+            // Register clients to applicationManager
+            ApplicationManager.Instance.CurrentGame.Player1.Ready();
+            ApplicationManager.Instance.CurrentGame.Player2.Ready();
 
             // Wait
             Console.ReadLine();

@@ -15,13 +15,5 @@ namespace Tools
             sb.Append(ex.Message);
             Console.Error.WriteLine(sb.ToString());
         }
-
-        public static bool Connected(OthelloTCPClient client)
-        {
-            var s = client.TcpClient.Client;
-            bool part1 = s.Poll(1000, System.Net.Sockets.SelectMode.SelectRead);
-            bool part2 = s.Available == 0;
-            return !(part1 & part2);
-        }
     }
 }

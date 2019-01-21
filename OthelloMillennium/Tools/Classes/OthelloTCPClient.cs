@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -9,10 +10,13 @@ namespace Tools
 {
     public class OthelloTCPClient
     {
+        #region Attributes
         private readonly BinaryFormatter formatter = new BinaryFormatter();
+        private readonly ConcurrentQueue<ISerializable> requests = new ConcurrentQueue<ISerializable>();
+        #endregion
 
         // Informations
-        public TcpClient TcpClient { get; private set; }
+        private TcpClient tcpClient;
         
         // Events
         public event EventHandler<OthelloTCPClientArgs> OnOrderReceived;
@@ -30,7 +34,7 @@ namespace Tools
             {
                 while (true)
                 {
-                    if (TcpClient == null)
+                    if (!IsConnected())
                     {
                         // Wait 0.5 second and check TcpConnection again
                         Thread.Sleep(500);
@@ -67,19 +71,44 @@ namespace Tools
             {
                 while (true)
                 {
-                    if (TcpClient == null)
+                    if (tcpClient == null)
                     {
                         // Wait 1 second and check TcpConnection again
                         Thread.Sleep(1000);
                     }
                     else
                     {
-                        if (!Toolbox.Connected(this))
+                        if (!tcpClient.Connected)
                         {
                             OnConnectionLost?.Invoke(this, new EventArgs());
                         }
 
                         Thread.Sleep(5000);
+                    }
+                }
+            }).Start();
+
+            // Sender task
+            new Task(() =>
+            {
+                while (true)
+                {
+                    if (!IsConnected())
+                    {
+                        // Wait 0.5 second and check TcpConnection again
+                        Thread.Sleep(500);
+                    }
+                    else
+                    {
+                        // Order over object
+                        if(requests.Count > 0)
+                        {
+                            requests.TryDequeue(out ISerializable output);
+                            Write(output);
+                        }
+
+                        // Avoid flames coming out of cpu
+                        Thread.Sleep(10);
                     }
                 }
             }).Start();
@@ -90,7 +119,16 @@ namespace Tools
             Bind(new TcpClient());
 
             // Register this client to the server
-            TcpClient.Connect(serverHostname, serverPort);
+            tcpClient.Connect(serverHostname, serverPort);
+        }
+
+        /// <summary>
+        /// Attach a tcpClient to this client
+        /// </summary>
+        /// <param name="othelloTCPClient"></param>
+        public void Bind(OthelloTCPClient othelloTCPClient)
+        {
+            Bind(othelloTCPClient.tcpClient);
         }
 
         /// <summary>
@@ -102,43 +140,46 @@ namespace Tools
             if (tcpClient == null)
                 throw new ArgumentNullException("tcpClient");
             else
-                TcpClient = tcpClient;
+                this.tcpClient = tcpClient;
         }
 
         /// <summary>
         /// Send a serialized object to the server
         /// </summary>
         /// <param name="obj">What to transfer</param>
-        public void Send(ISerializable obj)
+        public void Send(ISerializable serializable)
+        {
+            requests.Enqueue(serializable);
+        }
+
+        private void Write(ISerializable serializable)
         {
             lock (formatter)
             {
-                if (TcpClient != null && TcpClient.Connected)
+                try
                 {
-                    try
-                    {
-                        NetworkStream stream = TcpClient.GetStream();
+                    Console.WriteLine("Send " + (serializable as Order).GetAcronym());
 
-                        Console.WriteLine("Send " + (obj as Order).GetAcronym());
+                    // Get the stream
+                    NetworkStream stream = tcpClient.GetStream();
 
-                        // Serialize object
-                        formatter.Serialize(stream, obj);
+                    // Serialize object
+                    formatter.Serialize(stream, serializable);
 
-                        // Flush the stream
-                        stream.Flush();
-                            
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.Error.WriteLine("Error while writing into socket");
-                        Toolbox.LogError(ex);
-                    }
+                    // Flush the stream
+                    stream.Flush();
                 }
-                else
+                catch (Exception ex)
                 {
-                    Console.Error.WriteLine("TcpClient not connected");
+                    Console.Error.WriteLine("Error while writing into socket");
+                    Toolbox.LogError(ex);
                 }
             }
+        }
+
+        public bool IsConnected()
+        {
+            return tcpClient != null && tcpClient.Connected;
         }
 
         /// <summary>
@@ -147,37 +188,30 @@ namespace Tools
         /// <returns>Deserialized object</returns>
         private object Receive()
         {
+            object deserializedObject = null;
+
             lock (formatter)
             {
-                if (TcpClient != null && TcpClient.Connected)
+                try
                 {
-                    try
-                    {
-                        NetworkStream stream = TcpClient.GetStream();
+                    NetworkStream stream = tcpClient.GetStream();
 
-                        // Deserialize object
-                        var deserializedObject = formatter.Deserialize(stream);
+                    // Deserialize object
+                    deserializedObject = formatter.Deserialize(stream);
 
-                        Console.WriteLine("Received " + (deserializedObject as Order).GetAcronym());
+                    Console.WriteLine("Received " + (deserializedObject as Order).GetAcronym());
 
-                        // Flush the stream
-                        stream.Flush();
-
-                        return deserializedObject;
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.Error.WriteLine("Error while reading from socket");
-                        Toolbox.LogError(ex);
-                    }
+                    // Flush the stream
+                    stream.Flush();
                 }
-                else
+                catch (Exception ex)
                 {
-                    Console.Error.WriteLine("TcpClient not connected");
+                    Console.Error.WriteLine("Error while reading from socket");
+                    Toolbox.LogError(ex);
                 }
             }
 
-            return null;
+            return deserializedObject;
         }
     }
 

@@ -17,6 +17,7 @@ namespace Tools
 
         // Locked semaphore, will be released when registerSuccessful will be received
         private Semaphore semaphoreSearch = new Semaphore(0, 1);
+        private Semaphore semaphoreReady = new Semaphore(0, 1);
 
         #endregion
 
@@ -88,6 +89,7 @@ namespace Tools
 
                 case GameReadyOrder order:
                     OnGameReadyReceived?.Invoke(this, e);
+                    semaphoreReady.Release();
                     break;
             }
         }
@@ -98,9 +100,6 @@ namespace Tools
         /// <param name="gameType"></param>
         public void Register(GameType gameType)
         {
-            // If connected close the connection
-            TcpClient?.Close();
-
             switch (gameType)
             {
                 case GameType.Local:
@@ -123,6 +122,7 @@ namespace Tools
         /// <param name="battleType"></param>
         public void Search(BattleType battleType)
         {
+            // Wait for the client to be registred
             semaphoreSearch.WaitOne();
 
             // Send a request
@@ -134,6 +134,9 @@ namespace Tools
         /// </summary>
         public void Ready()
         {
+            // Wait for the game to be ready
+            semaphoreReady.WaitOne();
+
             Send(new ReadyOrder());
         }
 

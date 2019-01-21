@@ -135,10 +135,12 @@ namespace OthelloMillenniumServer
 
             // GameManager will now handle clients and put them as InGame
             var match = new GameHandler(client1, client2);
-            matches.Add(match);
 
             // Link end of game event
             match.GameManager.OnGameFinished += GameManager_OnGameFinished;
+
+            // Store the match
+            matches.Add(match);
         }
 
         private void GameManager_OnGameFinished(object sender, GameState e)
@@ -188,7 +190,7 @@ namespace OthelloMillenniumServer
                 // NOTE : Event seems to not raise across herited classes ... 
 
                 // Bind the socket
-                client.Bind(othelloTCPClient.TcpClient);
+                client.Bind(othelloTCPClient);
 
                 // Add the client to the dictionnary
                 registratedClients.Add(client);
@@ -208,7 +210,9 @@ namespace OthelloMillenniumServer
         private Client GetClientFromSender(object sender)
         {
             var tmp = sender as OthelloTCPClient;
-            return registratedClients.Union(searchingClients.Keys).Where(x => x.TcpClient.Equals(tmp.TcpClient)).FirstOrDefault();
+
+            // TODO VERIFIY IF OK
+            return registratedClients.Union(searchingClients.Keys).Where(x => x.Equals(tmp)).FirstOrDefault();
         }
 
         private void SearchReceived(object sender, OthelloTCPClientArgs e)

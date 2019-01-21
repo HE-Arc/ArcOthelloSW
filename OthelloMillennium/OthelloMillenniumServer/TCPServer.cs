@@ -123,16 +123,6 @@ namespace OthelloMillenniumServer
         /// <summary>
         /// From : https://stackoverflow.com/questions/409906/can-you-retrieve-the-hostname-and-port-from-a-system-net-sockets-tcpclient
         /// </summary>
-        /// <param name="client">An OthelloTCPClient</param>
-        /// <returns><see cref="GetHostNameAndPort(TcpClient)"/></returns>
-        public Tuple<string, int> GetHostNameAndPort(OthelloTCPClient client)
-        {
-            return GetHostNameAndPort(client.TcpClient);
-        }
-
-        /// <summary>
-        /// From : https://stackoverflow.com/questions/409906/can-you-retrieve-the-hostname-and-port-from-a-system-net-sockets-tcpclient
-        /// </summary>
         /// <param name="client"></param>
         /// <returns>A Tuple containing Hostname as Item1 and Port as Item2</returns>
         public Tuple<string, int> GetHostNameAndPort(TcpClient client)

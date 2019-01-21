@@ -162,6 +162,8 @@ namespace OthelloMillenniumServer
         /// </summary>
         private void StartGame()
         {
+            Console.WriteLine("Starting the game");
+
             // Start the game
             GameManager.Start();
 
