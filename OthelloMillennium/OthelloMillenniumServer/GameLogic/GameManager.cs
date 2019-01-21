@@ -3,7 +3,6 @@ using OthelloMillenniumServer.GameLogic;
 using System;
 using System.Collections.Generic;
 using Tools;
-using Tools.Classes;
 
 namespace OthelloMillenniumServer
 {
@@ -28,7 +27,7 @@ namespace OthelloMillenniumServer
         #region Attributes
         private int indexState;
         private List<GameBoard> listGameBoard;
-        private readonly Dictionary<Color, OthelloTimer> timeCounter;
+        private readonly Dictionary<Color, ITimer> timeCounter;
         private Tuple<int, int> scores;
         private Color winner;
 
@@ -53,7 +52,7 @@ namespace OthelloMillenniumServer
             //Assert.False(listGameBoard[indexState].GameEnded);
             //Assert.True(listGameBoard[indexState].LastPlayer == GameBoard.CellState.WHITE);
 
-            timeCounter = new Dictionary<Color, OthelloTimer>();
+            timeCounter = new Dictionary<Color, ITimer>();
             if (gameType == GameType.Online)
             {
                 timeCounter.Add(Color.Black, new StoppableTimer(Settings.TimePerPlayer));

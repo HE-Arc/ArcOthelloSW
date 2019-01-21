@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Controls;
-using Tools.Classes;
+using Tools;
 
 namespace OthelloMillenniumClient
 {

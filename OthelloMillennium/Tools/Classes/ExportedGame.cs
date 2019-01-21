@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Tools.Classes
+namespace Tools
 {
     [Serializable]
     public class ExportedGame : ISerializable

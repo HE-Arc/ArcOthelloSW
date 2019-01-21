@@ -4,16 +4,11 @@ using System.Timers;
 
 namespace OthelloMillenniumServer.GameLogic
 {
-    class StoppableCounter : OthelloTimer
+    class StoppableCounter : ITimer
     {
         #region Attributs
         private Stopwatch stopWatch;
         private long initialTime;
-
-        #endregion
-
-        #region Event
-        public event EventHandler Timeout;
 
         #endregion
 

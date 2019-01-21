@@ -1,6 +1,5 @@
 ﻿using System;
 using Tools;
-using Tools.Classes;
 
 namespace OthelloMillenniumServer
 {
@@ -27,7 +26,7 @@ namespace OthelloMillenniumServer
         /// <summary>
         /// Type of game currently being played
         /// </summary>
-        public BattleType GameType { get; private set; }
+        public BattleType GameTypeData { get; private set; }
 
         private bool client1Ready = false;
         private bool client2Ready = false;
@@ -57,9 +56,9 @@ namespace OthelloMillenniumServer
             // Init gameManager
             //TODO SEGAN Th following lines are broken, I on't need BattleType but GameType
             if (Client1.PlayerType == PlayerType.Human & Client2.PlayerType == PlayerType.Human)
-                GameManager = new GameManager(BattleType.AgainstPlayer);
+                GameManager = new GameManager(GameType.Local);
             else
-                GameManager = new GameManager(BattleType.AgainstAI);
+                GameManager = new GameManager(GameType.Local);
 
             Client1.Send(new GameReadyOrder());
             Client2.Send(new GameReadyOrder());

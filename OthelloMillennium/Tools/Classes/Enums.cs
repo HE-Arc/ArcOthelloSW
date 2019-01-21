@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tools.Classes
+namespace Tools
 {
     public enum GameType
     {

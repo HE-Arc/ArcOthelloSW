@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Tools;
-using Tools.Classes;
 
 namespace OthelloMillenniumServer
 {
@@ -54,7 +53,7 @@ namespace OthelloMillenniumServer
 
                 #region AcceptConnection
                 // Accept any new connection
-                Task t = new Task(() =>
+                Task t = new Task(async () =>
                 {
                     // Infinite loop
                     while (Running)

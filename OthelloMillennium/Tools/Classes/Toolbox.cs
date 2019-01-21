@@ -2,7 +2,7 @@
 using System.Text;
 using Tools;
 
-namespace OthelloMillenniumServer
+namespace Tools
 {
     public static class Toolbox
     {

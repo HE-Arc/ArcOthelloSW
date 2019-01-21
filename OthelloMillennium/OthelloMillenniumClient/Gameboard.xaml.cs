@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Tools;
-using Tools.Classes;
 using Color = System.Windows.Media.Color;
 
 namespace OthelloMillenniumClient

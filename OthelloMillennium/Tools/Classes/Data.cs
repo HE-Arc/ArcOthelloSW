@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Tools.Classes
+namespace Tools
 {
     [Serializable]
     public class Data : ISerializable

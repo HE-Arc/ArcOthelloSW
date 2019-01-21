@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Tools;
-using Tools.Classes;
 using WpfPageTransitions;
 
 namespace OthelloMillenniumClient

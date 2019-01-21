@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Tools;
-using Tools.Classes;
 
 namespace OthelloMillenniumServer
 {
@@ -58,7 +57,7 @@ namespace OthelloMillenniumServer
         {
             if (TCPServer.Instance.Running)
             {
-                Task binderThread = new Task(() =>
+                Task binderThread = new Task(async () =>
                 {
                     while (TCPServer.Instance.Running)
                     {
@@ -91,7 +90,7 @@ namespace OthelloMillenniumServer
                         }
 
                         // Sleep for 1 second
-                        Thread.Sleep(1000);
+                        await Task.Delay(1000);
                     }
                 });
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OthelloMillenniumServer.GameLogic
 {
-    interface OthelloTimer
+    interface ITimer
     {
         void Start();
         void Stop();

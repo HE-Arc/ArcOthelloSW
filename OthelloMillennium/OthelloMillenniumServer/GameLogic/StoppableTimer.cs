@@ -6,7 +6,7 @@ using System.Timers;
 
 namespace OthelloMillenniumServer.GameLogic
 {
-    class StoppableTimer : OthelloTimer
+    class StoppableTimer : ITimer
     {
         #region Attributs
         private Stopwatch stopWatch;

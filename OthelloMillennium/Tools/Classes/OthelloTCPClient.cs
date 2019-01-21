@@ -1,11 +1,9 @@
-﻿using OthelloMillenniumServer;
-using System;
+﻿using System;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
-using Tools.Classes;
 
 namespace Tools
 {
@@ -29,14 +27,14 @@ namespace Tools
         protected OthelloTCPClient()
         {
             // Listener task
-            new Task(() =>
+            new Task(async () =>
             {
                 while (true)
                 {
                     if (TcpClient == null)
                     {
                         // Wait 1 second and check TcpConnection again
-                        Thread.Sleep(1000);
+                        await Task.Delay(1000);
                     }
                     else
                     {
@@ -66,20 +64,20 @@ namespace Tools
                         }
 
                         // Wait before reading again
-                        Thread.Sleep(10);
+                        await Task.Delay(10);
                     }
                 }
             }).Start();
 
             // Ping task
-            new Task(() =>
+            new Task(async () =>
             {
                 while (true)
                 {
                     if (TcpClient == null)
                     {
                         // Wait 1 second and check TcpConnection again
-                        Thread.Sleep(1000);
+                        await Task.Delay(1000);
                     }
                     else
                     {
@@ -87,7 +85,7 @@ namespace Tools
                         {
                             OnConnectionLost?.Invoke(this, new EventArgs());
                         }
-                        Thread.Sleep(5000);
+                        await Task.Delay(5000);
                     }
                 }
             }).Start();
