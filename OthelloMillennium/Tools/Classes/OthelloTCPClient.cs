@@ -57,7 +57,7 @@ namespace Tools
                         }
 
                         // Avoid flames coming out of cpu
-                        Thread.Sleep(10);
+                        //Thread.Sleep(10);
                     }
                 }
             }).Start();
@@ -147,6 +147,10 @@ namespace Tools
         /// <returns>Deserialized object</returns>
         private object Receive()
         {
+            while (!TcpClient.GetStream().DataAvailable)
+            {
+                Thread.Sleep(10);
+            }
             lock (formatter)
             {
                 if (TcpClient != null && TcpClient.Connected)
@@ -154,7 +158,6 @@ namespace Tools
                     try
                     {
                         NetworkStream stream = TcpClient.GetStream();
-
                         // Deserialize object
                         var deserializedObject = formatter.Deserialize(stream);
 
