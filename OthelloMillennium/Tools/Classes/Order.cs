@@ -19,7 +19,7 @@ namespace Tools
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-
+            //Nothing
         }
     }
 
@@ -55,7 +55,6 @@ namespace Tools
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            base.GetObjectData(info, context);
             info.AddValue("PlayerType", PlayerType);
             info.AddValue("Name", Name);
         }
@@ -110,7 +109,6 @@ namespace Tools
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            base.GetObjectData(info, context);
             info.AddValue("OpponentType", OpponentType);
         }
     }
@@ -143,7 +141,6 @@ namespace Tools
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            base.GetObjectData(info, context);
             info.AddValue("OpponentData", OpponentData);
         }
     }
@@ -260,7 +257,6 @@ namespace Tools
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            base.GetObjectData(info, context);
             info.AddValue("Coords", Coords);
         }
     }
@@ -382,7 +378,6 @@ namespace Tools
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            base.GetObjectData(info, context);
             info.AddValue("Data", Data);
         }
     }

@@ -42,6 +42,7 @@ namespace Tools
                             while (TcpClient.Available > 0)
                             {
                                 object streamOutput = Receive();
+                                Console.WriteLine("Receive : " + (streamOutput as Order).GetAcronym());
 
                                 if (streamOutput is Order order && !string.IsNullOrEmpty(order.GetAcronym()))
                                 {
@@ -113,6 +114,7 @@ namespace Tools
             {
                 try
                 {
+                    Console.WriteLine("Send " + (obj as Order).GetAcronym());
                     BinaryFormatter formatter = new BinaryFormatter();
                     formatter.Serialize(TcpClient.GetStream(), obj);
                 }
@@ -144,6 +146,7 @@ namespace Tools
                 }
 
                 // Nothing could be read
+                Console.Error.WriteLine("Nothing as been readen");
                 return null;
             }
         }

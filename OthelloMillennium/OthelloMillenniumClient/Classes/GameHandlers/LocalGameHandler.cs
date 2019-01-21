@@ -52,15 +52,15 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             {
                 if(Player2.PlayerType == PlayerType.Human)
                 {
+                    BattleType = BattleType.AgainstPlayer;
                     Player1.Search(BattleType.AgainstPlayer);
                     Player2.Search(BattleType.AgainstPlayer);
-                    BattleType = BattleType.AgainstPlayer;
                 }
                 else
                 {
+                    BattleType = BattleType.AgainstAI;
                     Player1.Search(BattleType.AgainstAI);
                     Player2.Search(BattleType.AgainstPlayer);
-                    BattleType = BattleType.AgainstAI;
                 }
             }
             else
@@ -75,6 +75,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                     Player1.Search(BattleType.AgainstAI);
                     Player2.Search(BattleType.AgainstAI);
                 }
+                //TODO Ne gère pas deux AI
                 BattleType = BattleType.AgainstAI;
             }
         }
