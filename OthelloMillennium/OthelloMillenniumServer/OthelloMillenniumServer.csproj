@@ -58,9 +58,6 @@
     <Compile Include="Settings.cs" />
     <Compile Include="TCPServer.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Tools\Tools.csproj">
