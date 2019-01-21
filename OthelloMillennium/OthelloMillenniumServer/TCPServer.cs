@@ -108,7 +108,7 @@ namespace OthelloMillenniumServer
         {
             if (sender is OthelloTCPClient othelloTCPClient)
             {
-                if (e.Order is RegisterOrder order)
+                if (e.Order is RegisterRequestOrder order)
                 {
                     // Register client to the Matchmaker
                     Matchmaker.Instance.RegisterNewClient(othelloTCPClient, order);

@@ -26,17 +26,17 @@ namespace Tools
     #region Handshake
 
     [Serializable]
-    public class RegisterOrder : Order
+    public class RegisterRequestOrder : Order
     {
         public string Name { get; private set; }
         public int PlayerType { get; private set; }
 
-        public RegisterOrder(PlayerType playerType, string name) {
+        public RegisterRequestOrder(PlayerType playerType, string name) {
             PlayerType = (int)playerType;
             Name = name;
         }
 
-        protected RegisterOrder(SerializationInfo info, StreamingContext context)
+        protected RegisterRequestOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             PlayerType = (int)info.GetValue("PlayerType", typeof(int));
@@ -45,7 +45,7 @@ namespace Tools
 
         public override string GetAcronym()
         {
-            return "RO";
+            return "RRO";
         }
 
         public override string GetDefinition()

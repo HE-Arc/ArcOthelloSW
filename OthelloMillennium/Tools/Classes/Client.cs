@@ -161,8 +161,8 @@ namespace Tools
         {
             if (TcpClient != null && TcpClient.Connected)
             {
-                // TODO FIX ENUM
-                Send(GenerateData());
+                // TODO FIXME
+                // Send(GenerateData());
             }
         }
 
@@ -188,7 +188,7 @@ namespace Tools
             }
 
             // Send a register request
-            Send(new RegisterOrder(PlayerType, Name));
+            Send(new RegisterRequestOrder(PlayerType, Name));
         }
 
         /// <summary>

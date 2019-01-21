@@ -266,7 +266,7 @@ namespace OthelloMillenniumServer
                     else
                     {
                         // Store the new client in the matching hashset according to the player's game type wish
-                        if (order is RegisterOrder rsOrder)
+                        if (order is RegisterRequestOrder rsOrder)
                         {
                             return Register(client, (PlayerType)rsOrder.PlayerType, rsOrder.Name);
                         }
