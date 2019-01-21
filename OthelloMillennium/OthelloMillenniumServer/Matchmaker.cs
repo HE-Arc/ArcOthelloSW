@@ -208,6 +208,7 @@ namespace OthelloMillenniumServer
             }
             else
             {
+                Console.Error.WriteLine("Duplicate call for matchmaking with SingleClient");
                 return false;
             }
         }
@@ -260,6 +261,7 @@ namespace OthelloMillenniumServer
                     }
                     else if (order is LoadOrder loadOrder)
                     {
+                        Console.WriteLine("By passing matchmaking process in order to load a game !");
                         // Bypass the matchmaking process
                         //TODO
                     }
@@ -272,6 +274,7 @@ namespace OthelloMillenniumServer
             }
 
             // It failed
+            Console.Error.WriteLine("Error during RegisterNewClient order");
             return false;
         }
 

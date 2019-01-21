@@ -3,7 +3,6 @@ using OthelloMillenniumClient.Classes;
 using OthelloMillenniumClient.Classes.GameHandlers;
 using System;
 using Tools;
-using Tools.Classes;
 
 namespace ClientTest
 {

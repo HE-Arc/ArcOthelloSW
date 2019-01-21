@@ -55,11 +55,12 @@ namespace OthelloMillenniumClient
             get => imageIdWhite;
             set {
                 imageIdWhite = value % (NB_ROW*NB_COLUMN);
-                if (imageIdBlack < NB_ROW * NB_COLUMN)
+                if (imageIdWhite < NB_ROW * NB_COLUMN)
                 {
-                    imageIdBlack += NB_ROW * NB_COLUMN;
+                    imageIdWhite += NB_ROW * NB_COLUMN;
                 }
                 Tuple<int, int> location = IdImage(imageIdWhite);
+
                 Grid.SetRow(BackgroundWhite, location.Item1);
                 Grid.SetColumn(BackgroundWhite, location.Item2);
                 Grid.SetRow(whiteSelector, location.Item1);

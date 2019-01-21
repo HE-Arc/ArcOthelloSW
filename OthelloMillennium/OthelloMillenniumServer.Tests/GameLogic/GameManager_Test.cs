@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using Tools.Classes;
+using Tools;
 
 namespace OthelloMillenniumServer.Tests.GameLogic
 {
