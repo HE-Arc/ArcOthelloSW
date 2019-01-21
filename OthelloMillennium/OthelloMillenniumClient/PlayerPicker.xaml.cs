@@ -36,7 +36,7 @@ namespace OthelloMillenniumClient
             get => imageIdBlack;
             set {
                 imageIdBlack = value % (NB_ROW * NB_COLUMN);
-                if (imageIdBlack < NB_ROW * NB_COLUMN)
+                if (imageIdBlack < 0)
                 {
                     imageIdBlack += NB_ROW * NB_COLUMN;
                 }
@@ -55,7 +55,7 @@ namespace OthelloMillenniumClient
             get => imageIdWhite;
             set {
                 imageIdWhite = value % (NB_ROW*NB_COLUMN);
-                if (imageIdWhite < NB_ROW * NB_COLUMN)
+                if (imageIdWhite < 0)
                 {
                     imageIdWhite += NB_ROW * NB_COLUMN;
                 }
