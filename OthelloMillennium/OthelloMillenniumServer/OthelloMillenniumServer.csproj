@@ -49,6 +49,8 @@
     <Compile Include="GameHandler.cs" />
     <Compile Include="GameLogic\GameBoard.cs" />
     <Compile Include="GameLogic\GameManager.cs" />
+    <Compile Include="GameLogic\OthelloTimer.cs" />
+    <Compile Include="GameLogic\StoppableCounter.cs" />
     <Compile Include="GameLogic\StoppableTimer.cs" />
     <Compile Include="Matchmaker.cs" />
     <Compile Include="Program.cs" />

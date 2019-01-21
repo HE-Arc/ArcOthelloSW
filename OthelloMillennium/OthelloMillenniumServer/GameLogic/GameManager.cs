@@ -20,7 +20,7 @@ namespace OthelloMillenniumServer
 
         #region Properties
         public bool GameEnded { get; private set; }
-        public BattleType BattleType { get; private set; }
+        public GameType gameType { get; private set; }
         public Color CurrentPlayerTurn { get; private set; }
 
         #endregion
@@ -28,7 +28,7 @@ namespace OthelloMillenniumServer
         #region Attributes
         private int indexState;
         private List<GameBoard> listGameBoard;
-        private readonly Dictionary<Color, StoppableTimer> timeCounter = new Dictionary<Color, StoppableTimer>();
+        private readonly Dictionary<Color, OthelloTimer> timeCounter;
         private Tuple<int, int> scores;
         private Color winner;
 
@@ -39,9 +39,9 @@ namespace OthelloMillenniumServer
 
         #endregion
 
-        public GameManager(BattleType battleType)
+        public GameManager(GameType gameType)
         {
-            BattleType = battleType;
+            this.gameType = gameType;
 
             //Init GameState
             indexState = 0;
@@ -53,13 +53,16 @@ namespace OthelloMillenniumServer
             //Assert.False(listGameBoard[indexState].GameEnded);
             //Assert.True(listGameBoard[indexState].LastPlayer == GameBoard.CellState.WHITE);
 
-            if (BattleType == BattleType.AgainstPlayer)
+            timeCounter = new Dictionary<Color, OthelloTimer>();
+            if (gameType == GameType.Online)
             {
-                timeCounter = new Dictionary<Color, StoppableTimer>()
-                {
-                    { Color.Black, new StoppableTimer(Settings.TimePerPlayer) },
-                    { Color.White, new StoppableTimer(Settings.TimePerPlayer) }
-                };
+                timeCounter.Add(Color.Black, new StoppableTimer(Settings.TimePerPlayer));
+                timeCounter.Add(Color.White, new StoppableTimer(Settings.TimePerPlayer));
+            }
+            else
+            {
+                timeCounter.Add(Color.Black, new StoppableCounter(Settings.TimePerPlayer));
+                timeCounter.Add(Color.White, new StoppableCounter(Settings.TimePerPlayer));
             }
 
             CurrentPlayerTurn = Color.Black;
@@ -78,10 +81,7 @@ namespace OthelloMillenniumServer
             }
 
             //We start the counter
-            if (BattleType == BattleType.AgainstPlayer)
-            {
-                timeCounter[Color.Black].Start();
-            }
+            timeCounter[CurrentPlayerTurn].Start();
         }
 
         /// <summary>
@@ -100,12 +100,9 @@ namespace OthelloMillenniumServer
             {
                 throw new Exception("Invalid Color turn");
             }
-
-            if (BattleType == BattleType.AgainstPlayer)
-            {
-                timeCounter[CurrentPlayerTurn].Stop();
-            }
-
+            
+            timeCounter[CurrentPlayerTurn].Stop();
+            
             GameBoard.CellState cellStatePlayer = PlayerToCellState(CurrentPlayerTurn);
             listGameBoard[indexState].ValidateMove(coord, cellStatePlayer);
 
@@ -119,10 +116,9 @@ namespace OthelloMillenniumServer
             ++indexState;
 
             SwitchPlayer();
-            if (BattleType == BattleType.AgainstPlayer)
-            {
-                timeCounter[CurrentPlayerTurn].Start();
-            }
+
+            timeCounter[CurrentPlayerTurn].Start();
+            
 
             //Manage end of the game
             if (listGameBoard[indexState].GameEnded)
@@ -145,9 +141,9 @@ namespace OthelloMillenniumServer
                 throw new Exception("Game ended");
             }
 
-            if (BattleType == BattleType.AgainstPlayer)
+            if (gameType == GameType.Online)
             {
-                throw new Exception("Action not allowed in Multiplayer game type");
+                throw new Exception("Action not allowed in online game");
             }
 
             if (indexState > 0)
@@ -171,7 +167,7 @@ namespace OthelloMillenniumServer
                 throw new Exception("Game ended");
             }
 
-            if (BattleType == BattleType.AgainstPlayer)
+            if (gameType == GameType.Online)
             {
                 throw new Exception("Action not allowed in Multiplayer game type");
             }
@@ -227,7 +223,8 @@ namespace OthelloMillenniumServer
             GameBoard gameState = listGameBoard[indexState];
             int maxScore = gameState.Board.GetLength(0) * gameState.Board.GetLength(1);
             
-            if (BattleType == BattleType.AgainstPlayer && (timeCounter[Color.Black].GetRemainingTime() == 0 || timeCounter[Color.White].GetRemainingTime() == 0))
+            //TODO Bastien CHange with 
+            if (gameType == GameType.Online && (timeCounter[Color.Black].GetRemainingTime() == 0 || timeCounter[Color.White].GetRemainingTime() == 0))
             {
                 //One Color is out of time
                 scores = timeCounter[Color.Black].GetRemainingTime() == 0 ? new Tuple<int, int>(0, maxScore) : new Tuple<int, int>(maxScore, 0);
@@ -292,7 +289,7 @@ namespace OthelloMillenniumServer
                 listGameState.Add(Export(i));
             }
 
-            return new ExportedGame(BattleType, listGameState, CurrentPlayerTurn);
+            return new ExportedGame(gameType, listGameState, CurrentPlayerTurn);
         }
     }
 }

@@ -151,7 +151,7 @@ namespace Tools
                     break;
             }
 
-            // TOREMOVE
+            // TODO REMOVE
             Console.Error.WriteLine(e.Order.GetAcronym());
         }
 
@@ -212,6 +212,7 @@ namespace Tools
         /// </summary>
         public void Ready()
         {
+            //TODO SGAN Check
             if (TcpClient.Connected)
             {
                 Send(new ReadyOrder());

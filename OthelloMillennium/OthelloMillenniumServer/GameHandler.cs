@@ -27,7 +27,7 @@ namespace OthelloMillenniumServer
         /// <summary>
         /// Type of game currently being played
         /// </summary>
-        public BattleType GameType => GameManager.BattleType;
+        public BattleType GameType { get; private set; }
 
         private bool client1Ready = false;
         private bool client2Ready = false;
@@ -49,6 +49,7 @@ namespace OthelloMillenniumServer
             Client2.OnConnectionLost += Client_OnConnectionLost;
 
             // Init gameManager
+            //TODO SEGAN Th following lines are broken, I on't need BattleType but GameType
             if (Client1.PlayerType == PlayerType.Human & Client2.PlayerType == PlayerType.Human)
                 GameManager = new GameManager(BattleType.AgainstPlayer);
             else
@@ -218,6 +219,9 @@ namespace OthelloMillenniumServer
                     {
                         // Goes one step back
                         GameManager.MoveBack();
+                        // TODO SEGAN if with an AI:
+                        // two steps back
+                        // TODO SEGAN If only AI, not allowed
 
                         NextTurn();
                     }

@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Timers;
 
 namespace OthelloMillenniumServer.GameLogic
 {
-    class StoppableTimer : OthelloTimer
+    class StoppableCounter : OthelloTimer
     {
         #region Attributs
         private Stopwatch stopWatch;
-        private Timer timer;
         private long initialTime;
 
         #endregion
@@ -24,12 +21,10 @@ namespace OthelloMillenniumServer.GameLogic
         /// Constructor
         /// </summary>
         /// <param name="availableTime">Initial time in [ms]</param>
-        public StoppableTimer(long availableTime)
+        public StoppableCounter(long availableTime)
         {
             initialTime = availableTime;
             stopWatch = new Stopwatch();
-            timer = new Timer(initialTime);
-            timer.Elapsed += OnTimedEvent;
         }
 
         /// <summary>
@@ -38,7 +33,7 @@ namespace OthelloMillenniumServer.GameLogic
         /// <returns></returns>
         public long GetRemainingTime()
         {
-            return Math.Max(initialTime - (long)stopWatch.Elapsed.TotalMilliseconds, 0);
+            return (long)stopWatch.Elapsed.TotalMilliseconds;
         }
 
         /// <summary>
@@ -46,9 +41,7 @@ namespace OthelloMillenniumServer.GameLogic
         /// </summary>
         public void Start()
         {
-            timer.Interval = GetRemainingTime();
             stopWatch.Start();
-            timer.Start();
         }
 
         /// <summary>
@@ -57,7 +50,6 @@ namespace OthelloMillenniumServer.GameLogic
         public void Stop()
         {
             stopWatch.Stop();
-            timer.Stop();
         }
 
         /// <summary>
@@ -65,7 +57,6 @@ namespace OthelloMillenniumServer.GameLogic
         /// </summary>
         public void Reset()
         {
-            timer.Stop();
             stopWatch.Reset();
         }
 
@@ -76,19 +67,6 @@ namespace OthelloMillenniumServer.GameLogic
         public bool IsRunning()
         {
             return stopWatch.IsRunning;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        private void OnTimedEvent(Object source, ElapsedEventArgs e)
-        {
-            timer.Stop();
-            stopWatch.Stop();
-            EventHandler handler = Timeout;
-            handler(this, e);
         }
     }
 }
