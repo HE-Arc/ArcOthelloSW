@@ -8,14 +8,13 @@ namespace Tools
 {
     public class OthelloTCPClient
     {
-        private object formatter = new object();
+        private readonly object formatter = new object();
 
         // Informations
         public TcpClient TcpClient { get; protected set; }
         
         // Events
         public event EventHandler<OthelloTCPClientArgs> OnOrderReceived;
-        public event EventHandler<OthelloTCPClientDataArgs> OnDataReceived;
         public event EventHandler<OthelloTCPClientGameStateArgs> OnGameStateReceived;
         public event EventHandler<OthelloTCPClientSaveArgs> OnSaveReceived;
         public event EventHandler<EventArgs> OnConnectionLost;
@@ -51,10 +50,6 @@ namespace Tools
                                 else if (streamOutput is GameState gameState)
                                 {
                                     OnGameStateReceived?.Invoke(this, new OthelloTCPClientGameStateArgs(gameState));
-                                }
-                                else if (streamOutput is Data data)
-                                {
-                                    OnDataReceived?.Invoke(this, new OthelloTCPClientDataArgs(data));
                                 }
                                 else if (streamOutput is ExportedGame exportedGame)
                                 {
@@ -112,16 +107,19 @@ namespace Tools
         {
             lock (formatter)
             {
-                try
+                if (TcpClient != null && TcpClient.Connected)
                 {
-                    Console.WriteLine("Send " + (obj as Order).GetAcronym());
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    formatter.Serialize(TcpClient.GetStream(), obj);
-                }
-                catch (Exception ex)
-                {
-                    Console.Error.WriteLine("Error while writing into socket");
-                    Toolbox.LogError(ex);
+                    try
+                    {
+                        Console.WriteLine("Send " + (obj as Order).GetAcronym());
+                        BinaryFormatter formatter = new BinaryFormatter();
+                        formatter.Serialize(TcpClient.GetStream(), obj);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Error.WriteLine("Error while writing into socket");
+                        Toolbox.LogError(ex);
+                    }
                 }
             }
         }
@@ -134,31 +132,24 @@ namespace Tools
         {
             lock (formatter)
             {
-                try
+                if (TcpClient != null && TcpClient.Connected)
                 {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    return formatter.Deserialize(TcpClient.GetStream());
-                }
-                catch (Exception ex)
-                {
-                    Console.Error.WriteLine("Error while reading from socket");
-                    Toolbox.LogError(ex);
+                    try
+                    {
+                        BinaryFormatter formatter = new BinaryFormatter();
+                        return formatter.Deserialize(TcpClient.GetStream());
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Error.WriteLine("Error while reading from socket");
+                        Toolbox.LogError(ex);
+                    }
                 }
 
                 // Nothing could be read
                 Console.Error.WriteLine("Nothing as been readen");
                 return null;
             }
-        }
-    }
-
-    public class OthelloTCPClientDataArgs
-    {
-        public Data Data { get; private set; }
-
-        public OthelloTCPClientDataArgs(Data opponentData)
-        {
-            Data = opponentData;
         }
     }
 

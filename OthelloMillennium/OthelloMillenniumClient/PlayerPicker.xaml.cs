@@ -101,8 +101,8 @@ namespace OthelloMillenniumClient
             //If we are not in local, add listener on opponent avatar change
             if(ApplicationManager.Instance.CurrentGame.GameType == GameType.Online)
             {
-                ApplicationManager.Instance.CurrentGame.Player1.OnOpponentDataChanged += OnOpponentDataChange;
-                ApplicationManager.Instance.CurrentGame.Player2.OnOpponentDataChanged += OnOpponentDataChange;
+                ApplicationManager.Instance.CurrentGame.Player1.OnOpponentAvatarChanged += OnOpponentAvatarChange;
+                ApplicationManager.Instance.CurrentGame.Player2.OnOpponentAvatarChanged += OnOpponentAvatarChange;
             }
         }
         
@@ -210,17 +210,19 @@ namespace OthelloMillenniumClient
             }
         }
 
-        private void OnOpponentDataChange(object sender, OthelloTCPClientArgs e)
+        private void OnOpponentAvatarChange(object sender, OthelloTCPClientArgs e)
         {
-            if (e.Order is OpponentDataChangedOrder order)
+            //TODO FIX THIS, Color might not been assigned to the correct player
+            if (sender is Client client && e.Order is OpponentAvatarChangedOrder order)
             {
-                if ((Color)order.Data.Color == Color.White)
+                // Has to be the inverted since we modify the opponent
+                if (client.Color == Color.Black)
                 {
-                    PlayerWhiteImageId = order.Data.AvatarID;
+                    PlayerWhiteImageId = order.AvatarID;
                 }
                 else
                 {
-                    PlayerBlackImageId = order.Data.AvatarID;
+                    PlayerBlackImageId = order.AvatarID;
                 }
             }
         }
