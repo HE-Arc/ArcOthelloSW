@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="200">
     <Grid>
-        <Label Content="Choose your AI" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Top" FontSize="15"/>
+        <Label Content="Choose your AI" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Top" FontSize="15" FontFamily="Segoe UI Semibold"/>
         <Rectangle Fill="White" VerticalAlignment="Center" Height="100" AllowDrop="True" Drop="OnDropAI"/>
         <Image Source="/Icons/download.png" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center" Height="42" Margin="79,59,79,99" Width="42"/>
         <Label Content="Drop your AI here" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Top" FontSize="15" Margin="10,106,10,0" Width="180"/>

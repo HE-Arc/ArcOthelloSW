@@ -212,12 +212,12 @@ namespace OthelloMillenniumServer
                     // Informs the client that he is now known to the server
                     client.Send(new RegisterSuccessfulOrder());
 
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return true;
+            }
+            else
+            {
+                Console.Error.WriteLine("Duplicate call for matchmaking with SingleClient");
+                return false;
             }
         }
 
@@ -274,6 +274,7 @@ namespace OthelloMillenniumServer
                         }
                         else if (order is LoadOrder loadOrder)
                         {
+                            Console.WriteLine("By passing matchmaking process in order to load a game !");
                             // Bypass the matchmaking process
                             //TODO
                         }
@@ -284,8 +285,9 @@ namespace OthelloMillenniumServer
                     Console.Error.WriteLine("Error while registring client");
                     Toolbox.LogError(ex);
                 }
-
+                
                 // It failed
+                Console.Error.WriteLine("Error during RegisterNewClient order");
                 return false;
             }
         }
@@ -296,7 +298,7 @@ namespace OthelloMillenniumServer
             {
                 if (IsKnown(client))
                 {
-                    // Get the match 
+                    // Get the match
                     var currentMatch = GetMatch(client);
 
                     if (currentMatch == null)
@@ -307,7 +309,7 @@ namespace OthelloMillenniumServer
                     }
                     else
                     {
-                        
+
                         // Warn the opponent
                         if(currentMatch.Client1.Equals(client))
                         {
