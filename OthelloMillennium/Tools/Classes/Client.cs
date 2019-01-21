@@ -119,7 +119,7 @@ namespace Tools
         private void Client_OnDataReceived(object sender, OthelloTCPClientDataArgs e)
         {
             AvatarID = e.Data.AvatarID;
-            Color = e.Data.Color;
+            Color = (Color)e.Data.Color;
 
             // Inform opponent that this client's data has changed
             Send(new OpponentDataChangedOrder(e.Data));

@@ -240,7 +240,6 @@
     <Resource Include="Fonts\digital-7-mono.ttf" />
     <Resource Include="Fonts\digital-7.ttf" />
     <Resource Include="Fonts\Starjhol.ttf" />
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

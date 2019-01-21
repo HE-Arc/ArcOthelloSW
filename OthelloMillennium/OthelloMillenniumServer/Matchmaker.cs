@@ -61,32 +61,35 @@ namespace OthelloMillenniumServer
                 {
                     while (TCPServer.Instance.Running)
                     {
-                        List<Client> clientsToRemove = new List<Client>();
-                        foreach (var kv in searchingClients)
+                        lock (padlock)
                         {
-                            Client client = kv.Key;
-                            PlayerType opponentType = kv.Value.PlayerType;
-
-                            if (SearchOpponent(client, opponentType) is Client opponent && searchingClients[opponent].PlayerType != PlayerType.None)
+                            List<Client> clientsToRemove = new List<Client>();
+                            foreach (var kv in searchingClients)
                             {
-                                // Start a new match
-                                StartNewMatch(client, opponent);
+                                Client client = kv.Key;
+                                PlayerType opponentType = kv.Value.PlayerType;
 
-                                // Remove the two from the registredClients
-                                clientsToRemove.Add(client);
-                                clientsToRemove.Add(opponent);
+                                if (SearchOpponent(client, opponentType) is Client opponent && searchingClients[opponent].PlayerType != PlayerType.None)
+                                {
+                                    // Start a new match
+                                    StartNewMatch(client, opponent);
 
-                                // Switch opponentType to None in order to prevent binding with these
-                                // It has to be done like this since C# does not allow a modification on the list being iterated
-                                searchingClients[client].PlayerType = PlayerType.None;
-                                searchingClients[opponent].PlayerType = PlayerType.None;
+                                    // Remove the two from the registredClients
+                                    clientsToRemove.Add(client);
+                                    clientsToRemove.Add(opponent);
+
+                                    // Switch opponentType to None in order to prevent binding with these
+                                    // It has to be done like this since C# does not allow a modification on the list being iterated
+                                    searchingClients[client].PlayerType = PlayerType.None;
+                                    searchingClients[opponent].PlayerType = PlayerType.None;
+                                }
                             }
-                        }
 
-                        // Remove clients
-                        foreach (Client client in clientsToRemove)
-                        {
-                            searchingClients.TryRemove(client, out Container container);
+                            // Remove clients
+                            foreach (Client client in clientsToRemove)
+                            {
+                                searchingClients.TryRemove(client, out Container container);
+                            }
                         }
 
                         // Sleep for 1 second
@@ -140,16 +143,19 @@ namespace OthelloMillenniumServer
 
         private void StartNewMatch(Client client1, Client client2)
         {
-            // Informs clients that an opponent has be found
-            client1.Send(new OpponentFoundOrder(client2.GenerateData()));
-            client2.Send(new OpponentFoundOrder(client1.GenerateData()));
+            lock (padlock)
+            {
+                // Informs clients that an opponent has be found
+                client1.Send(new OpponentFoundOrder(client2.GenerateData()));
+                client2.Send(new OpponentFoundOrder(client1.GenerateData()));
 
-            // GameManager will now handle clients and put them as InGame
-            var match = new GameHandler(client1, client2);
-            matches.Add(match);
+                // GameManager will now handle clients and put them as InGame
+                var match = new GameHandler(client1, client2);
+                matches.Add(match);
 
-            // Link end of game event
-            match.GameManager.OnGameFinished += GameManager_OnGameFinished;
+                // Link end of game event
+                match.GameManager.OnGameFinished += GameManager_OnGameFinished;
+            }
         }
 
         private void GameManager_OnGameFinished(object sender, GameState e)
@@ -188,91 +194,100 @@ namespace OthelloMillenniumServer
         /// <returns></returns>
         private bool Register(OthelloTCPClient othelloTCPClient, PlayerType playerType, string name)
         {
-            if (!IsKnown(othelloTCPClient))
+            lock (padlock)
             {
-                Client client = new Client(playerType, name);
+                if (!IsKnown(othelloTCPClient))
+                {
+                    Client client = new Client(playerType, name);
 
-                // React to searchOrder
-                client.OnOrderReceived += Client_OnOrderReceived;
+                    // React to searchOrder
+                    client.OnOrderReceived += Client_OnOrderReceived;
 
-                // Bind the socket
-                client.Bind(othelloTCPClient.TcpClient);
+                    // Bind the socket
+                    client.Bind(othelloTCPClient.TcpClient);
 
-                // Add the client to the dictionnary
-                registratedClients.Add(client);
+                    // Add the client to the dictionnary
+                    registratedClients.Add(client);
 
-                // Informs the client that he is now known to the server
-                client.Send(new RegisterSuccessfulOrder());
+                    // Informs the client that he is now known to the server
+                    client.Send(new RegisterSuccessfulOrder());
 
-                return true;
-            }
-            else
-            {
-                return false;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 
         private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
         {
-            if(sender is Client client && e.Order is SearchOrder order)
+            lock (padlock)
             {
-                if(IsKnown(client))
+                if (sender is Client client && e.Order is SearchOrder order)
                 {
-                    registratedClients.Remove(client);
-                    searchingClients.TryAdd(client, new Container(order.OpponentType));
+                    if (IsKnown(client))
+                    {
+                        registratedClients.Remove(client);
+                        searchingClients.TryAdd(client, new Container((PlayerType)order.OpponentType));
 
-                    // Disconnect this function
-                    client.OnOrderReceived -= Client_OnOrderReceived;
-                }
-                else
-                {
-                    throw new Exception("Client unknown");
+                        // Disconnect this function
+                        client.OnOrderReceived -= Client_OnOrderReceived;
+                    }
+                    else
+                    {
+                        throw new Exception("Client unknown");
+                    }
                 }
             }
         }
 
         public bool RegisterNewClient(OthelloTCPClient client, Order order)
         {
-            try
+            lock (padlock)
             {
-                if (IsKnown(client))
+                try
                 {
-                    var currentMatch = GetMatch(client);
-                    if (currentMatch == null)
+                    if (IsKnown(client))
                     {
-                        throw new Exception("Client already registred and searching for a game");
+                        var currentMatch = GetMatch(client);
+                        if (currentMatch == null)
+                        {
+                            throw new Exception("Client already registred and searching for a game");
+                        }
+                        else
+                        {
+                            // Reconnect to the game
+                            // ---------------------
+                            // Check timers
+                            // Disconnected for too long ?
+                            Console.WriteLine("Client will be reconnected to the match"); // DEBUG
+                        }
                     }
                     else
                     {
-                        // Reconnect to the game
-                        // ---------------------
-                        // Check timers
-                        // Disconnected for too long ?
-                        Console.WriteLine("Client will be reconnected to the match"); // DEBUG
+                        // Store the new client in the matching hashset according to the player's game type wish
+                        if (order is RegisterOrder rsOrder)
+                        {
+                            return Register(client, (PlayerType)rsOrder.PlayerType, rsOrder.Name);
+                        }
+                        else if (order is LoadOrder loadOrder)
+                        {
+                            // Bypass the matchmaking process
+                            //TODO
+                        }
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    // Store the new client in the matching hashset according to the player's game type wish
-                    if(order is RegisterOrder rsOrder)
-                    {
-                        return Register(client, rsOrder.PlayerType, rsOrder.Name);
-                    }
-                    else if (order is LoadOrder loadOrder)
-                    {
-                        // Bypass the matchmaking process
-                        //TODO
-                    }
+                    Console.Error.WriteLine("Error while registring client");
+                    Toolbox.LogError(ex);
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine("Error while registring client");
-                Toolbox.LogError(ex);
-            }
 
-            // It failed
-            return false;
+                // It failed
+                return false;
+            }
         }
 
         private void DisconnectClient(Client client)

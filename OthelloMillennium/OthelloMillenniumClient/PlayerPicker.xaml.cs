@@ -214,7 +214,7 @@ namespace OthelloMillenniumClient
         {
             if (e.Order is OpponentDataChangedOrder order)
             {
-                if (order.Data.Color == Color.White)
+                if ((Color)order.Data.Color == Color.White)
                 {
                     PlayerWhiteImageId = order.Data.AvatarID;
                 }

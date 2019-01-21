@@ -6,25 +6,25 @@ namespace Tools
     [Serializable]
     public class Data : ISerializable
     {
-        public PlayerType PlayerType { get; private set; }
-        public Color Color { get; private set; }
+        public int PlayerType { get; private set; }
+        public int Color { get; private set; }
         public string Name { get; private set; }
         public int AvatarID { get; private set; }
 
         public Data(PlayerType playerType, Color color, string name, int avatarID)
         {
-            PlayerType = playerType;
+            PlayerType = (int)playerType;
             Name = name;
             AvatarID = avatarID;
-            Color = color;
+            Color = (int)color;
         }
 
         protected Data(SerializationInfo info, StreamingContext context)
         {
-            PlayerType = (PlayerType)info.GetValue("PlayerType", typeof(int));
+            PlayerType = (int)info.GetValue("PlayerType", typeof(int));
             Name = (string)info.GetValue("Name", typeof(string));
             AvatarID = (int)info.GetValue("AvatarID", typeof(int));
-            Color = (Color)info.GetValue("Color", typeof(int));
+            Color = (int)info.GetValue("Color", typeof(int));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

@@ -16,10 +16,6 @@ namespace Tools
 
         public abstract string GetAcronym();
         public abstract string GetDefinition();
-        public int GetLength()
-        {
-            return System.Text.Encoding.ASCII.GetByteCount(GetAcronym());
-        }
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -33,17 +29,17 @@ namespace Tools
     public class RegisterOrder : Order
     {
         public string Name { get; private set; }
-        public PlayerType PlayerType { get; private set; }
+        public int PlayerType { get; private set; }
 
         public RegisterOrder(PlayerType playerType, string name) {
-            PlayerType = playerType;
+            PlayerType = (int)playerType;
             Name = name;
         }
 
         protected RegisterOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            PlayerType = (PlayerType)info.GetValue("PlayerType", typeof(int));
+            PlayerType = (int)info.GetValue("PlayerType", typeof(int));
             Name = (string)info.GetValue("Name", typeof(string));
         }
 
@@ -60,7 +56,7 @@ namespace Tools
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
-            info.AddValue("PlayerType", (int)PlayerType);
+            info.AddValue("PlayerType", PlayerType);
             info.AddValue("Name", Name);
         }
     }
@@ -88,18 +84,18 @@ namespace Tools
     [Serializable]
     public class SearchOrder : Order
     {
-        public PlayerType OpponentType { get; private set; }
+        public int OpponentType { get; private set; }
 
 
         public SearchOrder(PlayerType opponentType)
         {
-            OpponentType = opponentType;
+            OpponentType = (int)opponentType;
         }
 
         protected SearchOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            OpponentType = (PlayerType)info.GetValue("OpponentType", typeof(int));
+            OpponentType = (int)info.GetValue("OpponentType", typeof(int));
         }
 
         public override string GetAcronym()
@@ -115,7 +111,7 @@ namespace Tools
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
-            info.AddValue("OpponentType", (int)OpponentType);
+            info.AddValue("OpponentType", OpponentType);
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using Tools;
 
@@ -52,8 +53,9 @@ namespace OthelloMillenniumServer
                 Console.WriteLine("Waiting for connections...");
 
                 #region AcceptConnection
+
                 // Accept any new connection
-                Task t = new Task(async () =>
+                new Task(async () =>
                 {
                     // Infinite loop
                     while (Running)
@@ -74,11 +76,11 @@ namespace OthelloMillenniumServer
                             // DEBUG
                             Console.WriteLine("NEW CLIENT CONNECTED");
                         }
-                    }
-                });
 
-                // Start to accept new connection
-                t.Start();
+                        // Wait before reading again
+                        await Task.Delay(10);
+                    }
+                }).Start();
 
                 #endregion
             }

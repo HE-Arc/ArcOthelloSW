@@ -9,11 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OthelloMillenniumServer.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools", "Tools\Tools.csproj", "{0D689054-0E76-4CAF-A8F0-EA621E32ADA8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientTest", "ClientTest\ClientTest.csproj", "{5BBFFA09-C8A7-48CF-A3A4-3C403A415C2E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPageTransitions", "WpfPageTransitions\WpfPageTransitions.csproj", "{22A46D61-1D40-43A9-802C-B9D43DADD9EC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OthelloMillenniumServer", "OthelloMillenniumServer\OthelloMillenniumServer.csproj", "{AE7945BE-8562-47FA-965F-76F8BED87F6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCommunication", "TestCommunication\TestCommunication.csproj", "{1E4D979B-4D6A-48F7-A209-575EF8FDDCF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +33,6 @@ Global
 		{0D689054-0E76-4CAF-A8F0-EA621E32ADA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D689054-0E76-4CAF-A8F0-EA621E32ADA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D689054-0E76-4CAF-A8F0-EA621E32ADA8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5BBFFA09-C8A7-48CF-A3A4-3C403A415C2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5BBFFA09-C8A7-48CF-A3A4-3C403A415C2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5BBFFA09-C8A7-48CF-A3A4-3C403A415C2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5BBFFA09-C8A7-48CF-A3A4-3C403A415C2E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22A46D61-1D40-43A9-802C-B9D43DADD9EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22A46D61-1D40-43A9-802C-B9D43DADD9EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22A46D61-1D40-43A9-802C-B9D43DADD9EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{AE7945BE-8562-47FA-965F-76F8BED87F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE7945BE-8562-47FA-965F-76F8BED87F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE7945BE-8562-47FA-965F-76F8BED87F6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E4D979B-4D6A-48F7-A209-575EF8FDDCF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E4D979B-4D6A-48F7-A209-575EF8FDDCF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E4D979B-4D6A-48F7-A209-575EF8FDDCF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E4D979B-4D6A-48F7-A209-575EF8FDDCF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
