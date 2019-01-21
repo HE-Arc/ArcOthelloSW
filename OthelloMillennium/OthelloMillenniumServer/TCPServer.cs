@@ -37,7 +37,7 @@ namespace OthelloMillenniumServer
         #region Properties
         private readonly TcpListener listener; 
         public bool Running { get; private set; }
-        public int Port { get; set; } = Tools.Properties.Settings.Default.OnlinePort;
+        public int Port { get; set; } = Tools.Properties.Settings.Default.LocalPort;
         #endregion
 
         public bool StartListening()
@@ -55,7 +55,7 @@ namespace OthelloMillenniumServer
                 #region AcceptConnection
 
                 // Accept any new connection
-                new Task(async () =>
+                new Task(() =>
                 {
                     // Infinite loop
                     while (Running)
@@ -71,14 +71,14 @@ namespace OthelloMillenniumServer
                             client.Bind(newConnection);
 
                             // Will be used once to listen what type of game the player is searching
-                            client.OnOrderReceived += Client_OnOrderReceived;
+                            client.OnOrderReceived += RequestReceived;
 
                             // DEBUG
                             Console.WriteLine("NEW CLIENT CONNECTED");
                         }
 
                         // Wait before reading again
-                        await Task.Delay(10);
+                        Thread.Sleep(1);
                     }
                 }).Start();
 
@@ -104,18 +104,18 @@ namespace OthelloMillenniumServer
             listener.Stop();
         }
 
-        private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
+        private void RequestReceived(object sender, OthelloTCPClientArgs e)
         {
             if (sender is OthelloTCPClient othelloTCPClient)
             {
                 if (e.Order is RegisterRequestOrder order)
                 {
-                    // Register client to the Matchmaker
-                    Matchmaker.Instance.RegisterNewClient(othelloTCPClient, order);
-
                     // TCPServer should only listen once per new connection
                     // It will just listen to know how to annouce the new client to the matchmaker
-                    othelloTCPClient.OnOrderReceived -= Client_OnOrderReceived;
+                    othelloTCPClient.OnOrderReceived -= RequestReceived;
+
+                    // Register client to the Matchmaker
+                    Matchmaker.Instance.RegisterNewClient(othelloTCPClient, order);
                 }
             }
         }

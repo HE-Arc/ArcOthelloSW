@@ -23,6 +23,8 @@ namespace OthelloMillenniumServer
         // GameManager
         public GameManager GameManager { get; private set; }
 
+        public BattleType BattleType { get; private set; }
+
         /// <summary>
         /// Type of game currently being played
         /// </summary>
@@ -50,16 +52,25 @@ namespace OthelloMillenniumServer
             // Update clients
             Client1.Color = Color.Black;
             Client1.AvatarID = 0;
+
+            Client1.Send(new AssignColorOrder(Client1.Color));
+            Client1.Send(new AssignAvatarIDOrder(Client1.AvatarID));
+
             Client2.Color = Color.White;
             Client2.AvatarID = 19;
 
-            // Init gameManager
-            //TODO SEGAN Th following lines are broken, I on't need BattleType but GameType
-            if (Client1.PlayerType == PlayerType.Human & Client2.PlayerType == PlayerType.Human)
-                GameManager = new GameManager(GameType.Local);
-            else
-                GameManager = new GameManager(GameType.Local);
+            Client2.Send(new AssignColorOrder(Client2.Color));
+            Client2.Send(new AssignAvatarIDOrder(Client2.AvatarID));
 
+            if (Client1.PlayerType == PlayerType.Human & Client2.PlayerType == PlayerType.Human)
+                BattleType = BattleType.AgainstPlayer;
+            else
+                BattleType = BattleType.AgainstAI;
+
+            // Init gameManager. TODO BASTIEN : Server don't know if it's local or online
+            GameManager = new GameManager(GameType.Local);
+
+            // Game is ready
             Client1.Send(new GameReadyOrder());
             Client2.Send(new GameReadyOrder());
         }

@@ -113,6 +113,70 @@ namespace Tools
     }
 
     [Serializable]
+    public class AssignColorOrder : Order
+    {
+        public int Color { get; private set; }
+
+        public AssignColorOrder(Color opponentType)
+        {
+            Color = (int)opponentType;
+        }
+
+        protected AssignColorOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            Color = info.GetInt32("Color");
+        }
+
+        public override string GetAcronym()
+        {
+            return "ACO";
+        }
+
+        public override string GetDefinition()
+        {
+            return "Server assign a color";
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Color", Color);
+        }
+    }
+
+    [Serializable]
+    public class AssignAvatarIDOrder : Order
+    {
+        public int AvatarID { get; private set; }
+
+        public AssignAvatarIDOrder(int avatarID)
+        {
+            AvatarID = avatarID;
+        }
+
+        protected AssignAvatarIDOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            AvatarID = info.GetInt32("AvatarID");
+        }
+
+        public override string GetAcronym()
+        {
+            return "AAO";
+        }
+
+        public override string GetDefinition()
+        {
+            return "Server assign an avatar";
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("AvatarID", AvatarID);
+        }
+    }
+
+    [Serializable]
     public class OpponentFoundOrder : Order
     {
         public string OpponentName { get; private set; }

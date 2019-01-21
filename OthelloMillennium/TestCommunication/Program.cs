@@ -2,6 +2,7 @@
 using OthelloMillenniumClient.Classes.GameHandlers;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Tools;
 
 namespace TestCommunication
@@ -16,7 +17,7 @@ namespace TestCommunication
             client1.OnGameStartedReceived += OnGameStartedReceived;
 
             // Init the game
-            new Thread(() =>
+            new Task(() =>
             {
                 // Register clients to applicationManager
                 ApplicationManager.Instance.CurrentGame = new LocalGameHandler();
@@ -41,7 +42,7 @@ namespace TestCommunication
         private static void OnGameStartedReceived(object sender, OthelloTCPClientArgs e)
         {
             // Gameplay test
-            ApplicationManager.Instance.CurrentGame.Player1.Play('a', 0);
+            ApplicationManager.Instance.CurrentGame.Place(new Tuple<char, int>('a', 0));
         }
 
         private static void OnGameReady(object sender, OthelloTCPClientArgs e)

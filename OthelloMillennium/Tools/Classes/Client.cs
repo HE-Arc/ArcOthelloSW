@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Tools
 {
@@ -9,19 +8,14 @@ namespace Tools
     /// </summary>
     public class Client : OthelloTCPClient
     {
-        public event EventHandler<OthelloTCPClientArgs> OnRegisterSuccessful;
         public event EventHandler<OthelloTCPClientArgs> OnOpponentAvatarChanged;
         public event EventHandler<OthelloTCPClientArgs> OnGameStartedReceived;
         public event EventHandler<OthelloTCPClientArgs> OnGameReadyReceived;
 
         #region Attributes
-
-        private string name;
-        private PlayerType playerType;
-        private Color color;
         private int avatarID;
 
-        // Locked semaphore
+        // Locked semaphore, will be released when registerSuccessful will be received
         private Semaphore semaphoreSearch = new Semaphore(0, 1);
 
         #endregion
@@ -34,49 +28,19 @@ namespace Tools
         /// Get : get the Name binded
         /// Set : set the Name and inform the server of the change
         /// </summary>
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-            set
-            {
-                name = value;
-            }
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// Get : get the PlayerType
         /// Set : set the PlayerType
         /// </summary>
-        public PlayerType PlayerType
-        {
-            get
-            {
-                return playerType;
-            }
-            set
-            {
-                playerType = value;
-            }
-        }
+        public PlayerType PlayerType { get; set; }
 
         /// <summary>
         /// Get : get the Color
         /// Set : set the Color
         /// </summary>
-        public Color Color
-        {
-            get
-            {
-                return color;
-            }
-            set
-            {
-                color = value;
-            }
-        }
+        public Color Color { get; set; }
 
         /// <summary>
         /// Get : get the AvatarID binded
@@ -104,12 +68,6 @@ namespace Tools
 
             // Respond to order
             OnOrderReceived += Client_OnOrderReceived;
-            OnRegisterSuccessful += Client_OnRegisterSuccessful;
-        }
-
-        private void Client_OnRegisterSuccessful(object sender, OthelloTCPClientArgs e)
-        {
-            semaphoreSearch.Release();
         }
 
         private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
@@ -121,12 +79,7 @@ namespace Tools
                     break;
 
                 case RegisterSuccessfulOrder order:
-                    OnRegisterSuccessful?.Invoke(this, e);
-                    break;
-
-                // Used by the server
-                case AvatarChangedOrder order:
-                    avatarID = order.AvatarID;
+                    semaphoreSearch.Release();
                     break;
 
                 case GameStartedOrder order:

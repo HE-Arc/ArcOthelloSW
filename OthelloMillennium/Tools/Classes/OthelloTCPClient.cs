@@ -2,13 +2,14 @@
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Tools
 {
     public class OthelloTCPClient
     {
-        private readonly object formatter = new object();
+        private readonly BinaryFormatter formatter = new BinaryFormatter();
 
         // Informations
         public TcpClient TcpClient { get; private set; }
@@ -25,54 +26,51 @@ namespace Tools
         protected OthelloTCPClient()
         {
             // Listener task
-            new Task(async () =>
+            new Task(() =>
             {
                 while (true)
                 {
                     if (TcpClient == null)
                     {
-                        // Wait 1 second and check TcpConnection again
-                        await Task.Delay(1000);
+                        // Wait 0.5 second and check TcpConnection again
+                        Thread.Sleep(500);
                     }
                     else
                     {
-                        if (TcpClient.Connected)
-                        {
-                            while (TcpClient.Available > 0)
-                            {
-                                object streamOutput = Receive();
-                                Console.WriteLine("Receive : " + (streamOutput as Order).GetAcronym());
+                        var deserializedObject = Receive();
 
-                                if (streamOutput is Order order && !string.IsNullOrEmpty(order.GetAcronym()))
-                                {
-                                    OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs(order));
-                                }
-                                else if (streamOutput is GameState gameState)
-                                {
-                                    OnGameStateReceived?.Invoke(this, new OthelloTCPClientGameStateArgs(gameState));
-                                }
-                                else if (streamOutput is ExportedGame exportedGame)
-                                {
-                                    OnSaveReceived?.Invoke(this, new OthelloTCPClientSaveArgs(exportedGame));
-                                }
-                            }
+                        if (deserializedObject is Order order && !string.IsNullOrEmpty(order.GetAcronym()))
+                        {
+                            OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs(order));
+                        }
+                        else if (deserializedObject is GameState gameState)
+                        {
+                            OnGameStateReceived?.Invoke(this, new OthelloTCPClientGameStateArgs(gameState));
+                        }
+                        else if (deserializedObject is ExportedGame exportedGame)
+                        {
+                            OnSaveReceived?.Invoke(this, new OthelloTCPClientSaveArgs(exportedGame));
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine("Can't cast to any known object");
                         }
 
-                        // Wait before reading again
-                        await Task.Delay(10);
+                        // Avoid flames coming out of cpu
+                        Thread.Sleep(10);
                     }
                 }
             }).Start();
 
             // Ping task
-            new Task(async () =>
+            new Task(() =>
             {
                 while (true)
                 {
                     if (TcpClient == null)
                     {
                         // Wait 1 second and check TcpConnection again
-                        await Task.Delay(1000);
+                        Thread.Sleep(1000);
                     }
                     else
                     {
@@ -80,7 +78,8 @@ namespace Tools
                         {
                             OnConnectionLost?.Invoke(this, new EventArgs());
                         }
-                        await Task.Delay(5000);
+
+                        Thread.Sleep(5000);
                     }
                 }
             }).Start();
@@ -94,9 +93,16 @@ namespace Tools
             TcpClient.Connect(serverHostname, serverPort);
         }
 
+        /// <summary>
+        /// Attach a tcpClient to this client
+        /// </summary>
+        /// <param name="tcpClient"></param>
         public void Bind(TcpClient tcpClient)
         {
-            TcpClient = tcpClient;
+            if (tcpClient == null)
+                throw new ArgumentNullException("tcpClient");
+            else
+                TcpClient = tcpClient;
         }
 
         /// <summary>
@@ -111,9 +117,16 @@ namespace Tools
                 {
                     try
                     {
+                        NetworkStream stream = TcpClient.GetStream();
+
                         Console.WriteLine("Send " + (obj as Order).GetAcronym());
-                        BinaryFormatter formatter = new BinaryFormatter();
-                        formatter.Serialize(TcpClient.GetStream(), obj);
+
+                        // Serialize object
+                        formatter.Serialize(stream, obj);
+
+                        // Flush the stream
+                        stream.Flush();
+                            
                     }
                     catch (Exception ex)
                     {
@@ -140,8 +153,17 @@ namespace Tools
                 {
                     try
                     {
-                        BinaryFormatter formatter = new BinaryFormatter();
-                        return formatter.Deserialize(TcpClient.GetStream());
+                        NetworkStream stream = TcpClient.GetStream();
+
+                        // Deserialize object
+                        var deserializedObject = formatter.Deserialize(stream);
+
+                        Console.WriteLine("Received " + (deserializedObject as Order).GetAcronym());
+
+                        // Flush the stream
+                        stream.Flush();
+
+                        return deserializedObject;
                     }
                     catch (Exception ex)
                     {
