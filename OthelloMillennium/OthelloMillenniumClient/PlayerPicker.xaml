@@ -25,6 +25,5 @@
 
         <Rectangle x:Name="BackgroundBlack" Grid.Row="0" Grid.Column="0" Fill="black"/>
         <Rectangle x:Name="BackgroundWhite" Grid.Row="1" Grid.Column="0" Fill="white"/>
-
     </Grid>
 </UserControl>

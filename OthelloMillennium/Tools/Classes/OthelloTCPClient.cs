@@ -8,11 +8,11 @@ namespace Tools
 {
     public class OthelloTCPClient
     {
-        private BinaryFormatter formatter = new BinaryFormatter();
+        private object formatter = new object();
 
         // Informations
-        public TcpClient TcpClient { get; private set; }
-
+        public TcpClient TcpClient { get; protected set; }
+        
         // Events
         public event EventHandler<OthelloTCPClientArgs> OnOrderReceived;
         public event EventHandler<OthelloTCPClientDataArgs> OnDataReceived;
@@ -113,6 +113,7 @@ namespace Tools
             {
                 try
                 {
+                    BinaryFormatter formatter = new BinaryFormatter();
                     formatter.Serialize(TcpClient.GetStream(), obj);
                 }
                 catch (Exception ex)
@@ -133,6 +134,7 @@ namespace Tools
             {
                 try
                 {
+                    BinaryFormatter formatter = new BinaryFormatter();
                     return formatter.Deserialize(TcpClient.GetStream());
                 }
                 catch (Exception ex)

@@ -16,6 +16,7 @@ namespace OthelloMillenniumClient
         #region Consts
         private const int NB_ROW = 4;
         private const int NB_COLUMN = 5;
+        private const string IMAGE_FOLDER = "Images/";
         private readonly string[] IMAGES_PERSO = {"Snoke.png","Yoda.png","TheEmperor.png","Stormtrooper.png","Rey.png","R2-D2.png","Prog.png","Obi-Wan.png","MazKanata.png","Luke.png","Leia.png","KyloRen.png","K-2SO.png","HanSolo.png","Finn.png","DarkVader.png","Chewbacca.png","C-3PO.png","BobaFet.png","BB-8.png"};
         private System.Windows.Media.ScaleTransform flip = new System.Windows.Media.ScaleTransform() { ScaleX = -1 };
         private System.Windows.Media.ScaleTransform noFlip = new System.Windows.Media.ScaleTransform() { ScaleX = 1 };
@@ -47,6 +48,7 @@ namespace OthelloMillenniumClient
                 Grid.SetRow(blackSelector, location.Item1);
                 Grid.SetColumn(blackSelector, location.Item2);
                 blackSelector.RenderTransform = imageIdBlack % 2 == 0 ? flip : noFlip;
+                ImagePlayerBlack = IMAGE_FOLDER + IMAGES_PERSO[imageIdBlack];
             }
         }
 
@@ -66,6 +68,7 @@ namespace OthelloMillenniumClient
                 Grid.SetRow(whiteSelector, location.Item1);
                 Grid.SetColumn(whiteSelector, location.Item2);
                 whiteSelector.RenderTransform = imageIdWhite % 2 == 0 ? flip : noFlip;
+                ImagePlayerWhite = IMAGE_FOLDER + IMAGES_PERSO[imageIdWhite];
             }
         }
 
@@ -108,27 +111,23 @@ namespace OthelloMillenniumClient
             Thickness margin = new Thickness(10);
 
             int nb = 0;
-            for(int i = 0; i < NB_COLUMN; ++i)
+            for (int j = 0; j < NB_ROW; ++j)
             {
-                for (int j = 0; j < NB_ROW; ++j)
+                for(int i = 0; i < NB_COLUMN; ++i)
                 {
                     ImageDecorator image = new ImageDecorator()
                     {
                         Margin = margin,
                         Width = 140,
                         Height = 140,
-                        ImageSource = "Images/" + IMAGES_PERSO[nb]
+                        ImageSource = "Images/" + IMAGES_PERSO[nb],
+                        RenderTransformOrigin = new Point(0.5, 0.5),
+                        RenderTransform = (nb % 2 == 0) ? flip : noFlip
                     };
+
                     image.SetValue(Grid.ColumnProperty, i);
                     image.SetValue(Grid.RowProperty, j);
-
-
-                    if (nb%2 == 0)
-                    {
-                        image.RenderTransformOrigin = new Point(0.5, 0.5);
-                        image.RenderTransform = flip;
-                    }
-
+                    
                     MainGrid.Children.Add(image);
 
                     nb++;

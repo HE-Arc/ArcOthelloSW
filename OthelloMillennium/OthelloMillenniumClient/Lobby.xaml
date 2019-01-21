@@ -18,9 +18,9 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <!-- TODO Change fix values and add min and percentages -> fixed for speed dev visualisation purposes -->
-            <ColumnDefinition Width="150px"></ColumnDefinition>
+            <ColumnDefinition Width="160"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="150px"></ColumnDefinition>
+            <ColumnDefinition Width="160"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <Viewbox Grid.Column="1" Grid.Row="1">
