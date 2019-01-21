@@ -137,9 +137,6 @@ namespace Tools
                     OnGameReadyReceived?.Invoke(this, e);
                     break;
             }
-
-            // TODO REMOVE
-            Console.Error.WriteLine(e.Order.GetAcronym());
         }
 
         /// <summary>

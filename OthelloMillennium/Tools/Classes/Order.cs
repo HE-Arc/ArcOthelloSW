@@ -85,7 +85,6 @@ namespace Tools
     {
         public int OpponentType { get; private set; }
 
-
         public SearchOrder(PlayerType opponentType)
         {
             OpponentType = (int)opponentType;

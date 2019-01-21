@@ -11,7 +11,7 @@ namespace Tools
         private readonly object formatter = new object();
 
         // Informations
-        public TcpClient TcpClient { get; protected set; }
+        public TcpClient TcpClient { get; private set; }
         
         // Events
         public event EventHandler<OthelloTCPClientArgs> OnOrderReceived;
@@ -121,6 +121,10 @@ namespace Tools
                         Toolbox.LogError(ex);
                     }
                 }
+                else
+                {
+                    Console.Error.WriteLine("TcpClient not connected");
+                }
             }
         }
 
@@ -145,11 +149,13 @@ namespace Tools
                         Toolbox.LogError(ex);
                     }
                 }
-
-                // Nothing could be read
-                Console.Error.WriteLine("Nothing as been readen");
-                return null;
+                else
+                {
+                    Console.Error.WriteLine("TcpClient not connected");
+                }
             }
+
+            return null;
         }
     }
 

@@ -4,24 +4,24 @@ namespace Tools
 {
     public enum GameType
     {
-        Local,
-        Online,
+        Local = 0,
+        Online = 1,
     }
 
     public enum BattleType
     {
-        AgainstAI,
-        AgainstPlayer,
+        AgainstAI = 0,
+        AgainstPlayer = 1,
     }
 
     public enum PlayerType
     {
-        Human,
-        AI,
-        Any,
+        Human = 2,
+        AI = 3,
+        Any = 1,
 
         // Used only on the server side
-        None,
+        None = 0,
     }
 
     public enum Color
