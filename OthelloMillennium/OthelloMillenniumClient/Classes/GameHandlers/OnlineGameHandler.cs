@@ -33,33 +33,33 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             //TODO Goto Game when both player are ready
         }
 
-        public override void HandleOrder(Order handledOrder)
+        public override void HandleOrder(IOrderHandler sender, Order handledOrder)
         {
             switch (handledOrder)
             {
                 case RegisterSuccessfulOrder order:
                     //TODO
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
 
                 case OpponentFoundOrder order:
                     //TODO
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
 
                 case GameReadyOrder order:
                     //TODO
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
 
                 case GameStartedOrder order:
                     //TODO
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
 
                 case OpponentAvatarChangedOrder order:
                     //TODO
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
             }
         }

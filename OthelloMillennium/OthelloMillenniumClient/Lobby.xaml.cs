@@ -34,5 +34,10 @@ namespace OthelloMillenniumClient
             ApplicationManager.Instance.LaunchGame();
         }
 
+        public void OnUpdateOpponentColorServer()
+        {
+
+        }
+
     }
 }

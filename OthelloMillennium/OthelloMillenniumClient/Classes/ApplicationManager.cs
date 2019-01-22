@@ -14,7 +14,7 @@ namespace OthelloMillenniumClient
     public class ApplicationManager : IOrderHandler
     {
         #region Singleton
-        private static object padlock = new object();
+        private static readonly object padlock = new object();
         private static ApplicationManager instance = null;
 
         private ConcurrentQueue<Order> orderReceived;
@@ -39,6 +39,8 @@ namespace OthelloMillenniumClient
 
         #endregion
 
+        private GameType gameType;
+
         private ApplicationManager()
         {
             orderReceived = new ConcurrentQueue<Order>();
@@ -59,32 +61,39 @@ namespace OthelloMillenniumClient
                 while (!orderReceived.IsEmpty)
                 {
                     orderReceived.TryDequeue(out Order order);
-                    orderHandler.HandleOrder(order);
+                    orderHandler.HandleOrder(this, order);
                 }
                 Thread.Sleep(50);
             }
         }
 
-        private GameType gameType;
+        public void SetOrderHandler(IOrderHandler handler)
+        {
+            throw new NotImplementedException();
+        }
+
         private GameHandler gameHandler;
 
         public void JoinGameLocal(PlayerType playerOne, string playerNameOne, PlayerType playerTwo, string playerNameTwo)
         {
+            gameType = GameType.Local;
             gameHandler = new LocalGameHandler();
             (gameHandler as LocalGameHandler).JoinGame(playerOne, playerNameOne, playerTwo, playerNameTwo);
         }
 
         public void JoinGameOnline(PlayerType playerOne, string playerNameOne, BattleType battleType)
         {
+            gameType = GameType.Online;
             gameHandler = new OnlineGameHandler();
             (gameHandler as OnlineGameHandler).JoinGame(playerOne, playerNameOne, battleType);
         }
 
         public void LaunchGame() => gameHandler.LaunchGame();
 
-        public void HandleOrder(Order order)
+        public void HandleOrder(IOrderHandler sender, Order order)
         {
             orderReceived.Enqueue(order);
         }
+
     }
 }

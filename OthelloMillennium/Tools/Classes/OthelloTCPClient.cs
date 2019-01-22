@@ -210,7 +210,7 @@ namespace Tools
                 while (!orderReceived.IsEmpty)
                 {
                     orderReceived.TryDequeue(out Order order);
-                    orderHandler.HandleOrder(order);
+                    orderHandler.HandleOrder(null, order);
                 }
                 Thread.Sleep(50);
             }

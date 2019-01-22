@@ -47,11 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Client.cs" />
+    <Compile Include="Classes\OrderHandler.cs" />
+    <Compile Include="Classes\OthelloPlayerClient.cs" />
+    <Compile Include="Classes\OthelloPlayerServer.cs" />
     <Compile Include="Classes\Enums.cs" />
     <Compile Include="Classes\ExportedGame.cs" />
     <Compile Include="Classes\GameState.cs" />
-    <Compile Include="Classes\Message.cs" />
     <Compile Include="Classes\Order.cs" />
     <Compile Include="Classes\OthelloTCPClient.cs" />
     <Compile Include="Classes\Toolbox.cs" />

@@ -5,6 +5,12 @@ namespace Tools
 {
     public class OthelloPlayerServer : IOrderHandler
     {
+        #region Attributes
+        private OthelloTCPClient client;
+        private IOrderHandler orderHandler;
+        #endregion
+
+        #region Properties
         /// <summary>
         /// Get : get the Name binded
         /// Set : set the Name and inform the server of the change
@@ -22,21 +28,19 @@ namespace Tools
         /// Set : set the Color
         /// </summary>
         public Color Color { get; private set; }
+        #endregion
 
-        private OthelloTCPClient client;
-        private IOrderHandler orderHandler;
-
-        public OthelloPlayerServer(TcpClient tcpClient)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="tcpClient">socket</param>
+        public OthelloPlayerServer(OthelloTCPClient tcpClient)
         {
-            //TODO Think about receiving a client or a TcpClient
-            client = new OthelloTCPClient();
-
-            client.Bind(tcpClient);
-
+            client = tcpClient;
             client.SetOrderhandler(this);
         }
 
-        public void SetOrderhandler(IOrderHandler orderHandler)
+        public void SetOrderHandler(IOrderHandler orderHandler)
         {
             this.orderHandler = orderHandler;
         }
@@ -51,12 +55,21 @@ namespace Tools
         }
 
         /// <summary>
+        /// Send the avatarID the the client-side
+        /// </summary>
+        /// <param name="avatarID"></param>
+        public void SetAvatarID(int avatarID)
+        {
+            client.Send(new AssignAvatarIDOrder(avatarID));
+        }
+
+        /// <summary>
         /// Send the opponentName to the client-side
         /// </summary>
         /// <param name="opponentName"></param>
-        public void OpponentFound(string opponentName)
+        public void OpponentFound(string opponentName, PlayerType opponentType)
         {
-            client.Send(new OpponentFoundOrder(opponentName));
+            client.Send(new OpponentFoundOrder(opponentName, opponentType));
         }
 
         /// <summary>
@@ -66,6 +79,48 @@ namespace Tools
         public void OpponentAvatarChanged(int avatarId)
         {
             client.Send(new OpponentAvatarChangedOrder(avatarId));
+        }
+
+        /// <summary>
+        /// Call by the gameHandler
+        /// </summary>
+        public void GameReady()
+        {
+            client.Send(new GameReadyOrder());
+        }
+
+        /// <summary>
+        /// Call by the gameHandler
+        /// </summary>
+        public void GameStarted()
+        {
+            client.Send(new GameStartedOrder());
+        }
+
+        /// <summary>
+        /// Call by the gameHandler
+        /// </summary>
+        /// <param name="gameState"></param>
+        public void UpdateGameboard(GameState gameState)
+        {
+            client.Send(new UpdateGameStateOrder(gameState));
+        }
+
+        /// <summary>
+        /// Call by the gameHandler
+        /// </summary>
+        public void GameEnded()
+        {
+            client.Send(new GameEndedOrder());
+        }
+
+        /// <summary>
+        /// Call by the gameHandler
+        /// </summary>
+        /// <param name="exportedGame"></param>
+        public void TransferSaveOrder(ExportedGame exportedGame)
+        {
+            client.Send(new TransferSaveOrder(exportedGame));
         }
 
         /// <summary>

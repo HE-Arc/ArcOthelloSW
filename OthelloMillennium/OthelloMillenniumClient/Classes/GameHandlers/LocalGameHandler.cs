@@ -70,33 +70,32 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             }
         }
 
-        public override void HandleOrder(Order handledOrder)
+        public override void HandleOrder(IOrderHandler sender, Order handledOrder)
         {
             switch (handledOrder)
             {
                 case RegisterSuccessfulOrder order:
                     //TODO
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
 
                 case OpponentFoundOrder order:
                     //TODO
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
 
                 case GameReadyOrder order:
                     //TODO
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
 
                 case GameStartedOrder order:
                     //TODO
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
 
                 case OpponentAvatarChangedOrder order:
-                    //TODO
-                    orderHandler?.HandleOrder(order);
+                    // Nothing -> no need to update imagePlayer in local game
                     break;
             }
         }

@@ -90,7 +90,7 @@ namespace Tools
             client.SetOrderhandler(this);
         }
 
-        public void SetOrderhandler(IOrderHandler orderHandler)
+        public void SetOrderHandler(IOrderHandler orderHandler)
         {
             this.orderHandler = orderHandler;
         }
@@ -105,7 +105,7 @@ namespace Tools
         public void SearchOpponent(PlayerType playerType)
         {
             if (PlayerState != PlayerState.REGISTERED) throw new Exception("Action not available");
-            client.Send(new SearchRequestOrder(battleType == BattleType.AgainstPlayer ? PlayerType.Human : PlayerType.AI));
+            client.Send(new SearchRequestOrder(playerType));
 
             // Switch client state to searching
             PlayerState = PlayerState.SEARCHING;
@@ -158,7 +158,21 @@ namespace Tools
                     PlayerState = Color == Color.Black ? PlayerState.MY_TURN : PlayerState.OPPONENT_TURN;
                     orderHandler?.HandleOrder(sender, order);
                     break;
-                
+
+                case UpdateGameStateOrder order:
+                    PlayerState = order.GameState.PlayerTurn == (int)this.Color ? PlayerState.MY_TURN : PlayerState.OPPONENT_TURN;
+                    orderHandler?.HandleOrder(sender, order);
+                    break;
+
+                case GameEndedOrder order:
+                    PlayerState = PlayerState.GAME_ENDED;
+                    orderHandler?.HandleOrder(sender, order);
+                    break;
+
+                case TransferSaveOrder order:
+                    orderHandler?.HandleOrder(sender, order);
+                    break;
+
                 case OpponentAvatarChangedOrder order:
                     orderHandler?.HandleOrder(sender, order);
                     break;
@@ -174,6 +188,9 @@ namespace Tools
                     avatarId = order.AvatarID;
                     break;
                 #endregion
+                
+                case Order unknownOrder:
+                    throw new Exception("Unknown order received !");
             }
         }
     }

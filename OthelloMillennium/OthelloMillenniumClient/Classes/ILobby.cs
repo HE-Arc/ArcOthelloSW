@@ -9,5 +9,6 @@ namespace OthelloMillenniumClient
     interface ILobby
     {
         void OnLaunchGameServer();
+        void OnUpdateOpponentColorServer();
     }
 }

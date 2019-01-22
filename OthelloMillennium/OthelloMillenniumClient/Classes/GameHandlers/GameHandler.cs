@@ -13,13 +13,13 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             //Nothing
         }
 
-        public void SetOrderhandler(IOrderHandler orderHandler)
+        public void SetOrderHandler(IOrderHandler orderHandler)
         {
             this.orderHandler = orderHandler;
         }
 
         public abstract void LaunchGame();
         
-        public abstract void HandleOrder(Order order);
+        public abstract void HandleOrder(IOrderHandler sender, Order order);
     }
 }
