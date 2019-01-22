@@ -22,7 +22,7 @@ namespace OthelloMillenniumClient
          * Oui ça fonctionnera si le gameboard est appelé après que le client reçoive l'ordre StartOfTheGameOrder
          * Car lors du démarrage d'une partie le serveur transmet l'état du gameBoard initial aux clients
          */
-        public GameState GameState => ApplicationManager.Instance.CurrentGame.GameState;
+        public GameState GameState => null;// ApplicationManager.Instance.CurrentGame.GameState;
 
         public Gameboard()
         {
@@ -132,29 +132,30 @@ namespace OthelloMillenniumClient
             }
         }
 
-        private void OnReceiveGameState(object sender, OthelloTCPClientGameStateArgs e)
-        {
-            //Update grid with played tokens
-            int[,] gameboard = e.GameState.Gameboard;
-            for (int i = 0; i < gameboard.GetLength(0); ++i)
-            {
-                for (int j = 0; j < gameboard.GetLength(1); ++i)
-                {
-                    if (gameboard[i, j] > 0)
-                    {
-                        listButtons[i, j].Style = e.GameState.Gameboard[i, j] == 1 ? this.Resources["circle-black"] as Style : this.Resources["circle-white"] as Style;
-                    }
-                }
-            }
+        //TODO
+        //private void OnReceiveGameState(object sender, OthelloTCPClientGameStateArgs e)
+        //{
+        //    //Update grid with played tokens
+        //    int[,] gameboard = e.GameState.Gameboard;
+        //    for (int i = 0; i < gameboard.GetLength(0); ++i)
+        //    {
+        //        for (int j = 0; j < gameboard.GetLength(1); ++i)
+        //        {
+        //            if (gameboard[i, j] > 0)
+        //            {
+        //                listButtons[i, j].Style = e.GameState.Gameboard[i, j] == 1 ? this.Resources["circle-black"] as Style : this.Resources["circle-white"] as Style;
+        //            }
+        //        }
+        //    }
 
-            //Update grid with potential moves
-            foreach (Tuple<char, int> move in e.GameState.PossiblesMoves)
-            {
-                int i = move.Item1 - 65;
-                int j = move.Item2;
-                listButtons[i, j].Style = this.Resources["circle-grey"] as Style;
-            }
-        }
+        //    //Update grid with potential moves
+        //    foreach (Tuple<char, int> move in e.GameState.PossiblesMoves)
+        //    {
+        //        int i = move.Item1 - 65;
+        //        int j = move.Item2;
+        //        listButtons[i, j].Style = this.Resources["circle-grey"] as Style;
+        //    }
+        //}
 
         private void OnCellClick(object sender, RoutedEventArgs e)
         {
@@ -164,7 +165,9 @@ namespace OthelloMillenniumClient
             Console.WriteLine(column.ToString(), row.ToString());
 
             // Send the player new token location
-            ApplicationManager.Instance.CurrentGame.Place(new Tuple<char, int>(column, row));
+
+            //TODO
+            //ApplicationManager.Instance.CurrentGame.Place(new Tuple<char, int>(column, row));
         }
     }
 }

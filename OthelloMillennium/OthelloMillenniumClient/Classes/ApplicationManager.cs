@@ -20,8 +20,6 @@ namespace OthelloMillenniumClient
         private ConcurrentQueue<Order> orderReceived;
         private Task taskOrderHandler;
 
-        private IOrderHandler orderHandler;
-
         public static ApplicationManager Instance
         {
             get
@@ -51,7 +49,7 @@ namespace OthelloMillenniumClient
 
         private void ManageOrder()
         {
-            while (orderHandler == null)
+            while (orderReceived == null)
             {
                 Thread.Sleep(50);
             }
@@ -61,7 +59,8 @@ namespace OthelloMillenniumClient
                 while (!orderReceived.IsEmpty)
                 {
                     orderReceived.TryDequeue(out Order order);
-                    orderHandler.HandleOrder(this, order);
+                    //orderHandler.HandleOrder(this, order);
+                    //TODO
                 }
                 Thread.Sleep(50);
             }
@@ -74,18 +73,40 @@ namespace OthelloMillenniumClient
 
         private GameHandler gameHandler;
 
-        public void JoinGameLocal(PlayerType playerOne, string playerNameOne, PlayerType playerTwo, string playerNameTwo)
+        public void JoinGameLocal(OthelloPlayerClient player1, OthelloPlayerClient player2)
         {
             GameType = GameType.Local;
             gameHandler = new LocalGameHandler();
-            (gameHandler as LocalGameHandler).JoinGame(playerOne, playerNameOne, playerTwo, playerNameTwo);
+            (gameHandler as LocalGameHandler).JoinGame(player1, player2);
         }
 
-        public void JoinGameOnline(PlayerType playerOne, string playerNameOne, BattleType battleType)
+        public void JoinGameLocal(PlayerType playerTypeOne, string playerNameOne, PlayerType playerTypeTwo, string playerNameTwo)
+        {
+            GameType = GameType.Local;
+            gameHandler = new LocalGameHandler();
+
+            OthelloPlayerClient player1 = new OthelloPlayerClient(playerTypeOne, playerNameOne);
+            OthelloPlayerClient player2 = new OthelloPlayerClient(playerTypeTwo, playerNameTwo);
+
+            (gameHandler as LocalGameHandler).JoinGame(player1, player2);
+        }
+
+        public void JoinGameOnline(OthelloPlayerClient player, BattleType battleType)
         {
             GameType = GameType.Online;
             gameHandler = new OnlineGameHandler();
-            (gameHandler as OnlineGameHandler).JoinGame(playerOne, playerNameOne, battleType);
+
+            (gameHandler as OnlineGameHandler).JoinGame(player, battleType);
+        }
+
+        public void JoinGameOnline(PlayerType playerType, string playerName, BattleType battleType)
+        {
+            GameType = GameType.Online;
+            gameHandler = new OnlineGameHandler();
+
+            OthelloPlayerClient player = new OthelloPlayerClient(playerType, playerName);
+
+            (gameHandler as OnlineGameHandler).JoinGame(player, battleType);
         }
 
         public void LaunchGame() => gameHandler.LaunchGame();

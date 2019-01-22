@@ -205,7 +205,6 @@ namespace OthelloMillenniumServer
 
                 case LoadRequestOrder castedOrder:
                     throw new NotImplementedException();
-                    break;
             }
 
             throw new NotImplementedException();

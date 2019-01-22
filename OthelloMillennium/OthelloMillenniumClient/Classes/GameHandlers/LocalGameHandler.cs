@@ -24,10 +24,10 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             }
         }
 
-        public void JoinGame(PlayerType playerOne, string playerNameOne, PlayerType playerTwo, string playerNameTwo)
+        public void JoinGame(OthelloPlayerClient player1, OthelloPlayerClient player2)
         {
-            player1 = new OthelloPlayerClient(playerOne, playerNameOne);
-            player2 = new OthelloPlayerClient(playerTwo, playerNameTwo);
+            this.player1 = player1;
+            this.player2 = player2;
 
             player1.Connect(GameType);
             player2.Connect(GameType);
@@ -37,8 +37,8 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 
             // TODO Wait for registration completed
 
-            player1.SearchOpponent(playerTwo);
-            player2.SearchOpponent(playerOne);
+            player1.SearchOpponent(player2.PlayerType);
+            player2.SearchOpponent(player1.PlayerType);
         }
 
         public override void LaunchGame()

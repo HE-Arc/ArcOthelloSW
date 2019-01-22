@@ -13,9 +13,9 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             GameType = GameType.Online;
         }
 
-        public void JoinGame(PlayerType playerOne, string playerNameOne, BattleType battleType)
+        public void JoinGame(OthelloPlayerClient player, BattleType battleType)
         {
-            player1 = new OthelloPlayerClient(playerOne, playerNameOne);
+            player1 = player;
             player2 = new RemotePlayerData();
 
             player1.Connect(GameType);
