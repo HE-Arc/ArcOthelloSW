@@ -34,8 +34,8 @@ namespace OthelloMillenniumClient.Classes
 
         public GameHandler CurrentGame { get; set; }
 
-        public Client Player1 => CurrentGame.Player1;
-        public Client Player2 => CurrentGame.Player2;
+        public Client_old Player1 => CurrentGame.Player1;
+        public Client_old Player2 => CurrentGame.Player2;
 
         #region Methods
 

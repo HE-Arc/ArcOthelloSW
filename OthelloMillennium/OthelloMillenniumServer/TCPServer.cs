@@ -67,7 +67,7 @@ namespace OthelloMillenniumServer
                             var newConnection = listener.AcceptTcpClient();
 
                             // PlayerType will be fetched during the register method inside the matchmaking
-                            var client = new Client(PlayerType.None, "unknown");
+                            var client = new Client_old(PlayerType.None, "unknown");
                             client.Bind(newConnection);
 
                             // Will be used once to listen what type of game the player is searching
@@ -106,7 +106,7 @@ namespace OthelloMillenniumServer
 
         private void RequestReceived(object sender, OthelloTCPClientArgs e)
         {
-            if (sender is OthelloTCPClient othelloTCPClient)
+            if (sender is OthelloTCPClient_old othelloTCPClient)
             {
                 if (e.Order is RegisterRequestOrder order)
                 {
@@ -125,7 +125,7 @@ namespace OthelloMillenniumServer
         /// </summary>
         /// <param name="client">An OthelloTCPClient</param>
         /// <returns><see cref="GetHostNameAndPort(TcpClient)"/></returns>
-        public Tuple<string, int> GetHostNameAndPort(OthelloTCPClient client)
+        public Tuple<string, int> GetHostNameAndPort(OthelloTCPClient_old client)
         {
             return GetHostNameAndPort(client.TcpClient);
         }
@@ -154,7 +154,7 @@ namespace OthelloMillenniumServer
   
     public class ServerEvent : EventArgs
     {
-        public OthelloTCPClient Client { get; set; }
+        public OthelloTCPClient_old Client { get; set; }
 
         public Order Order { get; set; }
 

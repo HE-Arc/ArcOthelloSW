@@ -162,9 +162,9 @@ namespace OthelloMillenniumClient
         /// </summary>
         /// <param name="sender"></param>
         /// <returns>the client</returns>
-        private Client GetClientFromSender(object sender)
+        private Client_old GetClientFromSender(object sender)
         {
-            if (sender is Client s)
+            if (sender is Client_old s)
             {
                 if (s.Color == ApplicationManager.Instance.Player1.Color)
                 {
@@ -183,7 +183,7 @@ namespace OthelloMillenniumClient
         /// </summary>
         /// <param name="sender"></param>
         /// <returns>the client</returns>
-        private Client GetOpponentFromClient(Client client)
+        private Client_old GetOpponentFromClient(Client_old client)
         {
             if (client.Equals(ApplicationManager.Instance.Player1))
             {
@@ -200,7 +200,7 @@ namespace OthelloMillenniumClient
         /// </summary>
         /// <param name="sender"></param>
         /// <returns>the client</returns>
-        private Client GetClientFromColor(Color color)
+        private Client_old GetClientFromColor(Color color)
         {
             if (ApplicationManager.Instance.Player1.Color == color)
             {
@@ -215,7 +215,7 @@ namespace OthelloMillenniumClient
         private void OnOpponentAvatarChange(object sender, OthelloTCPClientArgs e)
         {
             //TODO FIX THIS, Color might not been assigned to the correct player
-            if (sender is Client client && e.Order is OpponentAvatarChangedOrder order)
+            if (sender is Client_old client && e.Order is OpponentAvatarChangedOrder order)
             {
                 // Has to be the inverted since we modify the opponent
                 if (client.Color == Color.Black)

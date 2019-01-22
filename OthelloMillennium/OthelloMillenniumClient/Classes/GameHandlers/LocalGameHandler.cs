@@ -22,7 +22,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         /// <para/>Make it available through Player1 or Player2
         /// </summary>
         /// <param name="client">Who to register</param>
-        public override void Register(Client client)
+        public override void Register(Client_old client)
         {
             base.Register(client);
 

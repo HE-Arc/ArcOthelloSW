@@ -119,15 +119,15 @@ namespace OthelloMillenniumClient
 
         public void OnParamLocal(MenuParamGameLocal menuParam)
         {
-            Client player1;
-            Client player2;
+            Client_old player1;
+            Client_old player2;
 
             if (playerType == PlayerType.Human)
             {
                 string pseudo = (menuParam.player1 as PlayerName).Pseudo;
 
                 // Create the player
-                player1 = new Client(playerType, pseudo);
+                player1 = new Client_old(playerType, pseudo);
             }
             else
             {
@@ -145,7 +145,7 @@ namespace OthelloMillenniumClient
                 string pseudo = (menuParam.player2 as PlayerName).Pseudo;
 
                 // Create the player
-                player2 = new Client(playerType, pseudo);
+                player2 = new Client_old(playerType, pseudo);
             }
             else
             {
@@ -173,14 +173,14 @@ namespace OthelloMillenniumClient
 
         public void OnParamOnline(MenuParamGameOnline menuParam)
         {
-            Client player1;
+            Client_old player1;
 
             if (playerType == PlayerType.Human)
             {
                 string pseudo = (menuParam.player as PlayerName).Pseudo;
 
                 // Create the player
-                player1 = new Client(playerType, pseudo);
+                player1 = new Client_old(playerType, pseudo);
             }
             else
             {

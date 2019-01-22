@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Tools.Classes
+namespace Tools
 {
     class Client
     {
@@ -39,12 +39,23 @@ namespace Tools.Classes
         /// <param name="serverPort"></param>
         public void ConnectTo(string serverHostname, int serverPort)
         {
-            Bind(new TcpClient());
+            if (tcpClient != null)
+                throw new Exception("TcpClient already binded");
+
+            tcpClient = new TcpClient();
 
             // Register this client to the server
             tcpClient.Connect(serverHostname, serverPort);
             stream = tcpClient.GetStream();
 
+            Start();
+        }
+
+        /// <summary>
+        /// Start the listener and all services
+        /// </summary>
+        private void Start()
+        {
             taskSender = new Task(Sender);
             taskListener = new Task(Listener);
             taskOrderHandler = new Task(OrderHandler);
@@ -69,10 +80,12 @@ namespace Tools.Classes
         /// <param name="tcpClient"></param>
         public void Bind(TcpClient tcpClient)
         {
-            if (tcpClient != null)
+            if (tcpClient == null)
                 throw new ArgumentNullException("tcpClient");
-            else
-                this.tcpClient = tcpClient;
+            if (this.tcpClient != null)
+                throw new Exception("TcpClient already binded");
+
+            Start();
         }
 
         /// <summary>

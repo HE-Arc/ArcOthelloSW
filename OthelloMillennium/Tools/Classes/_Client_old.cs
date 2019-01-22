@@ -6,7 +6,7 @@ namespace Tools
     /// <summary>
     /// Wrapper of OthelloTCPClient
     /// </summary>
-    public class Client : OthelloTCPClient
+    public class Client_old : OthelloTCPClient_old
     {
         public event EventHandler<OthelloTCPClientArgs> OnOpponentAvatarChanged;
         public event EventHandler<OthelloTCPClientArgs> OnGameStartedReceived;
@@ -60,7 +60,7 @@ namespace Tools
 
         #endregion
 
-        public Client(PlayerType type, string name)
+        public Client_old(PlayerType type, string name)
             : base()
         {
             PlayerType = type;

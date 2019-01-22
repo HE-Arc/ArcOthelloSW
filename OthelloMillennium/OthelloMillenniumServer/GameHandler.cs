@@ -13,12 +13,12 @@ namespace OthelloMillenniumServer
         /// <summary>
         /// Socket server-side linked to a client remote
         /// </summary>
-        public Client Client1 { get; private set; }
+        public Client_old Client1 { get; private set; }
 
         /// <summary>
         /// Socket server-side linked to a client remote
         /// </summary>
-        public Client Client2 { get; private set; }
+        public Client_old Client2 { get; private set; }
 
         // GameManager
         public GameManager GameManager { get; private set; }
@@ -34,7 +34,7 @@ namespace OthelloMillenniumServer
         private bool client1Ready = false;
         private bool client2Ready = false;
 
-        public GameHandler(Client black, Client white)
+        public GameHandler(Client_old black, Client_old white)
         {
             // Init Client 1
             Client1 = black;
@@ -83,9 +83,9 @@ namespace OthelloMillenniumServer
         /// <param name="client"></param>
         /// <param name="opponent"></param>
         /// <returns>True if it succeded</returns>
-        private bool GetClientAndOpponentFromSender(object sender, out Client client, out Client opponent)
+        private bool GetClientAndOpponentFromSender(object sender, out Client_old client, out Client_old opponent)
         {
-            if (sender is Client s)
+            if (sender is Client_old s)
             {
                 if (s.Color == Client1.Color)
                 {
@@ -108,7 +108,7 @@ namespace OthelloMillenniumServer
 
         private void Client_OnConnectionLost(object sender, EventArgs e)
         {
-            if (GetClientAndOpponentFromSender(sender, out Client client, out Client opponent))
+            if (GetClientAndOpponentFromSender(sender, out Client_old client, out Client_old opponent))
             {
                 opponent.Send(new OpponentConnectionLostOrder());
             }
@@ -188,7 +188,7 @@ namespace OthelloMillenniumServer
         private void OnOrderReceived(object s, OthelloTCPClientArgs e)
         {
 
-            if (GetClientAndOpponentFromSender(s, out Client sender, out Client opponent))
+            if (GetClientAndOpponentFromSender(s, out Client_old sender, out Client_old opponent))
             {
 
                 if (e.Order is PlayMoveOrder playMoveOrder)
@@ -281,8 +281,8 @@ namespace OthelloMillenniumServer
 
     public class GameHandlerArgs
     {
-        public Client Player1 { get; set; }
-        public Client Player2 { get; set; }
+        public Client_old Player1 { get; set; }
+        public Client_old Player2 { get; set; }
 
         public DateTime Time { get; private set; } = DateTime.Now;
     }

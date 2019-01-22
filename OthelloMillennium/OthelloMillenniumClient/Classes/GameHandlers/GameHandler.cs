@@ -11,8 +11,8 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 
         public GameState GameState { get; protected set; } = null;
 
-        public Client Player1 { get; protected set; } = null;
-        public Client Player2 { get; protected set; } = null;
+        public Client_old Player1 { get; protected set; } = null;
+        public Client_old Player2 { get; protected set; } = null;
 
         public event EventHandler<OthelloTCPClientArgs> OnGameReady;
 
@@ -20,7 +20,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         #endregion
 
         #region Abstract methods
-        public virtual void Register(Client client)
+        public virtual void Register(Client_old client)
         {
             // Register client to the server
             client.Register(GameType);
@@ -56,7 +56,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             Player1 = Player2 = null;
         }
 
-        public Client GetCurrentPlayer()
+        public Client_old GetCurrentPlayer()
         {
             return (Player1.CanPlay ? Player1 : Player2.CanPlay ? Player2 : null);
         }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Tools
 {
-    public class OthelloTCPClient
+    public class OthelloTCPClient_old
     {
         private readonly BinaryFormatter formatter = new BinaryFormatter();
         private MemoryStream memoryStreamListen = new MemoryStream();
@@ -27,7 +27,7 @@ namespace Tools
         /// <summary>
         /// Basic constructor, start to listen for orders
         /// </summary>
-        protected OthelloTCPClient()
+        protected OthelloTCPClient_old()
         {
             StartListener();
 

@@ -11,8 +11,8 @@ namespace TestCommunication
     {
         static void Main(string[] args)
         {
-            Client client1 = new Client(PlayerType.Human, "Me");
-            Client client2 = new Client(PlayerType.Human, "eM");
+            Client_old client1 = new Client_old(PlayerType.Human, "Me");
+            Client_old client2 = new Client_old(PlayerType.Human, "eM");
 
             client1.OnGameStartedReceived += OnGameStartedReceived;
 
