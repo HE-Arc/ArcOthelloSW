@@ -101,6 +101,7 @@ namespace Tools
             client.Send(new RegisterRequestOrder(PlayerType, Name));
             PlayerState = PlayerState.REGISTERING;
         }
+
         public void SearchOpponent(PlayerType opponentType)
         {
             if (PlayerState != PlayerState.REGISTERED) throw new Exception("Action not available");

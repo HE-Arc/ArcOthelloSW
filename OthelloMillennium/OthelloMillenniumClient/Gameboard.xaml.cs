@@ -113,7 +113,7 @@ namespace OthelloMillenniumClient
                 {
                     Button button = new Button()
                     {
-                        Tag = ((char)(i + 65), j),
+                        Tag = new Tuple<char, int>((char)(i + 65), j),
                         Style = styleCell,
                         MinWidth = 12,
                         MinHeight = 12
@@ -159,10 +159,10 @@ namespace OthelloMillenniumClient
 
         private void OnCellClick(object sender, RoutedEventArgs e)
         {
-            (char column, int row) = ((char, int))((Button)sender).Tag;
+            Tuple<char, int> columnRow = (Tuple<char, int>)((Button)sender).Tag;
 
             Console.WriteLine("Call");
-            Console.WriteLine(column.ToString(), row.ToString());
+            Console.WriteLine(columnRow.Item1.ToString(), columnRow.Item2.ToString());
 
             // Send the player new token location
 

@@ -85,7 +85,7 @@ namespace OthelloMillenniumClient
             pageTransitionControl.ShowPage(nextPage);
         }
 
-        private void OnBattleType((PlayerType, BattleType) data)
+        private void OnBattleType(Tuple<PlayerType, BattleType> data)
         {
             this.playerType = data.Item1;
             this.battleType = data.Item2;

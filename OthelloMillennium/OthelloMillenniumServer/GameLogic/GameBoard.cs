@@ -176,20 +176,21 @@ namespace OthelloMillenniumServer
             CellState[,] newCellState = (CellState[,])Board.Clone();
             newCellState[indices.Item1, indices.Item2] = cellStatePlayer;
 
-            List<(int, int)> tokenToReturn = new List<(int, int)>();
-            List<(int, int)> tokenToReturnPotential = new List<(int, int)>();
+            List<Tuple<int, int>> tokenToReturn = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> tokenToReturnPotential = new List<Tuple<int, int>>();
 
             // Check in all 8 directions that there is at least one cellState of our own
             foreach (Tuple<int, int> direction in directions)
             {
                 tokenToReturnPotential.Clear();
                 bool end = false;
-                (int i, int j) = indices;
-                while (i > 0 && i < Settings.SIZE_WIDTH && j > 0 && j < Settings.SIZE_HEIGHT && !end)
+                Tuple<int, int> ij = indices;
+
+                while (ij.Item1 > 0 && ij.Item2 < Settings.SIZE_WIDTH && ij.Item2 > 0 && ij.Item2 < Settings.SIZE_HEIGHT && !end)
                 {
                     // Compute cell
-                    (i, j) = new Tuple<int, int>(i + direction.Item1, j + direction.Item2);
-                    CellState cellState = Board[i, j];
+                    ij = new Tuple<int, int>(ij.Item1 + direction.Item1, ij.Item2 + direction.Item2);
+                    CellState cellState = Board[ij.Item1, ij.Item2];
 
                     if (cellState == cellStatePlayer) // Token of the player
                     {
@@ -202,15 +203,15 @@ namespace OthelloMillenniumServer
                     }
                     else // Token of the opponent
                     {
-                        tokenToReturnPotential.Add((i, j));
+                        tokenToReturnPotential.Add(ij);
                     }
                 }
             }
 
             // Return the tokens
-            foreach ((int i, int j) in tokenToReturn)
+            foreach (Tuple<int, int> ij in tokenToReturn)
             {
-                newCellState[i, j] = cellStatePlayer;
+                newCellState[ij.Item1, ij.Item2] = cellStatePlayer;
             }
 
             // Return the new state
@@ -246,25 +247,24 @@ namespace OthelloMillenniumServer
         /// <returns></returns>
         private bool ValidateMove(Tuple<int, int> indices, CellState cellStatePlayer)
         {
-            //Check if cell at given coord is empty
+            // Check if cell at given coord is empty
             if (Board[indices.Item1, indices.Item2] != CellState.EMPTY)
             {
                 return false;
             }
 
-            //Check in all 8 directions that there is at least one cellState of our own
-            int i = 0, j = 0;
+            // Check in all 8 directions that there is at least one cellState of our own
             foreach (Tuple<int, int> direction in directions)
             {
                 bool end = false;
                 int nbTokenReturnedTemp = 0;
-                (i, j) = indices;
+                Tuple<int, int> ij = indices;
 
-                (i, j) = new Tuple<int, int>(i + direction.Item1, j + direction.Item2);
+                ij = new Tuple<int, int>(ij.Item1 + direction.Item1, ij.Item2 + direction.Item2);
 
-                while (i >= 0 && i < Settings.SIZE_WIDTH && j >= 0 && j < Settings.SIZE_HEIGHT && !end)
+                while (ij.Item1 >= 0 && ij.Item1 < Settings.SIZE_WIDTH && ij.Item2 >= 0 && ij.Item2 < Settings.SIZE_HEIGHT && !end)
                 {
-                    CellState cellState = Board[i, j];
+                    CellState cellState = Board[ij.Item1, ij.Item2];
                     if (cellState == cellStatePlayer)
                     {
                         end = true;
@@ -279,7 +279,7 @@ namespace OthelloMillenniumServer
                     {
                         nbTokenReturnedTemp++;
                     }
-                    (i, j) = (i + direction.Item1, j + direction.Item2);
+                    ij = new Tuple<int, int>(ij.Item1 + direction.Item1, ij.Item2 + direction.Item2);
                 }
             }
             return false;

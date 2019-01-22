@@ -1,9 +1,5 @@
 ﻿using OthelloMillenniumClient;
-using OthelloMillenniumClient.Classes;
-using OthelloMillenniumClient.Classes.GameHandlers;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Tools;
 
 namespace TestCommunication
@@ -16,18 +12,10 @@ namespace TestCommunication
             OthelloPlayerClient client2 = new OthelloPlayerClient(PlayerType.Human, "eM");
 
             // Register clients to applicationManager
-            // ApplicationManager.Instance.JoinGameLocal()
+            ApplicationManager.Instance.JoinGameLocal(client1, client2);
 
-            client1.Register();
-            client2.Register();
-
-            // TODO AVOID BUTTON SPAM
-            client1.SearchOpponent(PlayerType.Human);
-            client2.SearchOpponent(PlayerType.Human);
-
-            // Register clients to applicationManager
-            client1.ReadyToPlay();
-            client2.ReadyToPlay();
+            // Search, ready, etc
+            ApplicationManager.Instance.LaunchGame();
 
             // Wait
             Console.ReadLine();
