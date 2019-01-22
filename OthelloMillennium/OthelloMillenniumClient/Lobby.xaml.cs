@@ -9,7 +9,7 @@ namespace OthelloMillenniumClient
     /// <summary>
     /// Logique d'interaction pour Saloon.xaml
     /// </summary>
-    public partial class Lobby : Window
+    public partial class Lobby : Window, ILobby
     {
         public Lobby()
         {
