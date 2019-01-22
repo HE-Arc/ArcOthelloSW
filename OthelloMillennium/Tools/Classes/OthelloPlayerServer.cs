@@ -37,6 +37,7 @@ namespace Tools
         {
             switch (order)
             {
+                //TODO Update with order to manage
                 case OpponentAvatarChangedOrder order:
                     OnOpponentAvatarChanged?.Invoke(this, e);
                     break;
