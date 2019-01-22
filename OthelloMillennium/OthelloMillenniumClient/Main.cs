@@ -7,6 +7,7 @@ namespace OthelloMillenniumClient
     {
         public Main()
         {
+
         }
 
         public static implicit operator UserControl(Main v)

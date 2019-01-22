@@ -60,7 +60,6 @@ namespace Tools
         public PlayerState PlayerState { get; private set; }
         #endregion
 
-
         public OthelloPlayerClient(PlayerType playerType, string name)
         {
             Name = !string.IsNullOrEmpty(name) ? name : throw new ArgumentException("name can't be null or empty");
@@ -103,10 +102,10 @@ namespace Tools
             PlayerState = PlayerState.REGISTERING;
         }
 
-        public void SearchOpponent(BattleType battleType)
+        public void SearchOpponent(PlayerType playerType)
         {
             if (PlayerState != PlayerState.REGISTERED) throw new Exception("Action not available");
-            client.Send(new SearchOrder(battleType == BattleType.AgainstPlayer ? PlayerType.Human : PlayerType.AI));
+            client.Send(new SearchOrder(playerType));
 
             // Switch client state to searching
             PlayerState = PlayerState.SEARCHING;
@@ -126,7 +125,6 @@ namespace Tools
             if (PlayerState != PlayerState.MY_TURN) throw new Exception("Action not allowed");
             client.Send(new PlayMoveOrder(new Tuple<char, int>(row, column)));
         }
-
 
         public void HandleOrder(Order orderHandled)
         {
@@ -173,7 +171,6 @@ namespace Tools
                     avatarId = order.AvatarID;
                     break;
                 #endregion
-
             }
         }
     }

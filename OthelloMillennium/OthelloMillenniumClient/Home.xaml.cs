@@ -13,7 +13,7 @@ namespace OthelloMillenniumClient
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IHome
     {
         private GameType gameType;
         private BattleType battleType;
@@ -119,15 +119,11 @@ namespace OthelloMillenniumClient
 
         public void OnParamLocal(MenuParamGameLocal menuParam)
         {
-            Client_old player1;
-            Client_old player2;
-
+            string pseudo1 = "Player1";
+            string pseudo2 = "Player2";
             if (playerType == PlayerType.Human)
             {
                 string pseudo = (menuParam.player1 as PlayerName).Pseudo;
-
-                // Create the player
-                player1 = new Client_old(playerType, pseudo);
             }
             else
             {
@@ -142,10 +138,7 @@ namespace OthelloMillenniumClient
 
             if (battleType == BattleType.AgainstPlayer)
             {
-                string pseudo = (menuParam.player2 as PlayerName).Pseudo;
-
-                // Create the player
-                player2 = new Client_old(playerType, pseudo);
+                pseudo2 = (menuParam.player2 as PlayerName).Pseudo;
             }
             else
             {
@@ -161,26 +154,20 @@ namespace OthelloMillenniumClient
             new Thread(() =>
             {
                 // Register clients to applicationManager
-                ApplicationManager.Instance.CurrentGame = new LocalGameHandler();
-                ApplicationManager.Instance.CurrentGame.OnGameReady += OnGameReady;
-                ApplicationManager.Instance.CurrentGame.Register(player1);
-                ApplicationManager.Instance.CurrentGame.Register(player2);
-
-                // TODO AVOID BUTTON SPAM
-                StartMatchmaking();
+                ApplicationManager.Instance.JoinGameLocal(
+                    playerType,
+                    pseudo1,
+                    battleType == BattleType.AgainstPlayer ? PlayerType.Human:PlayerType.AI, pseudo2
+                );
             }).Start();
         }
 
         public void OnParamOnline(MenuParamGameOnline menuParam)
         {
-            Client_old player1;
-
+            string pseudo = "Player";
             if (playerType == PlayerType.Human)
             {
-                string pseudo = (menuParam.player as PlayerName).Pseudo;
-
-                // Create the player
-                player1 = new Client_old(playerType, pseudo);
+                pseudo = (menuParam.player as PlayerName).Pseudo;
             }
             else
             {
@@ -197,28 +184,12 @@ namespace OthelloMillenniumClient
             new Thread(() =>
             {
                 // Register clients to applicationManager
-                ApplicationManager.Instance.CurrentGame = new LocalGameHandler();
-                ApplicationManager.Instance.CurrentGame.OnGameReady += OnGameReady;
-                ApplicationManager.Instance.CurrentGame.Register(player1);
-
-                // TODO AVOID BUTTON SPAM
-                StartMatchmaking();
-            }).Start();
-        }
-        
-        private void StartMatchmaking()
-        {
-            try
-            {
-                ApplicationManager.Instance.CurrentGame.Search();
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex.Message);
-            }
+                ApplicationManager.Instance.JoinGameOnline(playerType, pseudo, battleType);
+            })
+            .Start();
         }
 
-        private void OnGameReady(object sender, OthelloTCPClientArgs e)
+        public void OnLaunchLobbyServer()
         {
             if (lockWindow.WaitOne(0))
             {

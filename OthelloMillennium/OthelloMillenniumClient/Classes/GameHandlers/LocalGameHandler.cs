@@ -1,12 +1,19 @@
 ﻿using OthelloMillenniumServer;
 using System;
+using System.Collections.Concurrent;
+using System.Threading;
+using System.Threading.Tasks;
 using Tools;
 
 namespace OthelloMillenniumClient.Classes.GameHandlers
 {
-    public class LocalGameHandler : GameHandler
+    public class LocalGameHandler : GameHandler, IOrderHandler
     {
-        public LocalGameHandler(PlayerType playerType, BattleType battleType)
+
+        private OthelloPlayerClient player1;
+        private OthelloPlayerClient player2;
+
+        public LocalGameHandler()
         {
             GameType = GameType.Local;
 
@@ -15,83 +22,32 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             {
                 throw new Exception($"Unable to start server on port {TCPServer.Instance.Port}");
             }
+
         }
 
-        public void JoinGame()
+        public void JoinGame(PlayerType playerOne, string playerNameOne, PlayerType playerTwo, string playerNameTwo)
         {
-            OthelloPlayerClient player1 = new OthelloPlayerClient();
-            //TODO Register
-            Register();
+            player1 = new OthelloPlayerClient(playerOne, playerNameOne);
+            player2 = new OthelloPlayerClient(playerOne, playerNameOne);
 
-            //TODO Search
+            player1.Connect(GameType);
+            player2.Connect(GameType);
+
+            player1.Register();
+            player2.Register();
+
+            // TODO Wait for registration completed
+
+            player1.SearchOpponent(playerTwo);
+            player2.SearchOpponent(playerOne);
         }
 
-        public void StartGame()
+        public override void LaunchGame()
         {
-            //Ready
-        }
+            player1.ReadyToPlay();
+            player2.ReadyToPlay();
 
-        /// <summary>
-        /// Register the client to the server
-        /// <para/>Make it available through Player1 or Player2
-        /// </summary>
-        /// <param name="client">Who to register</param>
-        public override void Register(Client_old client)
-        {
-            base.Register(client);
-
-            if (Player1 is null)
-            {
-                Player1 = client;
-            }
-            else if (Player2 is null)
-            {
-                Player2 = client;
-            }
-            else
-            {
-                throw new Exception("2 players have already been registred !");
-            }
-        }
-
-        /// <summary>
-        /// Start the matchmaking process
-        /// </summary>
-        public override void Search()
-        {
-            if (Player1 == null | Player2 == null)
-                throw new Exception("Please register players first");
-
-            if (Player1.PlayerType == PlayerType.Human)
-            {
-                if(Player2.PlayerType == PlayerType.Human)
-                {
-                    BattleType = BattleType.AgainstPlayer;
-                    Player1.Search(BattleType.AgainstPlayer);
-                    Player2.Search(BattleType.AgainstPlayer);
-                }
-                else
-                {
-                    BattleType = BattleType.AgainstAI;
-                    Player1.Search(BattleType.AgainstAI);
-                    Player2.Search(BattleType.AgainstPlayer);
-                }
-            }
-            else
-            {
-                if (Player2.PlayerType == PlayerType.Human)
-                {
-                    Player1.Search(BattleType.AgainstPlayer);
-                    Player2.Search(BattleType.AgainstAI);
-                }
-                else
-                {
-                    Player1.Search(BattleType.AgainstAI);
-                    Player2.Search(BattleType.AgainstAI);
-                }
-                //TODO Ne gère pas deux AI
-                BattleType = BattleType.AgainstAI;
-            }
+            //TODO Goto Game when both are ready
         }
 
         /// <summary>
@@ -114,9 +70,35 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             }
         }
 
-        public override void HandleOrder(Order order)
+        public override void HandleOrder(Order handledOrder)
         {
-            throw new NotImplementedException();
+            switch (handledOrder)
+            {
+                case RegisterSuccessfulOrder order:
+                    //TODO
+                    orderHandler?.HandleOrder(order);
+                    break;
+
+                case OpponentFoundOrder order:
+                    //TODO
+                    orderHandler?.HandleOrder(order);
+                    break;
+
+                case GameReadyOrder order:
+                    //TODO
+                    orderHandler?.HandleOrder(order);
+                    break;
+
+                case GameStartedOrder order:
+                    //TODO
+                    orderHandler?.HandleOrder(order);
+                    break;
+
+                case OpponentAvatarChangedOrder order:
+                    //TODO
+                    orderHandler?.HandleOrder(order);
+                    break;
+            }
         }
     }
 }

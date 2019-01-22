@@ -5,41 +5,63 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 {
     public class OnlineGameHandler : GameHandler
     {
-        public OnlineGameHandler(BattleType battleType)
+        private OthelloPlayerClient player1;
+        private RemotePlayerData player2;
+
+        public OnlineGameHandler()
         {
             GameType = GameType.Online;
-            BattleType = battleType;
         }
 
-        /// <summary>
-        /// Register the client to the server
-        /// <para/>Make it available through Player1
-        /// </summary>
-        /// <param name="client">Who to register</param>
-        public override void Register(Client_old client)
+        public void JoinGame(PlayerType playerOne, string playerNameOne, BattleType battleType)
         {
-            base.Register(client);
+            player1 = new OthelloPlayerClient(playerOne, playerNameOne);
+            player2 = new RemotePlayerData();
 
-            if (Player1 is null)
-            {
-                Player1 = client;
-                Player1.OnGameStateReceived += GameStateUpdate;
-            }
-            else
-            {
-                throw new Exception("player has already been registred !");
-            }
+            player1.Connect(GameType);
+            player1.Register();
+
+            // TODO Wait for registration completed
+
+            player1.SearchOpponent(battleType == BattleType.AgainstPlayer ? PlayerType.Human : PlayerType.AI);
         }
 
-        /// <summary>
-        /// Start the matchmaking process
-        /// </summary>
-        public override void Search()
+        public override void LaunchGame()
         {
-            if (Player1 == null)
-                throw new Exception("Please register player first");
+            player1.ReadyToPlay();
 
-            Player1.Search(BattleType);
+            //TODO Goto Game when both player are ready
+        }
+
+        public override void HandleOrder(Order handledOrder)
+        {
+            switch (handledOrder)
+            {
+                case RegisterSuccessfulOrder order:
+                    //TODO
+                    orderHandler?.HandleOrder(order);
+                    break;
+
+                case OpponentFoundOrder order:
+                    //TODO
+                    orderHandler?.HandleOrder(order);
+                    break;
+
+                case GameReadyOrder order:
+                    //TODO
+                    orderHandler?.HandleOrder(order);
+                    break;
+
+                case GameStartedOrder order:
+                    //TODO
+                    orderHandler?.HandleOrder(order);
+                    break;
+
+                case OpponentAvatarChangedOrder order:
+                    //TODO
+                    orderHandler?.HandleOrder(order);
+                    break;
+            }
         }
     }
 }

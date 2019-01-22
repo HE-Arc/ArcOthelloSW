@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace OthelloMillenniumClient
 {
-    interface ILobby
+    public interface IHome
     {
-        void OnLaunchGameServer();
+        void OnLaunchLobbyServer();
     }
 }
