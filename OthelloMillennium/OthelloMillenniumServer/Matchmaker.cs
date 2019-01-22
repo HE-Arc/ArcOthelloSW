@@ -189,7 +189,7 @@ namespace OthelloMillenniumServer
 
         private void SearchReceived(object sender, OthelloTCPClientArgs e)
         {
-            if (GetClientFromSender(sender) is Client_old client && e.Order is SearchOrder order)
+            if (GetClientFromSender(sender) is Client_old client && e.Order is SearchRequestOrder order)
             {
                 if (IsKnown(client))
                 {
@@ -206,7 +206,7 @@ namespace OthelloMillenniumServer
             }
         }
 
-        public bool RegisterNewClient(OthelloTCPClient_old client, Order order)
+        public bool RegisterNewClient(OthelloTCPClient client, Order order)
         {
             lock (registerLock)
             {

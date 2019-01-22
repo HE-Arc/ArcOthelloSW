@@ -81,16 +81,16 @@ namespace Tools
     }
 
     [Serializable]
-    public class SearchOrder : Order
+    public class SearchRequestOrder : Order
     {
         public int OpponentType { get; private set; }
 
-        public SearchOrder(PlayerType opponentType)
+        public SearchRequestOrder(PlayerType opponentType)
         {
             OpponentType = (int)opponentType;
         }
 
-        protected SearchOrder(SerializationInfo info, StreamingContext context)
+        protected SearchRequestOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             OpponentType = info.GetInt32("OpponentType");
@@ -98,7 +98,7 @@ namespace Tools
 
         public override string GetAcronym()
         {
-            return "SO";
+            return "SRO";
         }
 
         public override string GetDefinition()
@@ -213,15 +213,15 @@ namespace Tools
     #region GameLogic
 
     [Serializable]
-    public class ReadyOrder : Order
+    public class PlayerReadyOrder : Order
     {
-        protected ReadyOrder(SerializationInfo info, StreamingContext context)
+        protected PlayerReadyOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         { }
         
         public override string GetAcronym()
         {
-            return "RO";
+            return "PRO";
         }
 
         public override string GetDefinition()
@@ -232,7 +232,7 @@ namespace Tools
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         { }
 
-        public ReadyOrder() { }
+        public PlayerReadyOrder() { }
     }
 
     [Serializable]

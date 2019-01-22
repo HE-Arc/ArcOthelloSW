@@ -7,7 +7,7 @@ using Tools;
 
 namespace OthelloMillenniumServer
 {
-    public class TCPServer
+    public class TCPServer : IOrderHandler
     {
         
         #region Singleton
@@ -67,11 +67,9 @@ namespace OthelloMillenniumServer
                             var newConnection = listener.AcceptTcpClient();
 
                             // PlayerType will be fetched during the register method inside the matchmaking
-                            var client = new Client_old(PlayerType.None, "unknown");
+                            var client = new OthelloTCPClient();
                             client.Bind(newConnection);
-
-                            // Will be used once to listen what type of game the player is searching
-                            client.OnOrderReceived += RequestReceived;
+                            client.SetOrderhandler(this);
 
                             // DEBUG
                             Console.WriteLine("NEW CLIENT CONNECTED");
@@ -104,32 +102,6 @@ namespace OthelloMillenniumServer
             listener.Stop();
         }
 
-        private void RequestReceived(object sender, OthelloTCPClientArgs e)
-        {
-            if (sender is OthelloTCPClient_old othelloTCPClient)
-            {
-                if (e.Order is RegisterRequestOrder order)
-                {
-                    // TCPServer should only listen once per new connection
-                    // It will just listen to know how to annouce the new client to the matchmaker
-                    othelloTCPClient.OnOrderReceived -= RequestReceived;
-
-                    // Register client to the Matchmaker
-                    Matchmaker.Instance.RegisterNewClient(othelloTCPClient, order);
-                }
-            }
-        }
-
-        /// <summary>
-        /// From : https://stackoverflow.com/questions/409906/can-you-retrieve-the-hostname-and-port-from-a-system-net-sockets-tcpclient
-        /// </summary>
-        /// <param name="client">An OthelloTCPClient</param>
-        /// <returns><see cref="GetHostNameAndPort(TcpClient)"/></returns>
-        public Tuple<string, int> GetHostNameAndPort(OthelloTCPClient_old client)
-        {
-            return GetHostNameAndPort(client.TcpClient);
-        }
-
         /// <summary>
         /// From : https://stackoverflow.com/questions/409906/can-you-retrieve-the-hostname-and-port-from-a-system-net-sockets-tcpclient
         /// </summary>
@@ -149,15 +121,14 @@ namespace OthelloMillenniumServer
 
             return new Tuple<string, int>(hostName, port);
         }
-    }
 
-  
-    public class ServerEvent : EventArgs
-    {
-        public OthelloTCPClient_old Client { get; set; }
-
-        public Order Order { get; set; }
-
-        public DateTime FiredDateTime { get; private set; } = DateTime.Now;
+        public void HandleOrder(IOrderHandler sender, Order order)
+        {
+            if(order is RegisterRequestOrder registerRequestOrder)
+            {
+                // Register client to the Matchmaker
+                Matchmaker.Instance.RegisterNewClient(sender, order);
+            }
+        }
     }
 }

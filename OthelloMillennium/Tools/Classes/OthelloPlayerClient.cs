@@ -9,7 +9,7 @@ namespace Tools
         #region Attributes
         private int avatarId;
 
-        private Client client;
+        private OthelloTCPClient client;
         private IOrderHandler orderHandler;
 
         #endregion
@@ -73,7 +73,7 @@ namespace Tools
         public void Connect(GameType localOrOnline)
         {
             // Init a new client
-            client = new Client();
+            client = new OthelloTCPClient();
 
             // Connect the client to the target gametype server
             if(localOrOnline == GameType.Local)
@@ -106,7 +106,7 @@ namespace Tools
         public void SearchOpponent(BattleType battleType)
         {
             if (PlayerState != PlayerState.REGISTERED) throw new Exception("Action not available");
-            client.Send(new SearchOrder(battleType == BattleType.AgainstPlayer ? PlayerType.Human : PlayerType.AI));
+            client.Send(new SearchRequestOrder(battleType == BattleType.AgainstPlayer ? PlayerType.Human : PlayerType.AI));
 
             // Switch client state to searching
             PlayerState = PlayerState.SEARCHING;
@@ -115,7 +115,7 @@ namespace Tools
         public void ReadyToPlay()
         {
             if (PlayerState != PlayerState.LOBBY_CHOICE) throw new Exception("Action not allowed");
-            client.Send(new ReadyOrder());
+            client.Send(new PlayerReadyOrder());
 
             // Switch client state to ready
             PlayerState = PlayerState.READY;
@@ -128,8 +128,11 @@ namespace Tools
         }
 
 
-        public void HandleOrder(Order orderHandled)
+        public void HandleOrder(IOrderHandler sender, Order orderHandled)
         {
+            // If null, sender is this object otherwise the order has been redirected
+            sender = sender ?? this;
+
             if (orderHandler == null)
             {
                 Console.Error.WriteLine("WARNING ! - [OthelloPlayerClient.handleOrder] handleOrder should normally be set!");
@@ -140,26 +143,26 @@ namespace Tools
                 #region Forwarded orders
                 case RegisterSuccessfulOrder order:
                     PlayerState = PlayerState.REGISTERED;
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
 
                 case OpponentFoundOrder order:
                     PlayerState = PlayerState.LOBBY_CHOICE;
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
 
                 case GameReadyOrder order:
                     PlayerState = PlayerState.ABOUT_TO_START;
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
 
                 case GameStartedOrder order:
                     PlayerState = Color == Color.Black ? PlayerState.MY_TURN : PlayerState.OPPONENT_TURN;
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
                 
                 case OpponentAvatarChangedOrder order:
-                    orderHandler?.HandleOrder(order);
+                    orderHandler?.HandleOrder(sender, order);
                     break;
                 #endregion
 

@@ -30,7 +30,7 @@ namespace OthelloMillenniumServer
         /// </summary>
         public BattleType GameTypeData { get; private set; }
 
-        private object locker = new object();
+        private readonly object locker = new object();
         private bool client1Ready = false;
         private bool client2Ready = false;
 
@@ -253,7 +253,7 @@ namespace OthelloMillenniumServer
                         sender.Send(new DeniedOrder());
                     }
                 }
-                else if (e.Order is ReadyOrder)
+                else if (e.Order is PlayerReadyOrder)
                 {
                     lock (locker)
                     {
@@ -277,13 +277,5 @@ namespace OthelloMillenniumServer
                 throw new Exception("Can't cast sender to client");
             }
         }
-    }
-
-    public class GameHandlerArgs
-    {
-        public Client_old Player1 { get; set; }
-        public Client_old Player2 { get; set; }
-
-        public DateTime Time { get; private set; } = DateTime.Now;
     }
 }
