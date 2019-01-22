@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tools
+﻿namespace Tools
 {
-    interface OrderHandler
+    public interface IOrderHandler
     {
         void HandleOrder(Order order);
     }

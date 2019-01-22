@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tools
 {
-    class OthelloPlayerClient : OrderHandler
+    public class OthelloPlayerClient : IOrderHandler
     {
         // properties
 
@@ -14,15 +10,40 @@ namespace Tools
         private int avatarId;
 
         private Client client;
-        private OrderHandler orderHandler;
+        private IOrderHandler orderHandler;
 
         #endregion
 
         #region Properties
 
-        public int AvatarId
+        /// <summary>
+        /// Get : get the Name binded
+        /// Set : set the Name and inform the server of the change
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// Get : get the PlayerType
+        /// Set : set the PlayerType
+        /// </summary>
+        public PlayerType PlayerType { get; private set; }
+
+        /// <summary>
+        /// Get : get the Color
+        /// Set : set the Color
+        /// </summary>
+        public Color Color { get; private set; }
+
+        /// <summary>
+        /// Get : get the AvatarID binded
+        /// Set : set the AvatarID and inform the server of the change
+        /// </summary>
+        public int AvatarID
         {
-            get { return avatarId; }
+            get
+            {
+                return avatarId;
+            }
             set
             {
                 if (!IsLocalPlayer && PlayerState.LOBBY_CHOICE != PlayerState)
@@ -34,37 +55,43 @@ namespace Tools
             }
         }
 
-        // Client properties
-        public string Name { get; private set; }
-        public PlayerType PlayerType { get; set; }
-        public BattleType BattleType { get; set; }
-        public Color color { get; private set; }
-
         public bool IsLocalPlayer { get; private set; }
+
         public PlayerState PlayerState { get; private set; }
         #endregion
 
 
-        public OthelloPlayerClient(PlayerType playerType, BattleType battleType, string name)
+        public OthelloPlayerClient(PlayerType playerType, string name)
         {
+            Name = !string.IsNullOrEmpty(name) ? name : throw new ArgumentException("name can't be null or empty");
             PlayerType = playerType;
-            BattleType = battleType;
-            Name = name;
-
+            
+            // Set the set to initial
             PlayerState = PlayerState.INITIAL;
-
-            //TODO CHOOSE WHEN TO INIT CLIENT
         }
 
-        public void Connect()
+        public void Connect(GameType localOrOnline)
         {
+            // Init a new client
             client = new Client();
-            //TODO SEGAN
-            client.ConnectTo();
+
+            // Connect the client to the target gametype server
+            if(localOrOnline == GameType.Local)
+            {
+                IsLocalPlayer = true;
+                client.ConnectTo(Properties.Settings.Default.LocalHostname, Properties.Settings.Default.LocalPort);
+            }
+            else
+            {
+                IsLocalPlayer = false;
+                client.ConnectTo(Properties.Settings.Default.OnlineHostname, Properties.Settings.Default.OnlinePort);
+            }
+            
+            // Attach the client OrderHandler to this
             client.SetOrderhandler(this);
         }
 
-        public void SetOrderhandler(OrderHandler orderHandler)
+        public void SetOrderhandler(IOrderHandler orderHandler)
         {
             this.orderHandler = orderHandler;
         }
@@ -76,11 +103,12 @@ namespace Tools
             PlayerState = PlayerState.REGISTERING;
         }
 
-        public void SearchOpponent()
+        public void SearchOpponent(BattleType battleType)
         {
             if (PlayerState != PlayerState.REGISTERED) throw new Exception("Action not available");
-            PlayerType opponentType = BattleType == BattleType.AgainstPlayer ? PlayerType.Human : PlayerType.AI;
-            client.Send(new SearchOrder(opponentType));
+            client.Send(new SearchOrder(battleType == BattleType.AgainstPlayer ? PlayerType.Human : PlayerType.AI));
+
+            // Switch client state to searching
             PlayerState = PlayerState.SEARCHING;
         }
 
@@ -88,17 +116,15 @@ namespace Tools
         {
             if (PlayerState != PlayerState.LOBBY_CHOICE) throw new Exception("Action not allowed");
             client.Send(new ReadyOrder());
+
+            // Switch client state to ready
             PlayerState = PlayerState.READY;
         }
 
         public void Play(char row, int column)
         {
-            if (PlayerState != PlayerState.IN_GAME) throw new Exception("Action not allowed");
-
-            if (CanPlay)
-                Send(new PlayMoveOrder(new Tuple<char, int>(row, column)));
-            else
-                throw new Exception("Not allowed to play !");
+            if (PlayerState != PlayerState.MY_TURN) throw new Exception("Action not allowed");
+            client.Send(new PlayMoveOrder(new Tuple<char, int>(row, column)));
         }
 
 
@@ -111,6 +137,7 @@ namespace Tools
 
             switch (orderHandled)
             {
+                #region Forwarded orders
                 case RegisterSuccessfulOrder order:
                     PlayerState = PlayerState.REGISTERED;
                     orderHandler?.HandleOrder(order);
@@ -121,35 +148,33 @@ namespace Tools
                     orderHandler?.HandleOrder(order);
                     break;
 
-                case OpponentAvatarChangedOrder order:
-                    //Nothing special -> forward
-                    orderHandler?.HandleOrder(order);
-                    break;
-
                 case GameReadyOrder order:
                     PlayerState = PlayerState.ABOUT_TO_START;
                     orderHandler?.HandleOrder(order);
                     break;
 
                 case GameStartedOrder order:
-                    PlayerState = PlayerState.IN_GAME;
+                    PlayerState = Color == Color.Black ? PlayerState.MY_TURN : PlayerState.OPPONENT_TURN;
                     orderHandler?.HandleOrder(order);
                     break;
+                
+                case OpponentAvatarChangedOrder order:
+                    orderHandler?.HandleOrder(order);
+                    break;
+                #endregion
+
+                #region Properties received by the server
+                case AssignColorOrder order:
+                    Color = (Color)order.Color;
+                    break;
+
+                case AssignAvatarIDOrder order:
+                    // DO NOT change the property or it will send an order
+                    avatarId = order.AvatarID;
+                    break;
+                #endregion
+
             }
         }
-    }
-
-    public enum PlayerState
-    {
-        INITIAL,
-        REGISTERING,
-        REGISTERED,
-        SEARCHING,
-        LOBBY_CHOICE,
-        READY,
-        ABOUT_TO_START,
-        OPPONENT_TURN,
-        MY_TURN,
-        GAME_ENDED
     }
 }
