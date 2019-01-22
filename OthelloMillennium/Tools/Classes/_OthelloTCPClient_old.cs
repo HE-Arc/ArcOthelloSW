@@ -87,9 +87,15 @@ namespace Tools
                     try
                     {
                         NetworkStream stream = TcpClient.GetStream();
+                        Console.WriteLine("Send : " + (obj as Order).GetAcronym());
 
                         // Serialize object
-                        Message message = Serializer.Serialize(obj);
+                        Message message = null;
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            new BinaryFormatter().Serialize(memoryStream, obj);
+                            message = new Message { Data = memoryStream.ToArray() };
+                        }
 
                         //Workaround because of periodic random lost of bytes during communication transfert
                         byte[] array1 = new byte[4];
@@ -124,8 +130,6 @@ namespace Tools
 
         private void StartListener()
         {
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-
             // Listener task
             new Task(() =>
             {
@@ -206,7 +210,10 @@ namespace Tools
                         object deserializedObject = null;
                         try
                         {
-                            deserializedObject = Serializer.Deserialize(message);
+                            using (var memoryStream = new MemoryStream(message.Data))
+                            {
+                                deserializedObject = new BinaryFormatter().Deserialize(memoryStream);
+                            }
                         }
                         catch (SerializationException exception)
                         {
@@ -232,7 +239,6 @@ namespace Tools
                     Console.Error.WriteLine("TcpClient not connected");
                 }
             }
-
         }
     }
 

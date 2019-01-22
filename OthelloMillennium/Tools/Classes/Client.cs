@@ -1,153 +1,204 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
-namespace Tools
+namespace Tools.Classes
 {
-    /// <summary>
-    /// Wrapper of OthelloTCPClient
-    /// </summary>
-    public class Client : OthelloTCPClient
+    class Client
     {
-        public event EventHandler<OthelloTCPClientArgs> OnOpponentAvatarChanged;
-        public event EventHandler<OthelloTCPClientArgs> OnGameStartedReceived;
-        public event EventHandler<OthelloTCPClientArgs> OnGameReadyReceived;
+        // Informations
+        private TcpClient tcpClient;
+        private NetworkStream stream;
 
-        #region Attributes
-        private int avatarID;
+        private ConcurrentQueue<Order> orderToSend = new ConcurrentQueue<Order>();
+        private ConcurrentQueue<Order> orderReceived = new ConcurrentQueue<Order>();
 
-        // Locked semaphore, will be released when registerSuccessful will be received
-        private Semaphore semaphoreSearch = new Semaphore(0, 1);
+        private Task taskSender;
+        private Task taskListener;
+        private Task taskOrderHandler;
 
-        #endregion
+        private OrderHandler orderHandler;
 
-        #region Properties
-
-        public bool CanPlay { get; private set; }
-
-        /// <summary>
-        /// Get : get the Name binded
-        /// Set : set the Name and inform the server of the change
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Get : get the PlayerType
-        /// Set : set the PlayerType
-        /// </summary>
-        public PlayerType PlayerType { get; set; }
-
-        /// <summary>
-        /// Get : get the Color
-        /// Set : set the Color
-        /// </summary>
-        public Color Color { get; set; }
-
-        /// <summary>
-        /// Get : get the AvatarID binded
-        /// Set : set the AvatarID and inform the server of the change
-        /// </summary>
-        public int AvatarID {
-            get
-            {
-                return avatarID;
-            }
-            set
-            {
-                avatarID = value;
-                Send(new AvatarChangedOrder(avatarID));
-            }
-        }
-
-        #endregion
-
-        public Client(PlayerType type, string name)
-            : base()
+        public Client()
         {
-            PlayerType = type;
-            Name = name;
-
-            // Respond to order
-            OnOrderReceived += Client_OnOrderReceived;
-        }
-
-        private void Client_OnOrderReceived(object sender, OthelloTCPClientArgs e)
-        {
-            switch (e.Order)
-            {
-                case OpponentAvatarChangedOrder order:
-                    OnOpponentAvatarChanged?.Invoke(this, e);
-                    break;
-
-                case RegisterSuccessfulOrder order:
-                    semaphoreSearch.Release();
-                    break;
-
-                case GameStartedOrder order:
-                    OnGameStartedReceived?.Invoke(this, e);
-                    break;
-
-                case GameReadyOrder order:
-                    OnGameReadyReceived?.Invoke(this, e);
-                    break;
-            }
+            //Nothing
         }
 
         /// <summary>
-        /// Connect to a server
+        /// Connect to the server and start different services
         /// </summary>
-        /// <param name="gameType"></param>
-        public void Register(GameType gameType)
+        /// <param name="serverHostname"></param>
+        /// <param name="serverPort"></param>
+        public void ConnectTo(string serverHostname, int serverPort)
         {
-            // If connected close the connection
-            TcpClient?.Close();
+            Bind(new TcpClient());
 
-            switch (gameType)
-            {
-                case GameType.Local:
-                    ConnectTo(Properties.Settings.Default.LocalHostname, Properties.Settings.Default.LocalPort);
-                    break;
-                case GameType.Online:
-                    ConnectTo(Properties.Settings.Default.OnlineHostname, Properties.Settings.Default.OnlinePort);
-                    break;
-                default:
-                    throw new Exception("Invalid gameType provided");
-            }
+            // Register this client to the server
+            tcpClient.Connect(serverHostname, serverPort);
+            stream = tcpClient.GetStream();
 
-            // Send a register request
-            Send(new RegisterRequestOrder(PlayerType, Name));
+            taskSender = new Task(Sender);
+            taskListener = new Task(Listener);
+            taskOrderHandler = new Task(OrderHandler);
+
+            taskSender.Start();
+            taskListener.Start();
+            taskOrderHandler.Start();
         }
 
         /// <summary>
-        /// Send a message in order to register itself
+        /// Send a serialized object to the server
         /// </summary>
-        /// <param name="battleType"></param>
-        public void Search(BattleType battleType)
+        /// <param name="order">What to transfer</param>
+        public void Send(Order order)
         {
-            semaphoreSearch.WaitOne();
-
-            // Send a request
-            Send(new SearchOrder(battleType == BattleType.AgainstAI ? PlayerType.AI : PlayerType.Human));
+            orderToSend.Enqueue(order);
         }
 
         /// <summary>
-        /// Tell the gameHandler that the client is ready
+        /// Attach a tcpClient to this client
         /// </summary>
-        public void Ready()
+        /// <param name="tcpClient"></param>
+        public void Bind(TcpClient tcpClient)
         {
-            Send(new ReadyOrder());
-        }
-
-        /// <summary>
-        /// Sends to the server the location where the new token has been placed
-        /// </summary>
-        /// <param name="row">row</param>
-        /// <param name="column">column</param>
-        public void Play(char row, int column)
-        {
-            if (CanPlay)
-                Send(new PlayMoveOrder(new Tuple<char, int>(row, column)));
+            if (tcpClient != null)
+                throw new ArgumentNullException("tcpClient");
             else
-                throw new Exception("Not allowed to play !");
+                this.tcpClient = tcpClient;
+        }
+
+        /// <summary>
+        /// Send order to the server
+        /// </summary>
+        private void Sender()
+        {
+            while (!tcpClient.Connected)
+            {
+                Thread.Sleep(200);
+            }
+
+            Console.WriteLine("Server connected, sending enabled");
+            while (true)
+            {
+                while (!orderToSend.IsEmpty)
+                {
+                    try
+                    {
+                        orderToSend.TryDequeue(out Order order);
+
+                        // Serialize object
+                        byte[] data = null;
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            new BinaryFormatter().Serialize(memoryStream, order);
+                            data = memoryStream.ToArray();
+                        }
+
+                        // Send Data
+                        byte[] userDataLen = BitConverter.GetBytes((Int32)data.Length);
+                        stream.Write(userDataLen, 0, 4);
+                        stream.Write(data, 0, data.Length);
+
+                        stream.Flush();
+                    }
+                    catch (Exception exception)
+                    {
+                        Toolbox.LogError(exception);
+                    }
+                }
+                Thread.Sleep(50);
+            }
+        }
+
+        /// <summary>
+        /// Listen to the server for messages
+        /// </summary>
+        private void Listener()
+        {
+            while (!tcpClient.Connected)
+            {
+                Thread.Sleep(200);
+            }
+
+            Console.WriteLine("Server connected, listening enabled");
+            while (true)
+            {
+                try
+                {
+                    // Read message length
+                    byte[] lengthBuffer = new byte[sizeof(Int32)];
+                    int recv = stream.Read(lengthBuffer, 0, lengthBuffer.Length);
+
+                    // Prepare receiving
+                    byte[] data = null;
+
+                    if (recv == sizeof(int))
+                    {
+                        int messageLen = BitConverter.ToInt32(lengthBuffer, 0);
+                        data = new byte[messageLen];
+                        recv = stream.Read(data, 0, data.Length);
+
+                        if (recv != messageLen)
+                        {
+                            //Adapt size workaround
+                            Console.WriteLine("Shit missing some data" + messageLen);
+                        }
+                    }
+
+                    Order order = null;
+                    try
+                    {
+                        using (var memoryStream = new MemoryStream(data))
+                        {
+                            order = (Order)new BinaryFormatter().Deserialize(memoryStream);
+                        }
+                    }
+                    catch (SerializationException exception)
+                    {
+                        //TODO Remove console log juste under this line
+                        Console.WriteLine("Error during Serialization ");// + Encoding.Default.GetString(data));
+                        Toolbox.LogError(exception);
+                    }
+
+                    Console.WriteLine("Received " + order.GetAcronym());
+
+                    orderReceived.Enqueue(order);
+                }
+                catch (Exception exception)
+                {
+                    Console.Error.WriteLine("Error while reading from socket");
+                    Toolbox.LogError(exception);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Empty the list of order received
+        /// </summary>
+        private void OrderHandler()
+        {
+            while(orderHandler == null)
+            {
+                Thread.Sleep(50);
+            }
+
+            while (true)
+            {
+                while (!orderReceived.IsEmpty)
+                {
+                    orderReceived.TryDequeue(out Order order);
+                    orderHandler.HandleOrder(order);
+                }
+                Thread.Sleep(50);
+            }
         }
     }
 }

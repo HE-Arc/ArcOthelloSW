@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tools
+namespace Tools.Classes
 {
-    public class Message
+    interface OrderHandler
     {
-        public byte[] Data { get; set; }
+        void HandleOrder(Order order);
     }
 }

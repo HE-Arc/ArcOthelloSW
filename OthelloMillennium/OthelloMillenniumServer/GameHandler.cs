@@ -30,6 +30,7 @@ namespace OthelloMillenniumServer
         /// </summary>
         public BattleType GameTypeData { get; private set; }
 
+        private object locker = new object();
         private bool client1Ready = false;
         private bool client2Ready = false;
 
@@ -254,14 +255,17 @@ namespace OthelloMillenniumServer
                 }
                 else if (e.Order is ReadyOrder)
                 {
-                    if (sender.Color == Color.Black)
-                        client1Ready = true;
-                    else if (sender.Color == Color.White)
-                        client2Ready = true;
+                    lock (locker)
+                    {
+                        if (sender.Color == Color.Black)
+                            client1Ready = true;
+                        else if (sender.Color == Color.White)
+                            client2Ready = true;
 
-                    Console.WriteLine("Player : " + sender.Color);
-                    if (client1Ready && client2Ready)
-                        StartGame();
+                        Console.WriteLine("Player : " + sender.Color);
+                        if (client1Ready && client2Ready)
+                            StartGame();
+                    }
                 }
                 else
                 {
