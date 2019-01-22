@@ -9,6 +9,6 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
     class RemotePlayerData
     {
         public string Name { get; set; }
-        public int PlayerId { get; set; }
+        public int AvatarId { get; set; }
     }
 }

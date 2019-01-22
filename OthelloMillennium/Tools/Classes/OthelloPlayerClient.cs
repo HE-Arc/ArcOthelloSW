@@ -38,7 +38,7 @@ namespace Tools
         /// Get : get the AvatarID binded
         /// Set : set the AvatarID and inform the server of the change
         /// </summary>
-        public int AvatarID
+        public int AvatarId
         {
             get
             {

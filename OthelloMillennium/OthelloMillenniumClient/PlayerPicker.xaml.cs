@@ -144,12 +144,8 @@ namespace OthelloMillenniumClient
             MainGrid.Children.Add(whiteSelector);
             MainGrid.Children.Add(blackSelector);
 
-            //TODO SEGAN get initial player image id 
-
-            Tuple<int, Color> player1 = ApplicationManager.Instance.PlayersAvatarId();
-            //TODO TODO
-            //PlayerBlackImageId = GetClientFromColor(Color.Black).AvatarID;
-            //PlayerWhiteImageId = GetClientFromColor(Color.White).AvatarID;
+            PlayerBlackImageId = ApplicationManager.Instance.PlayersAvatarId(Color.Black);
+            PlayerWhiteImageId = ApplicationManager.Instance.PlayersAvatarId(Color.White);
         }
 
         public void OnUpdateOpponentColorServer(Color color, int AvatardId)

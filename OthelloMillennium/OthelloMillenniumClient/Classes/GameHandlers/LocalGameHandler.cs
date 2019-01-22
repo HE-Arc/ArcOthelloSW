@@ -51,17 +51,17 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 
         public override Tuple<Color, Color> PlayersColor() => new Tuple<Color, Color>(player1.Color, player2.Color);
 
-        public override Tuple<int, Color> PlayersAvatarId() => new Tuple<int, Color>(player1.AvatarID, player1.Color);
+        public override int PlayersAvatarId(Color color) => player1.Color == color ? player1.AvatarId : player2.AvatarId;
 
         public override void AvatarIdChange(Color color, int avatarId)
         {
             if(player1.Color == color)
             {
-                player1.AvatarID = avatarId;
+                player1.AvatarId = avatarId;
             }
             else
             {
-                player2.AvatarID = avatarId;
+                player2.AvatarId = avatarId;
             }
         }
 

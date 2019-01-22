@@ -25,6 +25,6 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         public abstract void AvatarIdChange(Color color, int avatarId);
 
         public abstract Tuple<Color, Color> PlayersColor();
-        public abstract Tuple<int, Color> PlayersAvatarId();
+        public abstract int PlayersAvatarId(Color color);
     }
 }
