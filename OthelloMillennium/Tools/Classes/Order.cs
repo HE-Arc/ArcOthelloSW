@@ -218,7 +218,7 @@ namespace Tools
         protected ReadyOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         { }
-
+        
         public override string GetAcronym()
         {
             return "RO";

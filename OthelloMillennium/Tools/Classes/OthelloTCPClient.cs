@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -57,7 +58,7 @@ namespace Tools
                         }
 
                         // Avoid flames coming out of cpu
-                        //Thread.Sleep(10);
+                        //Thread.Sleep(5);
                     }
                 }
             }).Start();
@@ -119,10 +120,17 @@ namespace Tools
                     {
                         NetworkStream stream = TcpClient.GetStream();
 
+                        // Serialize object
+                        Message message = Serializer.Serialize(obj);
+
+                        // Send Data
+                        byte[] userDataLen = BitConverter.GetBytes((Int32)message.Data.Length);
+                        stream.Write(userDataLen, 0, 4);
+                        stream.Write(message.Data, 0, message.Data.Length);
+
+
                         Console.WriteLine("Send " + (obj as Order).GetAcronym());
 
-                        // Serialize object
-                        formatter.Serialize(stream, obj);
 
                         // Flush the stream
                         stream.Flush();
@@ -158,8 +166,20 @@ namespace Tools
                     try
                     {
                         NetworkStream stream = TcpClient.GetStream();
-                        // Deserialize object
-                        var deserializedObject = formatter.Deserialize(stream);
+
+                        byte[] readMsgLen = new byte[4];
+                        stream.Read(readMsgLen, 0, 4);
+
+                        int dataLen = BitConverter.ToInt32(readMsgLen, 0);
+                        byte[] readMsgData = new byte[dataLen];
+                        stream.Read(readMsgData, 0, dataLen);
+
+                        Message message = new Message()
+                        {
+                            Data = readMsgData
+                        };
+
+                        object deserializedObject = Serializer.Deserialize(message);
 
                         Console.WriteLine("Received " + (deserializedObject as Order).GetAcronym());
 
