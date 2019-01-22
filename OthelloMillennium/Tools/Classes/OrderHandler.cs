@@ -2,6 +2,6 @@
 {
     public interface IOrderHandler
     {
-        void HandleOrder(Order order);
+        void HandleOrder(IOrderHandler sender, Order order);
     }
 }

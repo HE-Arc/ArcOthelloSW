@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Tools
 {
-    class Client
+    public class OthelloTCPClient
     {
         // Informations
         private TcpClient tcpClient;
@@ -27,7 +24,7 @@ namespace Tools
 
         private IOrderHandler orderHandler;
 
-        public Client()
+        public OthelloTCPClient()
         {
             //Nothing
         }
@@ -121,7 +118,7 @@ namespace Tools
                         }
 
                         // Send Data
-                        byte[] userDataLen = BitConverter.GetBytes((Int32)data.Length);
+                        byte[] userDataLen = BitConverter.GetBytes(data.Length);
                         stream.Write(userDataLen, 0, 4);
                         stream.Write(data, 0, data.Length);
 
@@ -152,7 +149,7 @@ namespace Tools
                 try
                 {
                     // Read message length
-                    byte[] lengthBuffer = new byte[sizeof(Int32)];
+                    byte[] lengthBuffer = new byte[sizeof(int)];
                     int recv = stream.Read(lengthBuffer, 0, lengthBuffer.Length);
 
                     // Prepare receiving

@@ -1,0 +1,22 @@
+Implement new version gamehandler client slide
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch master
+# Your branch is up to date with 'origin/master'.
+#
+# Changes to be committed:
+#	modified:   OthelloMillennium/OthelloMillenniumClient/App.xaml
+#	modified:   OthelloMillennium/OthelloMillenniumClient/Classes/ApplicationManager.cs
+#	modified:   OthelloMillennium/OthelloMillenniumClient/Classes/GameHandlers/GameHandler.cs
+#	modified:   OthelloMillennium/OthelloMillenniumClient/Classes/GameHandlers/LocalGameHandler.cs
+#	modified:   OthelloMillennium/OthelloMillenniumClient/Classes/GameHandlers/OnlineGameHandler.cs
+#	new file:   OthelloMillennium/OthelloMillenniumClient/Classes/GameHandlers/RemotePlayerData.cs
+#	modified:   OthelloMillennium/OthelloMillenniumClient/Classes/IGame.cs
+#	new file:   OthelloMillennium/OthelloMillenniumClient/Classes/IHome.cs
+#	modified:   OthelloMillennium/OthelloMillenniumClient/Classes/ILobby.cs
+#	modified:   OthelloMillennium/OthelloMillenniumClient/Home.xaml.cs
+#	modified:   OthelloMillennium/OthelloMillenniumClient/Lobby.xaml.cs
+#	modified:   OthelloMillennium/OthelloMillenniumClient/Main.cs
+#	modified:   OthelloMillennium/Tools/Classes/OthelloPlayerClient.cs
+#

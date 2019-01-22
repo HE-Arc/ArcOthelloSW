@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System;
+using System.Net.Sockets;
 
 namespace Tools
 {
@@ -22,13 +23,13 @@ namespace Tools
         /// </summary>
         public Color Color { get; private set; }
 
-        private Client client;
+        private OthelloTCPClient client;
         private IOrderHandler orderHandler;
 
         public OthelloPlayerServer(TcpClient tcpClient)
         {
             //TODO Think about receiving a client or a TcpClient
-            client = new Client();
+            client = new OthelloTCPClient();
 
             client.Bind(tcpClient);
 
@@ -40,28 +41,77 @@ namespace Tools
             this.orderHandler = orderHandler;
         }
 
+        /// <summary>
+        /// Send the color the the client-side
+        /// </summary>
+        /// <param name="color"></param>
+        public void SetColor(Color color)
+        {
+            client.Send(new AssignColorOrder(color));
+        }
+
+        /// <summary>
+        /// Send the opponentName to the client-side
+        /// </summary>
+        /// <param name="opponentName"></param>
         public void OpponentFound(string opponentName)
         {
             client.Send(new OpponentFoundOrder(opponentName));
         }
 
+        /// <summary>
+        /// Send the opponent's avatarID to the client-side
+        /// </summary>
+        /// <param name="avatarId"></param>
         public void OpponentAvatarChanged(int avatarId)
         {
             client.Send(new OpponentAvatarChangedOrder(avatarId));
         }
 
-        public void HandleOrder(Order order)
+        /// <summary>
+        /// Handle received orders
+        /// </summary>
+        /// <param name="order"></param>
+        public void HandleOrder(IOrderHandler sender, Order order)
         {
+            // If null, sender is this object otherwise the order has been redirected
+            sender = sender ?? this;
+
             switch (order)
             {
                 #region Forwarded orders
-                case AvatarChangedOrder castedOrder:
-                    orderHandler?.HandleOrder(order);
+
+                #region To GameHandler
+                case AvatarChangedOrder a:
+                case PlayerReadyOrder b:
+                case PlayMoveOrder c:
+                case UndoOrder d:
+                case RedoOrder e:
+                case SaveOrder f:
+                    orderHandler?.HandleOrder(sender, order);
                     break;
 
-                
-
                 #endregion
+
+                #region To TCPServer
+                case RegisterRequestOrder castedOrder:
+                    Name = !string.IsNullOrEmpty(castedOrder.Name) ? castedOrder.Name : throw new ArgumentException("name can't be null or empty");
+                    PlayerType = (PlayerType)castedOrder.PlayerType;
+                    orderHandler?.HandleOrder(sender, order);
+                    break;
+                #endregion
+
+                #region To Matchmaker
+                case SearchRequestOrder castedOrder:
+                    orderHandler?.HandleOrder(sender, order);
+                    break;
+
+                case LoadOrder castedOrder:
+                    orderHandler?.HandleOrder(sender, order);
+                    break;
+                    #endregion
+
+                    #endregion
             }
         }
     }
