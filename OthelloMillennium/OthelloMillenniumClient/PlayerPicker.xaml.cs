@@ -97,13 +97,6 @@ namespace OthelloMillenniumClient
             Init();
 
             DataContext = this;
-
-            //If we are not in local, add listener on opponent avatar change
-            if(ApplicationManager.Instance.CurrentGame.GameType == GameType.Online)
-            {
-                ApplicationManager.Instance.CurrentGame.Player1.OnOpponentAvatarChanged += OnOpponentAvatarChange;
-                //ApplicationManager.Instance.CurrentGame.Player2.OnOpponentAvatarChanged += OnOpponentAvatarChange;
-            }
         }
         
         private void Init()
@@ -152,142 +145,70 @@ namespace OthelloMillenniumClient
             MainGrid.Children.Add(blackSelector);
 
             //TODO SEGAN get initial player image id 
-            Console.WriteLine(GetClientFromColor(Color.Black).AvatarID + "", " ids ", GetClientFromColor(Color.Black).AvatarID);
-            PlayerBlackImageId = GetClientFromColor(Color.Black).AvatarID;
-            PlayerWhiteImageId = GetClientFromColor(Color.White).AvatarID;
-        }
-        
-        /// <summary>
-        /// Try to get client from the sender
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <returns>the client</returns>
-        private Client_old GetClientFromSender(object sender)
-        {
-            if (sender is Client_old s)
-            {
-                if (s.Color == ApplicationManager.Instance.Player1.Color)
-                {
-                    return ApplicationManager.Instance.Player1;
-                }
-                else
-                {
-                    return ApplicationManager.Instance.Player2;
-                }
-            }
-            return null;
+
+            Tuple<int, Color> player1 = ApplicationManager.Instance.PlayersAvatarId();
+            //TODO TODO
+            //PlayerBlackImageId = GetClientFromColor(Color.Black).AvatarID;
+            //PlayerWhiteImageId = GetClientFromColor(Color.White).AvatarID;
         }
 
-        /// <summary>
-        /// Try to get opponent from the client
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <returns>the client</returns>
-        private Client_old GetOpponentFromClient(Client_old client)
+        public void OnUpdateOpponentColorServer(Color color, int AvatardId)
         {
-            if (client.Equals(ApplicationManager.Instance.Player1))
+            // Has to be the inverted since we modify the opponent
+            if (color == Color.Black)
             {
-                return ApplicationManager.Instance.Player2;
+                PlayerBlackImageId = AvatardId;
             }
             else
             {
-                return ApplicationManager.Instance.Player1;
+                PlayerWhiteImageId = AvatardId;
             }
         }
 
-        /// <summary>
-        /// Try to get opponent from color
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <returns>the client</returns>
-        private Client_old GetClientFromColor(Color color)
+        public void OnKeyDownOnlineWhite(object sender, KeyEventArgs e)
         {
-            if (ApplicationManager.Instance.Player1.Color == color)
+            int newId = ManageKeyUpLeftDownRight(e.Key, ManageKeyWASD(e.Key, PlayerWhiteImageId));
+            if (newId != PlayerWhiteImageId)
             {
-                return ApplicationManager.Instance.Player1;
-            }
-            else
-            {
-                return ApplicationManager.Instance.Player2;
+                PlayerWhiteImageId = newId;
+
+                // Will inform the opponent of the change too
+                ApplicationManager.Instance.AvatarIdChange(Color.White, PlayerWhiteImageId);
             }
         }
 
-        private void OnOpponentAvatarChange(object sender, OthelloTCPClientArgs e)
+        public void OnKeyDownOnlineBlack(object sender, KeyEventArgs e)
         {
-            //TODO FIX THIS, Color might not been assigned to the correct player
-            if (sender is Client_old client && e.Order is OpponentAvatarChangedOrder order)
-            {
-                // Has to be the inverted since we modify the opponent
-                if (client.Color == Color.Black)
-                {
-                    PlayerWhiteImageId = order.AvatarID;
-                }
-                else
-                {
-                    PlayerBlackImageId = order.AvatarID;
-                }
-            }
-        }
-
-        public void OnKeyUpHandler(object sender, KeyEventArgs e)
-        {
-            if (ApplicationManager.Instance.CurrentGame.GameType == GameType.Online)
-            {
-                OnKeyDownOnline(e.Key);
-            }
-            else
-            {
-                OnKeyDownLocal(e.Key);
-            }
-        }
-
-        private void OnKeyDownOnline(Key key)
-        {
-            // Mode online, wasd et les touches flèchés
-            if (ApplicationManager.Instance.Player1.Color == Color.White)
-            {
-                int newId = ManageKeyUpLeftDownRight(key, ManageKeyWASD(key, PlayerWhiteImageId));
-                if (newId != PlayerWhiteImageId)
-                {
-                    PlayerWhiteImageId = newId;
-
-                    // Will inform the opponent of the change too
-                    ApplicationManager.Instance.Player1.AvatarID = PlayerWhiteImageId;
-                }
-            }
-            else
-            {
-                int newId = ManageKeyUpLeftDownRight(key, ManageKeyWASD(key, PlayerBlackImageId));
-                if (newId != PlayerBlackImageId)
-                {
-                    PlayerBlackImageId = newId;
-
-                    // Will inform the opponent of the change too
-                    ApplicationManager.Instance.Player1.AvatarID = PlayerBlackImageId;
-                }
-            }
-        }
-
-        private void OnKeyDownLocal(Key key)
-        {
-            //Mode local, wasd pour le joueur à droite et et touches flèchés pour le joueur à gauche
-            int newId = ManageKeyWASD(key, PlayerBlackImageId);
+            int newId = ManageKeyUpLeftDownRight(e.Key, ManageKeyWASD(e.Key, PlayerBlackImageId));
             if (newId != PlayerBlackImageId)
             {
                 PlayerBlackImageId = newId;
 
                 // Will inform the opponent of the change too
-                GetClientFromColor(Color.Black).AvatarID = PlayerBlackImageId;
+                ApplicationManager.Instance.AvatarIdChange(Color.Black, PlayerBlackImageId);
+            }
+        }
+
+        private void OnKeyDownLocal(object sender, KeyEventArgs e)
+        {
+            //Mode local, wasd pour le joueur à droite et et touches flèchés pour le joueur à gauche
+            int newId = ManageKeyWASD(e.Key, PlayerBlackImageId);
+            if (newId != PlayerBlackImageId)
+            {
+                PlayerBlackImageId = newId;
+
+                // Will inform the opponent of the change too
+                ApplicationManager.Instance.AvatarIdChange(Color.Black, PlayerBlackImageId);
             }
             else
             {
-                newId = ManageKeyUpLeftDownRight(key, PlayerWhiteImageId);
+                newId = ManageKeyUpLeftDownRight(e.Key, PlayerWhiteImageId);
                 if (newId != PlayerWhiteImageId)
                 {
                     PlayerWhiteImageId = newId;
 
                     // Will inform the opponent of the change too
-                    GetClientFromColor(Color.White).AvatarID = PlayerWhiteImageId;
+                    ApplicationManager.Instance.AvatarIdChange(Color.White, PlayerWhiteImageId);
                 }
             }
         }

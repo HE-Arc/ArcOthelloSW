@@ -22,13 +22,12 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             {
                 throw new Exception($"Unable to start server on port {TCPServer.Instance.Port}");
             }
-
         }
 
         public void JoinGame(PlayerType playerOne, string playerNameOne, PlayerType playerTwo, string playerNameTwo)
         {
             player1 = new OthelloPlayerClient(playerOne, playerNameOne);
-            player2 = new OthelloPlayerClient(playerOne, playerNameOne);
+            player2 = new OthelloPlayerClient(playerTwo, playerNameTwo);
 
             player1.Connect(GameType);
             player2.Connect(GameType);
@@ -48,6 +47,22 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             player2.ReadyToPlay();
 
             //TODO Goto Game when both are ready
+        }
+
+        public override Tuple<Color, Color> PlayersColor() => new Tuple<Color, Color>(player1.Color, player2.Color);
+
+        public override Tuple<int, Color> PlayersAvatarId() => new Tuple<int, Color>(player1.AvatarID, player1.Color);
+
+        public override void AvatarIdChange(Color color, int avatarId)
+        {
+            if(player1.Color == color)
+            {
+                player1.AvatarID = avatarId;
+            }
+            else
+            {
+                player2.AvatarID = avatarId;
+            }
         }
 
         /// <summary>

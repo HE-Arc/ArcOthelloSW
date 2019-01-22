@@ -15,8 +15,23 @@ namespace OthelloMillenniumClient
         {
             InitializeComponent();
 
+
+            if(ApplicationManager.Instance.GameType == GameType.Local)
+            {
+
+            }
+            else
+            {
+                if(ApplicationManager.Instance.PlayersColor().Item1 == Color.Black)
+                {
+                    KeyUp += PlayerPicker.OnKeyDownOnlineBlack;
+                }
+                else
+                {
+                    KeyUp += PlayerPicker.OnKeyDownOnlineWhite;
+                }
+            }
             // Bind key event to playerpicker
-            this.KeyUp += PlayerPicker.OnKeyUpHandler;
         }
 
         public void OnLaunchGameServer()
@@ -34,10 +49,9 @@ namespace OthelloMillenniumClient
             ApplicationManager.Instance.LaunchGame();
         }
 
-        public void OnUpdateOpponentColorServer()
+        public void OnUpdateOpponentColorServer(Color color, int AvatarId)
         {
-
+            PlayerPicker.OnUpdateOpponentColorServer(color, AvatarId);
         }
-
     }
 }

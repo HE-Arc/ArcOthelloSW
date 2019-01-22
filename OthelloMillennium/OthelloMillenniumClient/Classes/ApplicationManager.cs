@@ -39,7 +39,7 @@ namespace OthelloMillenniumClient
 
         #endregion
 
-        private GameType gameType;
+        public GameType GameType { get; private set; }
 
         private ApplicationManager()
         {
@@ -76,19 +76,24 @@ namespace OthelloMillenniumClient
 
         public void JoinGameLocal(PlayerType playerOne, string playerNameOne, PlayerType playerTwo, string playerNameTwo)
         {
-            gameType = GameType.Local;
+            GameType = GameType.Local;
             gameHandler = new LocalGameHandler();
             (gameHandler as LocalGameHandler).JoinGame(playerOne, playerNameOne, playerTwo, playerNameTwo);
         }
 
         public void JoinGameOnline(PlayerType playerOne, string playerNameOne, BattleType battleType)
         {
-            gameType = GameType.Online;
+            GameType = GameType.Online;
             gameHandler = new OnlineGameHandler();
             (gameHandler as OnlineGameHandler).JoinGame(playerOne, playerNameOne, battleType);
         }
 
         public void LaunchGame() => gameHandler.LaunchGame();
+
+        public void AvatarIdChange(Color color, int avatarId) => gameHandler.AvatarIdChange(color, avatarId);
+
+        public Tuple<Color, Color> PlayersColor() => gameHandler.PlayersColor();
+        public Tuple<int, Color> PlayersAvatarId() => gameHandler.PlayersAvatarId();
 
         public void HandleOrder(IOrderHandler sender, Order order)
         {

@@ -171,11 +171,11 @@ namespace OthelloMillenniumClient
             Image1 = "TODO";
             Image2 = "TODO";
 
-            Inactive1 = ApplicationManager.Instance.Player1.CanPlay;
-            Inactive2 = ApplicationManager.Instance.Player2.CanPlay;
+            Inactive1 = true;// ApplicationManager.Instance.Player1.CanPlay;
+            Inactive2 = false;// ApplicationManager.Instance.Player2.CanPlay;
 
-            Time1 = FormatDoubleToTime(ApplicationManager.Instance.CurrentGame.GameState.RemainingTimes.Item1);
-            Time2 = FormatDoubleToTime(ApplicationManager.Instance.CurrentGame.GameState.RemainingTimes.Item2);
+            Time1 = "12:000"; // FormatDoubleToTime(ApplicationManager.Instance.CurrentGame.GameState.RemainingTimes.Item1);
+            Time2 = "12:000"; // FormatDoubleToTime(ApplicationManager.Instance.CurrentGame.GameState.RemainingTimes.Item2);
         }
 
         private string FormatDoubleToTime(double time)
