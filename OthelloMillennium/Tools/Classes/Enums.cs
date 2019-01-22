@@ -29,4 +29,19 @@ namespace Tools
         Black = 1,
         White = 2
     }
+
+    public enum PlayerState
+    {
+        INITIAL,
+        REGISTERING,
+        REGISTERED,
+        SEARCHING,
+        LOBBY_CHOICE,
+        READY,
+        ABOUT_TO_START,
+        OPPONENT_TURN,
+        MY_TURN,
+        GAME_ENDED
+    }
+
 }

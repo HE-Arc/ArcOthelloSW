@@ -25,14 +25,14 @@ namespace Tools
         private Task taskListener;
         private Task taskOrderHandler;
 
-        private OrderHandler orderHandler;
+        private IOrderHandler orderHandler;
 
         public Client()
         {
             //Nothing
         }
 
-        public void SetOrderhandler(OrderHandler orderHandler)
+        public void SetOrderhandler(IOrderHandler orderHandler)
         {
             this.orderHandler = orderHandler;
         }
