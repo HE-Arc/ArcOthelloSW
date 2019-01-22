@@ -210,11 +210,7 @@ namespace Tools
                 while (!orderReceived.IsEmpty)
                 {
                     orderReceived.TryDequeue(out Order order);
-<<<<<<< Updated upstream
                     orderHandler.HandleOrder(null, order);
-=======
-                    orderHandler.HandleOrder(orderHandler, order);
->>>>>>> Stashed changes
                 }
                 Thread.Sleep(50);
             }

@@ -1,4 +1,5 @@
-﻿using OthelloMillenniumClient.Classes;
+﻿using OthelloMillenniumClient;
+using OthelloMillenniumClient.Classes;
 using OthelloMillenniumClient.Classes.GameHandlers;
 using System;
 using System.Threading;
@@ -15,7 +16,7 @@ namespace TestCommunication
             OthelloPlayerClient client2 = new OthelloPlayerClient(PlayerType.Human, "eM");
 
             // Register clients to applicationManager
-            ApplicationManager.Instance.StartGameLocal(PlayerType.Human, BattleType.AgainstPlayer);
+            // ApplicationManager.Instance.JoinGameLocal()
 
             client1.Register();
             client2.Register();
