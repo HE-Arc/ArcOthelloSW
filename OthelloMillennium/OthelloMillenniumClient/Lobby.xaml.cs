@@ -16,10 +16,12 @@ namespace OthelloMillenniumClient
             InitializeComponent();
 
             // Will listen for a gameStarted event
-            ApplicationManager.Instance.Player1.OnGameStartedReceived += OnGameStartedReceived;
+            //ApplicationManager.Instance.Player1.OnGameStartedReceived += OnGameStartedReceived;
+
+            ApplicationManager.Instance.CurrentGame.OnGameReady += OnGameStartedReceived;
 
             // Bind key event to playerpicker
-            this.KeyDown += PlayerPicker.OnKeyDownHandler;
+            this.KeyUp += PlayerPicker.OnKeyUpHandler;
         }
 
         private void OnGameStartedReceived(object sender, OthelloTCPClientArgs e)

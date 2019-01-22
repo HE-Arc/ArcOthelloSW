@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,10 +13,11 @@ namespace Tools
     public class OthelloTCPClient
     {
         private readonly BinaryFormatter formatter = new BinaryFormatter();
+        private MemoryStream memoryStreamListen = new MemoryStream();
 
         // Informations
         public TcpClient TcpClient { get; private set; }
-        
+
         // Events
         public event EventHandler<OthelloTCPClientArgs> OnOrderReceived;
         public event EventHandler<OthelloTCPClientGameStateArgs> OnGameStateReceived;
@@ -26,42 +29,7 @@ namespace Tools
         /// </summary>
         protected OthelloTCPClient()
         {
-            // Listener task
-            new Task(() =>
-            {
-                while (true)
-                {
-                    if (TcpClient == null)
-                    {
-                        // Wait 0.5 second and check TcpConnection again
-                        Thread.Sleep(500);
-                    }
-                    else
-                    {
-                        var deserializedObject = Receive();
-
-                        if (deserializedObject is Order order && !string.IsNullOrEmpty(order.GetAcronym()))
-                        {
-                            OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs(order));
-                        }
-                        else if (deserializedObject is GameState gameState)
-                        {
-                            OnGameStateReceived?.Invoke(this, new OthelloTCPClientGameStateArgs(gameState));
-                        }
-                        else if (deserializedObject is ExportedGame exportedGame)
-                        {
-                            OnSaveReceived?.Invoke(this, new OthelloTCPClientSaveArgs(exportedGame));
-                        }
-                        else
-                        {
-                            Console.Error.WriteLine("Can't cast to any known object");
-                        }
-
-                        // Avoid flames coming out of cpu
-                        //Thread.Sleep(5);
-                    }
-                }
-            }).Start();
+            StartListener();
 
             // Ping task
             new Task(() =>
@@ -123,18 +91,23 @@ namespace Tools
                         // Serialize object
                         Message message = Serializer.Serialize(obj);
 
+                        //Workaround because of periodic random lost of bytes during communication transfert
+                        byte[] array1 = new byte[4];
+                        array1[0] = 8;
+                        array1[1] = 8;
+                        array1[2] = 8;
+                        array1[3] = 8;
+                        byte[] array2 = message.Data;
+                        byte[] newArray = new byte[array1.Length + array2.Length];
+                        Array.Copy(array1, newArray, array1.Length);
+                        Array.Copy(array2, 0, newArray, array1.Length, array2.Length);
+
                         // Send Data
-                        byte[] userDataLen = BitConverter.GetBytes((Int32)message.Data.Length);
+                        byte[] userDataLen = BitConverter.GetBytes((Int32)newArray.Length);
                         stream.Write(userDataLen, 0, 4);
-                        stream.Write(message.Data, 0, message.Data.Length);
+                        stream.Write(newArray, 0, newArray.Length);
 
-
-                        Console.WriteLine("Send " + (obj as Order).GetAcronym());
-
-
-                        // Flush the stream
                         stream.Flush();
-                            
                     }
                     catch (Exception ex)
                     {
@@ -149,49 +122,109 @@ namespace Tools
             }
         }
 
+        private void StartListener()
+        {
+            BinaryFormatter binaryFormatter = new BinaryFormatter();
+
+            // Listener task
+            new Task(() =>
+            {
+                while (true)
+                {
+                    if (TcpClient == null)
+                    {
+                        // Wait 0.5 second and check TcpConnection again
+                        Thread.Sleep(500);
+                    }
+                    else
+                    {
+                        Listener();
+                    }
+                }
+            }).Start();
+        }
+
+        private void ManageOrder(object obj)
+        {
+            if (obj is Order order && !string.IsNullOrEmpty(order.GetAcronym()))
+            {
+                OnOrderReceived?.Invoke(this, new OthelloTCPClientArgs(order));
+            }
+            else if (obj is GameState gameState)
+            {
+                OnGameStateReceived?.Invoke(this, new OthelloTCPClientGameStateArgs(gameState));
+            }
+            else if (obj is ExportedGame exportedGame)
+            {
+                OnSaveReceived?.Invoke(this, new OthelloTCPClientSaveArgs(exportedGame));
+            }
+            else
+            {
+                Console.Error.WriteLine("Can't cast to any known object");
+            }
+        }
+
         /// <summary>
         /// Translate the message waiting on the socket
         /// </summary>
         /// <returns>Deserialized object</returns>
-        private object Receive()
+        private object Listener()
         {
-            while (!TcpClient.GetStream().DataAvailable)
+            NetworkStream stream = TcpClient.GetStream();
+            while (true)
             {
-                Thread.Sleep(10);
-            }
-            lock (formatter)
-            {
+                while (!TcpClient.GetStream().DataAvailable)
+                {
+                    Thread.Sleep(10);
+                }
                 if (TcpClient != null && TcpClient.Connected)
                 {
                     try
                     {
-                        NetworkStream stream = TcpClient.GetStream();
+                        Message message = new Message();
 
-                        byte[] readMsgLen = new byte[4];
-                        stream.Read(readMsgLen, 0, 4);
-
-                        int dataLen = BitConverter.ToInt32(readMsgLen, 0);
-                        byte[] readMsgData = new byte[dataLen];
-                        stream.Read(readMsgData, 0, dataLen);
-
-                        Message message = new Message()
+                        byte[] lengthBuffer = new byte[sizeof(Int32)];
+                        int recv = stream.Read(lengthBuffer, 0, lengthBuffer.Length);
+                        if (recv == sizeof(int))
                         {
-                            Data = readMsgData
-                        };
-
-                        object deserializedObject = Serializer.Deserialize(message);
+                            int messageLen = BitConverter.ToInt32(lengthBuffer, 0);
+                            byte[] messageBuffer = new byte[messageLen];
+                            recv = stream.Read(messageBuffer, 0, messageBuffer.Length);
+                            if (recv == messageLen)
+                            {
+                                //Remove 4 bytes Workaround
+                                message.Data = messageBuffer.Skip(4).ToArray();
+                            }
+                            else
+                            {
+                                //Adapt size workaround
+                                message.Data = messageBuffer.Take(messageLen-4).ToArray();
+                                Console.WriteLine("Missing part of data workaround"+messageLen);
+                            }
+                        }
+                        
+                        object deserializedObject = null;
+                        try
+                        {
+                            deserializedObject = Serializer.Deserialize(message);
+                        }
+                        catch (SerializationException exception)
+                        {
+                            Console.WriteLine("Error during Serialization " + Encoding.Default.GetString(message.Data));
+                            Toolbox.LogError(exception);
+                        }
 
                         Console.WriteLine("Received " + (deserializedObject as Order).GetAcronym());
 
                         // Flush the stream
                         stream.Flush();
 
-                        return deserializedObject;
+                        ManageOrder(deserializedObject);
                     }
-                    catch (Exception ex)
+                    catch (Exception exception)
                     {
                         Console.Error.WriteLine("Error while reading from socket");
-                        Toolbox.LogError(ex);
+                        Toolbox.LogError(exception);
                     }
                 }
                 else
@@ -200,7 +233,6 @@ namespace Tools
                 }
             }
 
-            return null;
         }
     }
 

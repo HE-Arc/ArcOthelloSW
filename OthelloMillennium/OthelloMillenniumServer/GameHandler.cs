@@ -259,7 +259,8 @@ namespace OthelloMillenniumServer
                     else if (sender.Color == Color.White)
                         client2Ready = true;
 
-                    if (client1Ready & client2Ready)
+                    Console.WriteLine("Player : " + sender.Color);
+                    if (client1Ready && client2Ready)
                         StartGame();
                 }
                 else

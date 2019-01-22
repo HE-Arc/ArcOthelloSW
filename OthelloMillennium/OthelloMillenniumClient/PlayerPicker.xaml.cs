@@ -229,7 +229,7 @@ namespace OthelloMillenniumClient
             }
         }
 
-        public void OnKeyDownHandler(object sender, KeyEventArgs e)
+        public void OnKeyUpHandler(object sender, KeyEventArgs e)
         {
             if (ApplicationManager.Instance.CurrentGame.GameType == GameType.Online)
             {
