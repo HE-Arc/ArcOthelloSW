@@ -21,6 +21,9 @@ namespace Tools
         public OthelloPlayerServer(TcpClient tcpClient)
         {
             //TODO Think about receiving a client or a TcpClient
+            client = new Client();
+            //TODO SEGAN
+            client.SetOrderhandler(this);
         }
 
         public void OpponentFound(string opponentName)

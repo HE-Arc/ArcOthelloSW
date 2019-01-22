@@ -56,6 +56,14 @@ namespace Tools
             //TODO CHOOSE WHEN TO INIT CLIENT
         }
 
+        public void Connect()
+        {
+            client = new Client();
+            //TODO SEGAN
+            client.ConnectTo();
+            client.SetOrderhandler(this);
+        }
+
         public void SetOrderhandler(OrderHandler orderHandler)
         {
             this.orderHandler = orderHandler;

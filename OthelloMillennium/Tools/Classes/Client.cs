@@ -32,6 +32,11 @@ namespace Tools
             //Nothing
         }
 
+        public void SetOrderhandler(OrderHandler orderHandler)
+        {
+            this.orderHandler = orderHandler;
+        }
+
         /// <summary>
         /// Connect to the server and start different services
         /// </summary>
