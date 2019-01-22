@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Tools;
 
 namespace OthelloMillenniumServer
@@ -13,12 +15,12 @@ namespace OthelloMillenniumServer
         /// <summary>
         /// Socket server-side linked to a client remote
         /// </summary>
-        public OthelloPlayerServer Client1 { get; private set; }
+        public OthelloPlayerServer OthelloPlayer1 { get; private set; }
 
         /// <summary>
         /// Socket server-side linked to a client remote
         /// </summary>
-        public OthelloPlayerServer Client2 { get; private set; }
+        public OthelloPlayerServer OthelloPlayer2 { get; private set; }
 
         // GameManager
         public GameManager GameManager { get; private set; }
@@ -33,53 +35,45 @@ namespace OthelloMillenniumServer
         private readonly object locker = new object();
         private bool client1Ready = false;
         private bool client2Ready = false;
+        private readonly Task pinger;
 
         public GameHandler(OthelloPlayerServer black, OthelloPlayerServer white)
         {
             // Init Client 1
-            Client1 = black;
+            OthelloPlayer1 = black;
             
             // Init Client 2
-            Client2 = white;
-            
-            // TODO SEGAN (NiceToHave): Watch for connection issues
+            OthelloPlayer2 = white;
+
+            // TODO SEGAN (NiceToHave) : Ping clients to detect disconnect
 
             // Update clients
-            Client1.SetColor(Color.Black);
-            Client1.SetAvatarID(0);
+            OthelloPlayer1.SetColor(Color.Black);
+            OthelloPlayer1.SetAvatarID(0);
 
-            Client2.SetColor(Color.White);
-            Client2.SetAvatarID(19);
+            OthelloPlayer2.SetColor(Color.White);
+            OthelloPlayer2.SetAvatarID(19);
 
-            if (Client1.PlayerType == PlayerType.Human & Client2.PlayerType == PlayerType.Human)
+            if (OthelloPlayer1.PlayerType == PlayerType.Human & OthelloPlayer2.PlayerType == PlayerType.Human)
                 BattleType = BattleType.AgainstPlayer;
             else
                 BattleType = BattleType.AgainstAI;
 
             // Init gameManager. TODO BASTIEN : Server don't know if it's local or online
             GameManager = new GameManager(GameType.Local);
+            GameManager.OnGameFinished += GameManager_OnGameFinished;
 
             // Game is ready
-            Client1.GameReady();
-            Client2.GameReady();
+            OthelloPlayer1.GameReady();
+            OthelloPlayer2.GameReady();
+
+            // Start to ping clients
+            pinger.Start();
         }
 
         private OthelloPlayerServer GetOpponent(OthelloPlayerServer othelloPlayer)
         {
-            return othelloPlayer.Equals(Client1) ? Client2 : Client1;
-        }
-
-        private void OnConnectionLost(OthelloPlayerServer othelloPlayer)
-        {
-            if (GetOpponent(othelloPlayer) is OthelloPlayerServer opponent)
-            {
-                // TODO
-                //opponent.Send(new OpponentConnectionLostOrder());
-            }
-            else
-            {
-                throw new Exception("Can't cast sender to client");
-            }
+            return othelloPlayer.Equals(OthelloPlayer1) ? OthelloPlayer2 : OthelloPlayer1;
         }
 
         private void GameManager_OnGameFinished(object sender, GameState e)
@@ -88,8 +82,8 @@ namespace OthelloMillenniumServer
             var finalGameState = gameManager.Export();
 
             // Notifiy the end of the game
-            Client1.GameEnded();
-            Client2.GameEnded();
+            OthelloPlayer1.GameEnded();
+            OthelloPlayer2.GameEnded();
 
             // Send the final state
             BroadcastGameboard(); 
@@ -101,8 +95,8 @@ namespace OthelloMillenniumServer
         private void BroadcastGameboard()
         {
             var gs = GameManager.Export();
-            Client1.UpdateGameboard(gs);
-            Client2.UpdateGameboard(gs);
+            OthelloPlayer1.UpdateGameboard(gs);
+            OthelloPlayer2.UpdateGameboard(gs);
         }
 
         /// <summary>
@@ -114,97 +108,11 @@ namespace OthelloMillenniumServer
             GameManager.Start();
 
             // Informs the players that the game is starting
-            Client1.GameStarted();
-            Client2.GameStarted();
+            OthelloPlayer1.GameStarted();
+            OthelloPlayer2.GameStarted();
 
             // Send gameboard
             BroadcastGameboard();
-        }
-
-        private void OnOrderReceived(object s, OthelloTCPClientArgs e)
-        {
-
-            if (GetClientAndOpponentFromSender(s, out Client_old sender, out Client_old opponent))
-            {
-
-                else if (e.Order is GetCurrentGameStateOrder currentGameStateOrder)
-                {
-                    // A client asked for the gameState, send it back to him
-                    sender.Send(GameManager.Export());
-                }
-                else if (e.Order is AvatarChangedOrder avatarChangedOrder)
-                {
-                    opponent.Send(new OpponentAvatarChangedOrder(avatarChangedOrder.AvatarID));
-                }
-                else if (e.Order is SaveOrder saveOrder)
-                {
-                    try
-                    {
-                        // Get gameStates
-                        var output = GameManager.Save();
-
-                        // Send the new gameState to the clients
-                        sender.Send(output);
-                    }
-                    catch
-                    {
-                        sender.Send(new DeniedOrder());
-                    }
-                }
-                else if (e.Order is UndoOrder undoOrder)
-                {
-                    try
-                    {
-                        // Goes one step back
-                        GameManager.MoveBack();
-                        // TODO SEGAN if with an AI:
-                        // two steps back
-                        // TODO SEGAN If only AI, not allowed
-
-                        NextTurn();
-                    }
-                    catch
-                    {
-                        sender.Send(new DeniedOrder());
-                    }
-                }
-                else if (e.Order is RedoOrder redoOrder)
-                {
-                    try
-                    {
-                        // Goes one step back
-                        GameManager.MoveForward();
-
-                        NextTurn();
-                    }
-                    catch
-                    {
-                        sender.Send(new DeniedOrder());
-                    }
-                }
-                else if (e.Order is PlayerReadyOrder)
-                {
-                    lock (locker)
-                    {
-                        if (sender.Color == Color.Black)
-                            client1Ready = true;
-                        else if (sender.Color == Color.White)
-                            client2Ready = true;
-
-                        Console.WriteLine("Player : " + sender.Color);
-                        if (client1Ready && client2Ready)
-                            StartGame();
-                    }
-                }
-                else
-                {
-                    sender.Send(new DeniedOrder());
-                }
-            }
-            else
-            {
-                throw new Exception("Can't cast sender to client");
-            }
         }
 
         public void SetOrderHandler(IOrderHandler handler)
@@ -214,19 +122,85 @@ namespace OthelloMillenniumServer
 
         public void HandleOrder(IOrderHandler sender, Order order)
         {
-            HandlerOrder(sender as OthelloPlayerServer, order);
-        }
+            // If null, sender is this object otherwise the order has been redirected
+            sender = sender ?? this;
 
-        public void HandlerOrder(OthelloPlayerServer sender, Order order)
-        {
             switch (order)
             {
                 case PlayMoveOrder castedOrder:
                     // Place a token on the board
-                    GameManager.PlayMove(castedOrder.Coords, sender.Color);
+                    GameManager.PlayMove(castedOrder.Coords, (sender as OthelloPlayerServer).Color);
 
                     // Send gameBoard to clients
                     BroadcastGameboard();
+                    break;
+
+                case GameStateRequestOrder castedOrder:
+                    // A client asked for the gameState, send it back to him
+                    (sender as OthelloPlayerServer).UpdateGameboard(GameManager.Export());
+                    break;
+
+                case AvatarChangedOrder castedOrder:
+                    OthelloPlayerServer opponent = GetOpponent((sender as OthelloPlayerServer));
+                    opponent.OpponentAvatarChanged(castedOrder.AvatarID);
+                    break;
+
+                case SaveRequestOrder castedOrder:
+                    // Send the saved game
+                    (sender as OthelloPlayerServer).TransferSaveOrder(GameManager.Save());
+                    break;
+
+                case UndoRequestOrder castedOrder:
+                    try
+                    {
+                        // Goes one step back
+                        GameManager.MoveBack();
+
+                        // Goes back one more if the battle is against an IA
+                        if (BattleType == BattleType.AgainstAI)
+                            GameManager.MoveBack();
+
+                        // Send gameboard
+                        BroadcastGameboard();
+                    }
+                    catch (Exception ex)
+                    {
+                        Toolbox.LogError(ex);
+                    }
+                    break;
+
+                case RedoRequestOrder castedOrder:
+                    try
+                    {
+                        // Goes one step forward
+                        GameManager.MoveForward();
+
+                        // Goes forward one more if the battle is against an IA
+                        if (BattleType == BattleType.AgainstAI)
+                            GameManager.MoveForward();
+
+                        // Send gameboard
+                        BroadcastGameboard();
+                    }
+                    catch (Exception ex)
+                    {
+                        Toolbox.LogError(ex);
+                    }
+                    break;
+
+                case PlayerReadyOrder castedOrder:
+                    lock (locker)
+                    {
+                        var castedSender = (sender as OthelloPlayerServer);
+
+                        if (castedSender.Color == Color.Black)
+                            client1Ready = true;
+                        else if (castedSender.Color == Color.White)
+                            client2Ready = true;
+
+                        if (client1Ready && client2Ready)
+                            StartGame();
+                    }
                     break;
 
                 case Order unknownOrder:

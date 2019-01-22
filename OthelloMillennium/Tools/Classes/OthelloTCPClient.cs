@@ -200,7 +200,7 @@ namespace Tools
         /// </summary>
         private void OrderHandler()
         {
-            while(orderHandler == null)
+            while (orderHandler == null)
             {
                 Thread.Sleep(50);
             }
@@ -210,7 +210,11 @@ namespace Tools
                 while (!orderReceived.IsEmpty)
                 {
                     orderReceived.TryDequeue(out Order order);
+<<<<<<< Updated upstream
                     orderHandler.HandleOrder(null, order);
+=======
+                    orderHandler.HandleOrder(orderHandler, order);
+>>>>>>> Stashed changes
                 }
                 Thread.Sleep(50);
             }

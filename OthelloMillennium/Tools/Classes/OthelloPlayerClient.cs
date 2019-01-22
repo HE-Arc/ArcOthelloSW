@@ -102,10 +102,17 @@ namespace Tools
             PlayerState = PlayerState.REGISTERING;
         }
 
+<<<<<<< Updated upstream
         public void SearchOpponent(PlayerType playerType)
         {
             if (PlayerState != PlayerState.REGISTERED) throw new Exception("Action not available");
             client.Send(new SearchRequestOrder(playerType));
+=======
+        public void SearchOpponent(PlayerType opponentType)
+        {
+            if (PlayerState != PlayerState.REGISTERED) throw new Exception("Action not available");
+            client.Send(new SearchRequestOrder(opponentType));
+>>>>>>> Stashed changes
 
             // Switch client state to searching
             PlayerState = PlayerState.SEARCHING;
