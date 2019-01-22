@@ -11,28 +11,26 @@ namespace Tools
     {
 
         // TODO Segan add function which can be send to the server
-
-        /// <summary>
-        /// Get : get the Name binded
-        /// Set : set the Name and inform the server of the change
-        /// </summary>
+        
         public string Name { get; set; }
-
-        /// <summary>
-        /// Get : get the PlayerType
-        /// Set : set the PlayerType
-        /// </summary>
         public PlayerType PlayerType { get; set; }
-
-        /// <summary>
-        /// Get : get the Color
-        /// Set : set the Color
-        /// </summary>
         public Color Color { get; set; }
+
+        private Client client;
 
         public OthelloPlayerServer(TcpClient tcpClient)
         {
+            //TODO Think about receiving a client or a TcpClient
+        }
 
+        public void OpponentFound(string opponentName)
+        {
+            client.Send(new OpponentFoundOrder(opponentName));
+        }
+
+        public void OpponentAvatarChanged(int avatarId)
+        {
+            client.Send(new OpponentAvatarChangedOrder(avatarId));
         }
 
         public void HandleOrder(Order order)
@@ -56,5 +54,7 @@ namespace Tools
                     break;
             }
         }
+
+
     }
 }

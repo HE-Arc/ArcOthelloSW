@@ -12,7 +12,9 @@ namespace Tools
 
         #region Attributes
         private int avatarId;
+
         private Client client;
+        private OrderHandler orderHandler;
 
         #endregion
 
@@ -54,6 +56,11 @@ namespace Tools
             //TODO CHOOSE WHEN TO INIT CLIENT
         }
 
+        public void SetOrderhandler(OrderHandler orderHandler)
+        {
+            this.orderHandler = orderHandler;
+        }
+
         public void Register()
         {
             if (PlayerState != PlayerState.INITIAL) throw new Exception("Action not available");
@@ -76,34 +83,50 @@ namespace Tools
             PlayerState = PlayerState.READY;
         }
 
+        public void Play(char row, int column)
+        {
+            if (PlayerState != PlayerState.IN_GAME) throw new Exception("Action not allowed");
+
+            if (CanPlay)
+                Send(new PlayMoveOrder(new Tuple<char, int>(row, column)));
+            else
+                throw new Exception("Not allowed to play !");
+        }
+
+
         public void HandleOrder(Order orderHandled)
         {
+            if (orderHandler == null)
+            {
+                Console.Error.WriteLine("WARNING ! - [OthelloPlayerClient.handleOrder] handleOrder should normally be set!");
+            }
+
             switch (orderHandled)
             {
-
                 case RegisterSuccessfulOrder order:
                     PlayerState = PlayerState.REGISTERED;
+                    orderHandler?.HandleOrder(order);
                     break;
 
                 case OpponentFoundOrder order:
                     PlayerState = PlayerState.LOBBY_CHOICE;
+                    orderHandler?.HandleOrder(order);
                     break;
 
                 case OpponentAvatarChangedOrder order:
-                    //TODO
+                    //Nothing special -> forward
+                    orderHandler?.HandleOrder(order);
                     break;
 
                 case GameReadyOrder order:
-                    //TODO
                     PlayerState = PlayerState.ABOUT_TO_START;
+                    orderHandler?.HandleOrder(order);
                     break;
 
                 case GameStartedOrder order:
                     PlayerState = PlayerState.IN_GAME;
-                    //TODO
+                    orderHandler?.HandleOrder(order);
                     break;
-
-
             }
         }
     }
@@ -117,6 +140,8 @@ namespace Tools
         LOBBY_CHOICE,
         READY,
         ABOUT_TO_START,
-        IN_GAME;
+        OPPONENT_TURN,
+        MY_TURN,
+        GAME_ENDED
     }
 }
