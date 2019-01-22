@@ -91,7 +91,7 @@ namespace Tools
             client.SetOrderhandler(this);
         }
 
-        public void SetOrderhandler(IOrderHandler orderHandler)
+        public void SetOrderHandler(IOrderHandler orderHandler)
         {
             this.orderHandler = orderHandler;
         }
@@ -160,7 +160,21 @@ namespace Tools
                     PlayerState = Color == Color.Black ? PlayerState.MY_TURN : PlayerState.OPPONENT_TURN;
                     orderHandler?.HandleOrder(sender, order);
                     break;
-                
+
+                case UpdateGameStateOrder order:
+                    PlayerState = order.GameState.PlayerTurn == (int)this.Color ? PlayerState.MY_TURN : PlayerState.OPPONENT_TURN;
+                    orderHandler?.HandleOrder(sender, order);
+                    break;
+
+                case GameEndedOrder order:
+                    PlayerState = PlayerState.GAME_ENDED;
+                    orderHandler?.HandleOrder(sender, order);
+                    break;
+
+                case TransferSaveOrder order:
+                    orderHandler?.HandleOrder(sender, order);
+                    break;
+
                 case OpponentAvatarChangedOrder order:
                     orderHandler?.HandleOrder(sender, order);
                     break;
@@ -177,6 +191,8 @@ namespace Tools
                     break;
                 #endregion
 
+                case Order unknownOrder:
+                    throw new Exception("Unknown order received !");
             }
         }
     }

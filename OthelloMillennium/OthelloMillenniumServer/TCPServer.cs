@@ -122,9 +122,19 @@ namespace OthelloMillenniumServer
             return new Tuple<string, int>(hostName, port);
         }
 
+        public void SetOrderHandler(IOrderHandler handler)
+        {
+            throw new Exception("This object can not receive an handler");
+        }
+
         public void HandleOrder(IOrderHandler sender, Order order)
         {
-            if(order is RegisterRequestOrder registerRequestOrder)
+            HandleOrder(sender as OthelloTCPClient, order);
+        }
+
+        public void HandleOrder(OthelloTCPClient sender, Order order)
+        {
+            if (order is RegisterRequestOrder registerRequestOrder)
             {
                 // Register client to the Matchmaker
                 Matchmaker.Instance.RegisterNewClient(sender, order);

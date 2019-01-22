@@ -180,15 +180,18 @@ namespace Tools
     public class OpponentFoundOrder : Order
     {
         public string OpponentName { get; private set; }
+        public int OpponentType { get; private set; }
 
-        public OpponentFoundOrder(string opponentName)
+        public OpponentFoundOrder(string opponentName, PlayerType opponentType)
         {
             OpponentName = opponentName;
+            OpponentType = (int)opponentType;
         }
 
         protected OpponentFoundOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+            OpponentType = info.GetInt32("OpponentType");
             OpponentName = info.GetString("OpponentName");
         }
 
@@ -205,6 +208,7 @@ namespace Tools
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("OpponentName", OpponentName);
+            info.AddValue("OpponentType", OpponentType);
         }
     }
 
@@ -336,51 +340,7 @@ namespace Tools
         }
     }
 
-    [Serializable]
-    public class PlayerBeginOrder : Order
-    {
-        protected PlayerBeginOrder(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        { }
-
-        public override string GetAcronym()
-        {
-            return "PB";
-        }
-
-        public override string GetDefinition()
-        {
-            return "Inform current player that he begins";
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        { }
-
-        public PlayerBeginOrder() { }
-    }
-
-    [Serializable]
-    public class PlayerAwaitOrder : Order
-    {
-        protected PlayerAwaitOrder(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        { }
-
-        public override string GetAcronym()
-        {
-            return "PA";
-        }
-
-        public override string GetDefinition()
-        {
-            return "Inform current player that he has to await his turn";
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        { }
-
-        public PlayerAwaitOrder() { }
-    }
+    
 
     #endregion
 
@@ -441,6 +401,76 @@ namespace Tools
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("AvatarID", AvatarID);
+        }
+    }
+
+    /// <summary>
+    /// Server send this to update client-side gameState
+    /// </summary>
+    [Serializable]
+    public class UpdateGameStateOrder : Order
+    {
+        public GameState GameState { get; private set; }
+
+        public UpdateGameStateOrder(GameState gameState)
+        {
+            GameState = gameState;
+        }
+
+        protected UpdateGameStateOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            GameState = (GameState)info.GetValue("GameState", typeof(GameState));
+        }
+
+        public override string GetAcronym()
+        {
+            return "UGO";
+        }
+
+        public override string GetDefinition()
+        {
+            return "Update gameState";
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("GameState", GameState);
+        }
+    }
+
+    /// <summary>
+    /// Server send this to export the current game
+    /// </summary>
+    [Serializable]
+    public class TransferSaveOrder : Order
+    {
+        public ExportedGame ExportedGame { get; private set; }
+
+        public TransferSaveOrder(ExportedGame exportedGame)
+        {
+            ExportedGame = exportedGame;
+        }
+
+        protected TransferSaveOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            ExportedGame = (ExportedGame)info.GetValue("ExportedGame", typeof(ExportedGame));
+        }
+
+        public override string GetAcronym()
+        {
+            return "TSO";
+        }
+
+        public override string GetDefinition()
+        {
+            return "Transfer ExportedGame";
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("ExportedGame", ExportedGame);
         }
     }
 

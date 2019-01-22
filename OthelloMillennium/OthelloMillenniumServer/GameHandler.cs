@@ -7,18 +7,18 @@ namespace OthelloMillenniumServer
      * Parse orders and send them to gamemanager
      * keep clients informed
      */
-    public class GameHandler
+    public class GameHandler : IOrderHandler
     {
         // Clients
         /// <summary>
         /// Socket server-side linked to a client remote
         /// </summary>
-        public Client_old Client1 { get; private set; }
+        public OthelloPlayerServer Client1 { get; private set; }
 
         /// <summary>
         /// Socket server-side linked to a client remote
         /// </summary>
-        public Client_old Client2 { get; private set; }
+        public OthelloPlayerServer Client2 { get; private set; }
 
         // GameManager
         public GameManager GameManager { get; private set; }
@@ -34,7 +34,7 @@ namespace OthelloMillenniumServer
         private bool client1Ready = false;
         private bool client2Ready = false;
 
-        public GameHandler(Client_old black, Client_old white)
+        public GameHandler(OthelloPlayerServer black, OthelloPlayerServer white)
         {
             // Init Client 1
             Client1 = black;
@@ -42,26 +42,14 @@ namespace OthelloMillenniumServer
             // Init Client 2
             Client2 = white;
             
-            // Watch for connection issues
-            Client1.OnConnectionLost += Client_OnConnectionLost;
-            Client2.OnConnectionLost += Client_OnConnectionLost;
-
-            // React to clients orders
-            Client1.OnOrderReceived += OnOrderReceived;
-            Client2.OnOrderReceived += OnOrderReceived;
+            // TODO SEGAN (NiceToHave): Watch for connection issues
 
             // Update clients
-            Client1.Color = Color.Black;
-            Client1.AvatarID = 0;
+            Client1.SetColor(Color.Black);
+            Client1.SetAvatarID(0);
 
-            Client1.Send(new AssignColorOrder(Client1.Color));
-            Client1.Send(new AssignAvatarIDOrder(Client1.AvatarID));
-
-            Client2.Color = Color.White;
-            Client2.AvatarID = 19;
-
-            Client2.Send(new AssignColorOrder(Client2.Color));
-            Client2.Send(new AssignAvatarIDOrder(Client2.AvatarID));
+            Client2.SetColor(Color.White);
+            Client2.SetAvatarID(19);
 
             if (Client1.PlayerType == PlayerType.Human & Client2.PlayerType == PlayerType.Human)
                 BattleType = BattleType.AgainstPlayer;
@@ -72,45 +60,21 @@ namespace OthelloMillenniumServer
             GameManager = new GameManager(GameType.Local);
 
             // Game is ready
-            Client1.Send(new GameReadyOrder());
-            Client2.Send(new GameReadyOrder());
+            Client1.GameReady();
+            Client2.GameReady();
         }
 
-        /// <summary>
-        /// Try to get client and opponent from the sender
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="client"></param>
-        /// <param name="opponent"></param>
-        /// <returns>True if it succeded</returns>
-        private bool GetClientAndOpponentFromSender(object sender, out Client_old client, out Client_old opponent)
+        private OthelloPlayerServer GetOpponent(OthelloPlayerServer othelloPlayer)
         {
-            if (sender is Client_old s)
-            {
-                if (s.Color == Client1.Color)
-                {
-                    client = Client1;
-                    opponent = Client2;
-                }
-                else
-                {
-                    client = Client2;
-                    opponent = Client1;
-                }
-                return true;
-            }
-            else
-            {
-                client = opponent = null;
-                return false;
-            }
+            return othelloPlayer.Equals(Client1) ? Client2 : Client1;
         }
 
-        private void Client_OnConnectionLost(object sender, EventArgs e)
+        private void OnConnectionLost(OthelloPlayerServer othelloPlayer)
         {
-            if (GetClientAndOpponentFromSender(sender, out Client_old client, out Client_old opponent))
+            if (GetOpponent(othelloPlayer) is OthelloPlayerServer opponent)
             {
-                opponent.Send(new OpponentConnectionLostOrder());
+                // TODO
+                //opponent.Send(new OpponentConnectionLostOrder());
             }
             else
             {
@@ -124,28 +88,11 @@ namespace OthelloMillenniumServer
             var finalGameState = gameManager.Export();
 
             // Notifiy the end of the game
-            Client1.Send(new GameEndedOrder());
-            Client2.Send(new GameEndedOrder());
+            Client1.GameEnded();
+            Client2.GameEnded();
 
             // Send the final state
             BroadcastGameboard(); 
-        }
-
-        /// <summary>
-        /// Send begin and await
-        /// </summary>
-        private void ScheduleGameplay()
-        {
-            if (Client1.Color == GameManager.CurrentPlayerTurn)
-            {
-                Client1.Send(new PlayerBeginOrder());
-                Client2.Send(new PlayerAwaitOrder());
-            }
-            else
-            {
-                Client1.Send(new PlayerAwaitOrder());
-                Client2.Send(new PlayerBeginOrder());
-            }
         }
 
         /// <summary>
@@ -154,8 +101,8 @@ namespace OthelloMillenniumServer
         private void BroadcastGameboard()
         {
             var gs = GameManager.Export();
-            Client1.Send(gs);
-            Client2.Send(gs);
+            Client1.UpdateGameboard(gs);
+            Client2.UpdateGameboard(gs);
         }
 
         /// <summary>
@@ -167,22 +114,11 @@ namespace OthelloMillenniumServer
             GameManager.Start();
 
             // Informs the players that the game is starting
-            Client1.Send(new GameStartedOrder());
-            Client2.Send(new GameStartedOrder());
+            Client1.GameStarted();
+            Client2.GameStarted();
 
-            NextTurn();
-        }
-
-        /// <summary>
-        /// Broadcast gameboard and give hand to opponent
-        /// </summary>
-        private void NextTurn()
-        {
-            // Send current gameState
+            // Send gameboard
             BroadcastGameboard();
-
-            // Send being and await
-            ScheduleGameplay();
         }
 
         private void OnOrderReceived(object s, OthelloTCPClientArgs e)
@@ -191,13 +127,6 @@ namespace OthelloMillenniumServer
             if (GetClientAndOpponentFromSender(s, out Client_old sender, out Client_old opponent))
             {
 
-                if (e.Order is PlayMoveOrder playMoveOrder)
-                {
-                    // Place a token on the board
-                    GameManager.PlayMove(playMoveOrder.Coords, sender.Color);
-
-                    NextTurn();
-                }
                 else if (e.Order is GetCurrentGameStateOrder currentGameStateOrder)
                 {
                     // A client asked for the gameState, send it back to him
@@ -275,6 +204,33 @@ namespace OthelloMillenniumServer
             else
             {
                 throw new Exception("Can't cast sender to client");
+            }
+        }
+
+        public void SetOrderHandler(IOrderHandler handler)
+        {
+            throw new Exception("This object can not receive an handler");
+        }
+
+        public void HandleOrder(IOrderHandler sender, Order order)
+        {
+            HandlerOrder(sender as OthelloPlayerServer, order);
+        }
+
+        public void HandlerOrder(OthelloPlayerServer sender, Order order)
+        {
+            switch (order)
+            {
+                case PlayMoveOrder castedOrder:
+                    // Place a token on the board
+                    GameManager.PlayMove(castedOrder.Coords, sender.Color);
+
+                    // Send gameBoard to clients
+                    BroadcastGameboard();
+                    break;
+
+                case Order unknownOrder:
+                    throw new Exception("Unknown order received !");
             }
         }
     }

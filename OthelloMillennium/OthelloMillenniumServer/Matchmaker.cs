@@ -255,6 +255,11 @@ namespace OthelloMillenniumServer
             }
         }
 
+        public void SetOrderHandler(IOrderHandler handler)
+        {
+            throw new Exception("This object can not receive an handler");
+        }
+
         private void DisconnectClient(Client_old client)
         {
             try
