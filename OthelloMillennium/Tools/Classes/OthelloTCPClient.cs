@@ -200,7 +200,7 @@ namespace Tools
         /// </summary>
         private void OrderHandler()
         {
-            while(orderHandler == null)
+            while (orderHandler == null)
             {
                 Thread.Sleep(50);
             }

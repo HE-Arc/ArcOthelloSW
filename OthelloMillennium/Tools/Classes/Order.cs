@@ -347,15 +347,15 @@ namespace Tools
     #region Synchronization
 
     [Serializable]
-    public class GetCurrentGameStateOrder : Order
+    public class GameStateRequestOrder : Order
     {
-        protected GetCurrentGameStateOrder(SerializationInfo info, StreamingContext context)
+        protected GameStateRequestOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         { }
 
         public override string GetAcronym()
         {
-            return "GCGS";
+            return "GSRO";
         }
 
         public override string GetDefinition()
@@ -366,7 +366,7 @@ namespace Tools
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         { }
 
-        public GetCurrentGameStateOrder() { }
+        public GameStateRequestOrder() { }
     }
 
     /// <summary>
@@ -568,9 +568,9 @@ namespace Tools
     #region GameManager
 
     [Serializable]
-    public class SaveOrder : Order
+    public class SaveRequestOrder : Order
     {
-        protected SaveOrder(SerializationInfo info, StreamingContext context)
+        protected SaveRequestOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         { }
 
@@ -587,21 +587,21 @@ namespace Tools
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         { }
 
-        public SaveOrder() { }
+        public SaveRequestOrder() { }
     }
 
     [Serializable]
-    public class LoadOrder : Order
+    public class LoadRequestOrder : Order
     {
-        public LoadOrder() { }
+        public LoadRequestOrder() { }
 
-        protected LoadOrder(SerializationInfo info, StreamingContext context)
+        protected LoadRequestOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         { }
 
         public override string GetAcronym()
         {
-            return "LS";
+            return "LRO";
         }
 
         public override string GetDefinition()
@@ -614,15 +614,15 @@ namespace Tools
     }
 
     [Serializable]
-    public class UndoOrder : Order
+    public class UndoRequestOrder : Order
     {
-        protected UndoOrder(SerializationInfo info, StreamingContext context)
+        protected UndoRequestOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         { }
 
         public override string GetAcronym()
         {
-            return "UDS";
+            return "URO";
         }
 
         public override string GetDefinition()
@@ -633,19 +633,19 @@ namespace Tools
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         { }
 
-        public UndoOrder() { }
+        public UndoRequestOrder() { }
     }
 
     [Serializable]
-    public class RedoOrder : Order
+    public class RedoRequestOrder : Order
     {
-        protected RedoOrder(SerializationInfo info, StreamingContext context)
+        protected RedoRequestOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         { }
 
         public override string GetAcronym()
         {
-            return "RDS";
+            return "RRO";
         }
 
         public override string GetDefinition()
@@ -656,31 +656,9 @@ namespace Tools
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         { }
 
-        public RedoOrder() { }
+        public RedoRequestOrder() { }
     }
 
     #endregion
 
-    [Serializable]
-    public class DeniedOrder : Order
-    {
-        protected DeniedOrder(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        { }
-
-        public override string GetAcronym()
-        {
-            return "DS";
-        }
-
-        public override string GetDefinition()
-        {
-            return "inform the player that this action is denied";
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        { }
-
-        public DeniedOrder() { }
-    }
 }

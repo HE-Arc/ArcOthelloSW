@@ -7,7 +7,7 @@ using Tools;
 
 namespace OthelloMillenniumServer
 {
-    public class TCPServer : IOrderHandler
+    public class TCPServer
     {
         
         #region Singleton
@@ -69,7 +69,7 @@ namespace OthelloMillenniumServer
                             // PlayerType will be fetched during the register method inside the matchmaking
                             var client = new OthelloTCPClient();
                             client.Bind(newConnection);
-                            client.SetOrderhandler(this);
+                            client.SetOrderhandler(Matchmaker.Instance);
 
                             // DEBUG
                             Console.WriteLine("NEW CLIENT CONNECTED");
@@ -120,25 +120,6 @@ namespace OthelloMillenniumServer
             int port = endPoint.Port;
 
             return new Tuple<string, int>(hostName, port);
-        }
-
-        public void SetOrderHandler(IOrderHandler handler)
-        {
-            throw new Exception("This object can not receive an handler");
-        }
-
-        public void HandleOrder(IOrderHandler sender, Order order)
-        {
-            HandleOrder(sender as OthelloTCPClient, order);
-        }
-
-        public void HandleOrder(OthelloTCPClient sender, Order order)
-        {
-            if (order is RegisterRequestOrder registerRequestOrder)
-            {
-                // Register client to the Matchmaker
-                Matchmaker.Instance.RegisterNewClient(sender, order);
-            }
         }
     }
 }

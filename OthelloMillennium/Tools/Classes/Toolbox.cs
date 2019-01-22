@@ -16,12 +16,12 @@ namespace Tools
             Console.Error.WriteLine(sb.ToString());
         }
 
-        public static bool Connected(OthelloTCPClient_old client)
+        public static bool Connected(OthelloTCPClient client)
         {
-            var s = client.TcpClient.Client;
-            bool part1 = s.Poll(1000, System.Net.Sockets.SelectMode.SelectRead);
-            bool part2 = s.Available == 0;
-            return !(part1 & part2);
+            throw new NotImplementedException();
+            //bool part1 = client.Socket.Poll(1000, System.Net.Sockets.SelectMode.SelectRead);
+            //bool part2 = client.Socket.Available == 0;
+            //return !(part1 & part2);
         }
     }
 }

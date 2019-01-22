@@ -81,6 +81,26 @@ namespace Tools
             client.Send(new OpponentAvatarChangedOrder(avatarId));
         }
 
+        public void OpponentConnectionLost()
+        {
+            client.Send(new OpponentConnectionLostOrder());
+        }
+
+        public void OpponentDisconnected()
+        {
+            client.Send(new OpponentDisconnectedOrder());
+        }
+
+        public void OpponentReconnected()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RegisterSuccessful()
+        {
+            client.Send(new RegisterSuccessfulOrder());
+        }
+
         /// <summary>
         /// Call by the gameHandler
         /// </summary>
@@ -140,9 +160,9 @@ namespace Tools
                 case AvatarChangedOrder a:
                 case PlayerReadyOrder b:
                 case PlayMoveOrder c:
-                case UndoOrder d:
-                case RedoOrder e:
-                case SaveOrder f:
+                case UndoRequestOrder d:
+                case RedoRequestOrder e:
+                case SaveRequestOrder f:
                     orderHandler?.HandleOrder(sender, order);
                     break;
 
@@ -161,7 +181,7 @@ namespace Tools
                     orderHandler?.HandleOrder(sender, order);
                     break;
 
-                case LoadOrder castedOrder:
+                case LoadRequestOrder castedOrder:
                     orderHandler?.HandleOrder(sender, order);
                     break;
                     #endregion
