@@ -6,7 +6,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 {
     public class LocalGameHandler : GameHandler
     {
-        public LocalGameHandler()
+        public LocalGameHandler(PlayerType playerType, BattleType battleType)
         {
             GameType = GameType.Local;
 
@@ -15,6 +15,20 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             {
                 throw new Exception($"Unable to start server on port {TCPServer.Instance.Port}");
             }
+        }
+
+        public void JoinGame()
+        {
+            OthelloPlayerClient player1 = new OthelloPlayerClient();
+            //TODO Register
+            Register();
+
+            //TODO Search
+        }
+
+        public void StartGame()
+        {
+            //Ready
         }
 
         /// <summary>
@@ -98,6 +112,11 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                 Toolbox.LogError(ex);
                 return -1;
             }
+        }
+
+        public override void HandleOrder(Order order)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace OthelloMillenniumClient
     /// <summary>
     /// Logique d'interaction pour Game.xaml
     /// </summary>
-    public partial class Game : Window
+    public partial class Game : Window, IGame
     {
         #region Binding properties
         public string Image1

@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tools
+namespace OthelloMillenniumClient.Classes
 {
-    public interface OrderHandler
+    interface IGame
     {
-        void HandleOrder(Order order);
     }
 }

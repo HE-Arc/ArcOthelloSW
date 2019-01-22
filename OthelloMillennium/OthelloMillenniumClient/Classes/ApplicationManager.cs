@@ -11,7 +11,7 @@ namespace OthelloMillenniumClient.Classes
     public class ApplicationManager
     {
         #region Singleton
-        private static readonly object padlock = new object();
+        private static object padlock = new object();
         private static ApplicationManager instance = null;
 
         public static ApplicationManager Instance
@@ -29,17 +29,24 @@ namespace OthelloMillenniumClient.Classes
             }
         }
 
+        #endregion
+
+        private GameType gameType;
+        private GameHandler gameHandler;
+
         private ApplicationManager() {}
-        #endregion
 
-        public GameHandler CurrentGame { get; set; }
+        public void StartGameLocal(PlayerType playerType, BattleType battleType)
+        {
+            gameHandler = new LocalGameHandler(playerType, battleType);
+            gameHandler.JoinGame();
+        }
 
-        public Client_old Player1 => CurrentGame.Player1;
-        public Client_old Player2 => CurrentGame.Player2;
+        public void StartGameOnline(BattleType battleType)
+        {
+            gameHandler = new OnlineGameHandler(battleType);
+            gameHandler.JoinGame();
 
-        #region Methods
-
-        public void SetCurrentHMI() { }
-        #endregion
+        }
     }
 }

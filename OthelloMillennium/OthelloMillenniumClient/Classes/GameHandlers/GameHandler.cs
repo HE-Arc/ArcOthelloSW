@@ -3,21 +3,30 @@ using Tools;
 
 namespace OthelloMillenniumClient.Classes.GameHandlers
 {
-    public abstract class GameHandler
+    public abstract class GameHandler : OrderHandler
     {
         #region Properties
         public GameType GameType { get; protected set; }
-        public BattleType BattleType { get; protected set; }
 
         public GameState GameState { get; protected set; } = null;
-
         public Client_old Player1 { get; protected set; } = null;
         public Client_old Player2 { get; protected set; } = null;
 
         public event EventHandler<OthelloTCPClientArgs> OnGameReady;
 
         private int gameReadyReceivedCount = 0;
+        
         #endregion
+
+
+        public GameHandler()
+        {
+            //Nothing
+        }
+
+        public abstract void JoinGame();
+        public abstract void StartGame();
+
 
         #region Abstract methods
         public virtual void Register(Client_old client)
@@ -49,22 +58,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             gameReadyReceivedCount += 1;
         }
         #endregion
-
-        #region Methods
-        public void DropClients()
-        {
-            Player1 = Player2 = null;
-        }
-
-        public Client_old GetCurrentPlayer()
-        {
-            return (Player1.CanPlay ? Player1 : Player2.CanPlay ? Player2 : null);
-        }
-
-        public void Place(Tuple<char, int> coords)
-        {
-            GetCurrentPlayer()?.Send(new PlayMoveOrder(coords));
-        }
-        #endregion
+        
+        public abstract void HandleOrder(Order order);
     }
 }
