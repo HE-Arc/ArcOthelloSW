@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Tools;
+using Tools.Classes;
 
 namespace OthelloMillenniumServer
 {
@@ -28,11 +29,6 @@ namespace OthelloMillenniumServer
 
         public BattleType BattleType { get; private set; }
 
-        /// <summary>
-        /// Type of game currently being played
-        /// </summary>
-        public BattleType GameTypeData { get; private set; }
-
         private readonly object locker = new object();
         private bool client1Ready = false;
         private bool client2Ready = false;
@@ -40,14 +36,12 @@ namespace OthelloMillenniumServer
 
         /// <summary>
         /// Assign player and handle their orders
-        /// <para/>Call Load(...) afterward
         /// </summary>
-        /// <param name="black"></param>
-        /// <param name="white"></param>
+        /// <param name="loadRequest"></param>
         internal GameHandler(LoadRequest loadRequest)
             : this(loadRequest.Player1, loadRequest.Player2)
         {
-            Load(loadRequest.GameStates);
+            Load(loadRequest.SaveFile);
         }
 
         /// <summary>
@@ -99,18 +93,20 @@ namespace OthelloMillenniumServer
         /// Send avatardID from both client after this function
         /// </summary>
         /// <param name="game"></param>
-        public void Load(List<GameState> game)
+        public void Load(SaveFile saveFile)
         {
             // Init gameManager
             GameManager = new GameManager();
             GameManager.OnGameFinished += GameManager_OnGameFinished;
 
             // Load the game
-            GameManager.Load(game);
+            GameManager.Load(saveFile.States);
 
-            // Game is ready
-            OthelloPlayer1.GameReady();
-            OthelloPlayer2.GameReady();
+            // Update clients
+            OthelloPlayer1.SetColor((Color)saveFile.Player1Color);
+            OthelloPlayer1.SetAvatarID(saveFile.Player1AvatarID);
+            OthelloPlayer2.SetColor((Color)saveFile.Player2Color);
+            OthelloPlayer2.SetAvatarID(saveFile.Player2AvatarID);
 
             // Immediatly start the game
             StartGame();

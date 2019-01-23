@@ -12,12 +12,12 @@ namespace OthelloMillenniumServer
     {
         public OthelloPlayerServer Player1 { get; private set; }
         public OthelloPlayerServer Player2 { get; private set; }
-        public List<GameState> GameStates { get; private set; }
+        public SaveFile SaveFile { get; private set; }
 
-        public LoadRequest(OthelloPlayerServer emitter, List<GameState> game)
+        public LoadRequest(OthelloPlayerServer emitter, SaveFile savefile)
         {
             Player1 = emitter;
-            GameStates = game;
+            SaveFile = savefile;
         }
 
         public void AssignOpponent(OthelloPlayerServer opponent)
@@ -143,7 +143,7 @@ namespace OthelloMillenniumServer
             loadRequest.Player2.OpponentFound(loadRequest.Player1.Name, loadRequest.Player1.PlayerType);
 
             // GameManager will now handle clients and put them as InGame
-            CreateMatch(loadRequest.Player1, loadRequest.Player2).Load(loadRequest.GameStates);
+            CreateMatch(loadRequest.Player1, loadRequest.Player2).Load(loadRequest.SaveFile);
         }
 
         /// <summary>
@@ -229,13 +229,13 @@ namespace OthelloMillenniumServer
             }
         }
 
-        private bool RegisterGame(OthelloPlayerServer emitter, List<GameState> game)
+        private bool RegisterGame(OthelloPlayerServer emitter, SaveFile saveFile)
         {
             // Test if the player is known
             if(!IsKnown(emitter)) throw new Exception("Unknown client");
 
             // Generate the "savefile"
-            LoadRequest loadRequest = new LoadRequest(emitter, game);
+            LoadRequest loadRequest = new LoadRequest(emitter, saveFile);
             int requestID = loadRequest.GetHashCode();
 
             // Verifiy that the game does not exist
@@ -298,7 +298,7 @@ namespace OthelloMillenniumServer
                     break;
 
                 case LoadRequestOrder castedOrder:
-                    RegisterGame(castedSender, castedOrder.SaveFile.States);
+                    RegisterGame(castedSender, castedOrder.SaveFile);
                     break;
 
                 case JoinRequestOrder castedOrder:

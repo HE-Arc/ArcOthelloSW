@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Tools;
+using Tools.Classes;
 
 namespace OthelloMillenniumClient.Classes.GameHandlers
 {
@@ -16,6 +17,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         private int readyToNextState;
         private bool load = false;
         private bool duplicatedGameEnded;
+        private int loadedGameID = -1;
         
         public LocalGameHandler():base()
         {
@@ -44,7 +46,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             player1.Connect(GameType);
             player2.Connect(GameType);
 
-            Thread.Sleep(1000);
+            Thread.Sleep(250);
 
             player1.Register();
             player2.Register();
@@ -137,7 +139,18 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                         }
                         else
                         {
-                            player1.Load();
+                            if (player1.PlayerState == PlayerState.REGISTERED)
+                            {
+                                player1.Load();
+                            }
+                            else if (player2.PlayerState == PlayerState.REGISTERED)
+                            {
+                                player2.JoinGame(loadedGameID);
+                            }
+                            else
+                            {
+                                Console.Error.WriteLine("[LocalGameHandler] - Can't load a game");
+                            }
                         }
                         orderHandler.HandleOrder(sender, order);
                         break;
@@ -183,10 +196,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                         break;
 
                     case LoadResponseOrder order:
-                        if(load && player2.PlayerState == PlayerState.REGISTERED)
-                        {
-                            player2.JoinGame(order.GameID);
-                        }
+                        loadedGameID = order.GameID;
                         orderHandler.HandleOrder(sender, order);
                         break;
 
@@ -204,6 +214,14 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         public override void Save()
         {
             player1.Save();
+        }
+
+        public override void Load()
+        {
+            var save = SaveFile.Load();
+            var player1 = new OthelloPlayerClient(PlayerType.Human, save.Player1Name);
+            var player2 = new OthelloPlayerClient(PlayerType.Human, save.Player2Name);
+            this.LoadGame(player1, player2);
         }
     }
 }

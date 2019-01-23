@@ -127,5 +127,10 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         {
             player1.Save();
         }
+
+        public override void Load()
+        {
+            player1.Load();
+        }
     }
 }

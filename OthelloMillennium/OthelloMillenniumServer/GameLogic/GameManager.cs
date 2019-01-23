@@ -44,7 +44,7 @@ namespace OthelloMillenniumServer
 
         public GameManager()
         {
-            GameType = TCPServer.Instance.Environnement;
+            GameType = TCPServer.Instance.Running ? TCPServer.Instance.Environnement : GameType.Online;
 
             //Init GameState
             indexState = 0;
@@ -82,26 +82,32 @@ namespace OthelloMillenniumServer
             }
             else
             {
+                // Reset
+                listGameBoard.Clear();
+                indexState = 0;
+
+                // Start loading
+                game.Reverse();
                 foreach (GameState step in game)
                 {
                     listGameBoard.Add(new GameBoard(step.Gameboard, step.PlayerTurn));
-                    CurrentPlayerTurn = CellStateToPlayer(step.PlayerTurn);
                     scores = step.Scores;
-                    winner = CellStateToPlayer(step.Winner); // TODO BASTIEN IS IT CORRECT ? Is it a cellState value for winner ?
+                    winner = CellStateToPlayer(step.Winner);
 
                     if (GameType == GameType.Online)
                     {
                         timeCounter[Color.Black] = new StoppableTimer(step.RemainingTimes.Item1);
-                        timeCounter[Color.Black] = new StoppableTimer(step.RemainingTimes.Item2);
+                        timeCounter[Color.White] = new StoppableTimer(step.RemainingTimes.Item2);
                     }
                     else
                     {
                         timeCounter[Color.Black] = new StoppableCounter(step.RemainingTimes.Item1);
-                        timeCounter[Color.Black] = new StoppableCounter(step.RemainingTimes.Item2);
+                        timeCounter[Color.White] = new StoppableCounter(step.RemainingTimes.Item2);
                     }                   
-
-                    indexState++;
                 }
+
+                // Current state is the last one
+                indexState = listGameBoard.Count - 1;
             }
         }
 

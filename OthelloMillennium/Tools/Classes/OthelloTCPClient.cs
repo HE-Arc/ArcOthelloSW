@@ -98,7 +98,6 @@ namespace Tools
         /// </summary>
         private void Sender()
         {
-            Console.WriteLine("Starting sender task");
             while (true)
             {
                 if (IsConnected())
@@ -150,7 +149,6 @@ namespace Tools
         /// </summary>
         private void Listener()
         {
-            Console.WriteLine("Starting listener task");
             while (true)
             {
                 if (IsConnected() && tcpClient.Available > 0)
