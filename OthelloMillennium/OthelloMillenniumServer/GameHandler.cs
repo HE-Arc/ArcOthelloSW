@@ -113,9 +113,6 @@ namespace OthelloMillenniumServer
             // Informs the players that the game is starting
             OthelloPlayer1.GameStarted();
             OthelloPlayer2.GameStarted();
-
-            // Send gameboard
-            BroadcastGameboard();
         }
 
         public void SetOrderHandler(IOrderHandler handler)
