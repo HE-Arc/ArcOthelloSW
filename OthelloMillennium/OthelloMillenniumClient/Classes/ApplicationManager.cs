@@ -104,7 +104,7 @@ namespace OthelloMillenniumClient
                                 //Switch to the windows Game
                                 Game game = new Game();
                                 game.Show();
-                                (Home as MainWindow).Close();
+                                (Home as Home).Close();
                             });
                         }
                         else
