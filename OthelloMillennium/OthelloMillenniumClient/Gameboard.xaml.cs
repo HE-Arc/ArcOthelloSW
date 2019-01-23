@@ -34,19 +34,17 @@ namespace OthelloMillenniumClient
 
         private void Init()
         {
-            //TODO Bastien Clean of code for graphical interface
             //Create game interface
             int width = ApplicationManager.Instance.GameState.Gameboard.GetLength(0);
             int height = ApplicationManager.Instance.GameState.Gameboard.GetLength(1);
 
             listEllipse = new Ellipse[width, height];
-
-            Grid grid = MainGrid;
+            
             SolidColorBrush brushYellow = new SolidColorBrush(Color.FromArgb(0xFF, 0xFC, 0xB0, 0x01));
 
-            grid.Children.Clear();
-            grid.RowDefinitions.Clear();
-            grid.ColumnDefinitions.Clear();
+            MainGrid.Children.Clear();
+            MainGrid.RowDefinitions.Clear();
+            MainGrid.ColumnDefinitions.Clear();
 
             GridLength zeroStars = new GridLength(0, GridUnitType.Star);
             GridLength oneStars = new GridLength(1, GridUnitType.Star);
@@ -55,19 +53,19 @@ namespace OthelloMillenniumClient
             Thickness none = new Thickness(0);
 
             ColumnDefinition c1 = new ColumnDefinition();
-            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = zeroStars });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = zeroStars });
+            MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = zeroStars });
+            MainGrid.RowDefinitions.Add(new RowDefinition() { Height = zeroStars });
 
             //Add columns
             for (int i = 0; i < width; ++i)
             {
-                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = twoStars });
+                MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = twoStars });
             }
 
             //Add rows
             for (int i = 0; i < height; ++i)
             {
-                grid.RowDefinitions.Add(new RowDefinition() { Height = twoStars });
+                MainGrid.RowDefinitions.Add(new RowDefinition() { Height = twoStars });
             }
 
             // Add legend for rows and column
@@ -85,7 +83,7 @@ namespace OthelloMillenniumClient
                     Margin = margin,
                     Foreground = brushYellow
                 };
-                grid.Children.Add(border);
+                MainGrid.Children.Add(border);
             }
 
             for (int i = 1; i < height +1; ++i)
@@ -101,7 +99,7 @@ namespace OthelloMillenniumClient
                     Margin = margin,
                     Foreground = brushYellow
                 };
-                grid.Children.Add(border);
+                MainGrid.Children.Add(border);
             }
 
             Style styleCell = this.Resources["cell"] as Style;
@@ -126,7 +124,7 @@ namespace OthelloMillenniumClient
                     button.Click += OnCellClick;
 
                     listEllipse[i, j] = ellipse;
-                    grid.Children.Add(button);
+                    MainGrid.Children.Add(button);
                 }
             }
 

@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OthelloMillenniumClient"
         mc:Ignorable="d"
-        Title="Game" Height="600" Width="800">
+        Title="Game" Height="600" Width="800"
+        x:Name="GameWindows">
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="/Images/Background.png" Stretch="UniformToFill"/>
@@ -28,14 +29,16 @@
         <Label Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" x:Name="score1" Content="12" Foreground="#b5b5b7" Width="66" VerticalAlignment="Top" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" Height="285" Margin="1.6,0,1.2,0"/>
         <Label Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" x:Name="score" Content="12" Foreground="#b5b5b7" Width="66" VerticalAlignment="Bottom" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" Height="156"/>
 
+        <Viewbox Grid.Row="1" Grid.Column="0" Margin="5" x:Name="WhitePlayer">
+            <local:PlayerCardWhite Image="{ Binding Path=ImageWhite, ElementName=GameWindows }" Pseudo="{ Binding Path=PseudoWhite, ElementName=GameWindows }" Time="{ Binding Path=TimeWhite, ElementName=GameWindows }" Inactive="{ Binding Path=InactiveWhite, ElementName=GameWindows }"/>
+        </Viewbox>
+
+        <Viewbox  Grid.Row="0" Grid.Column="0" Margin="5" x:Name="BlackPlayer">
+            <local:PlayerCardBlack Image="{ Binding Path=ImageBlack, ElementName=GameWindows }" Pseudo="{ Binding Path=PseudoBlack, ElementName=GameWindows }" Time="{ Binding Path=TimeBlack, ElementName=GameWindows }" Inactive="{ Binding Path=InactiveBlack, ElementName=GameWindows }"/>
+        </Viewbox>
+        
         <Viewbox Grid.Column="2" Grid.Row="0" Grid.RowSpan="2">
             <local:Gameboard x:Name="GameBoard"/>
-        </Viewbox>
-        <Viewbox  Grid.Row="0" Grid.Column="0" Margin="5" x:Name="BlackPlayer">
-            <local:PlayerCardBlack Image="Images/BB-8.png" Pseudo="Ph0tonic" Time="12:123" Inactive="False"/>
-        </Viewbox>
-        <Viewbox Grid.Row="1" Grid.Column="0" Margin="5" x:Name="WhitePlayer">
-            <local:PlayerCardWhite Image="Images/Snoke.png" Pseudo="Mearing" Time="12:123" Inactive="False"/>
         </Viewbox>
 
     </Grid>

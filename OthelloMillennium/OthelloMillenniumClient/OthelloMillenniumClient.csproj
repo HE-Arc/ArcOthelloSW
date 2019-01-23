@@ -60,6 +60,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AvatarSettings.cs" />
     <Compile Include="Classes\ApplicationManager.cs" />
     <Compile Include="Classes\GameHandlers\GameHandler.cs" />
     <Compile Include="Classes\GameHandlers\OnlineGameHandler.cs" />
