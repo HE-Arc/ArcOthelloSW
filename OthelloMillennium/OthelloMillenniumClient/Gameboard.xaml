@@ -100,7 +100,9 @@
         <Button Grid.Row="4" Grid.Column="5" Style="{ StaticResource cell }">
             <Ellipse Style="{ StaticResource white-circle }"/>
         </Button>
-        <Button Grid.Row="4" Grid.Column="6" Style="{ StaticResource cell }"></Button>
+        <Button Grid.Row="4" Grid.Column="6" Style="{ StaticResource cell }">
+            <Ellipse/>
+        </Button>
         <Button Grid.Row="4" Grid.Column="7" Style="{ StaticResource cell }"></Button>
         <Button Grid.Row="4" Grid.Column="8" Style="{ StaticResource cell }"></Button>
         <Button Grid.Row="4" Grid.Column="9" Style="{ StaticResource cell }"></Button>

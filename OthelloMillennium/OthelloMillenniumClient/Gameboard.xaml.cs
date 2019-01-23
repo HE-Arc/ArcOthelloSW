@@ -122,10 +122,13 @@ namespace OthelloMillenniumClient
                     };
                     button.SetValue(Grid.ColumnProperty, i);
                     button.SetValue(Grid.RowProperty, j);
-                    button.Content = new Ellipse()
+
+                    Ellipse token = new Ellipse();
+                    if(GameState.Gameboard[i, j] > 0)
                     {
-                        Style = styleBlack
-                    };
+                        token.SetValue(StyleProperty, GameState.Gameboard[i, j]==1?styleBlack:styleWhite);
+                    }
+                    button.Content = token;
                     button.Click += OnCellClick;
 
                     listButtons[i, j] = button;
