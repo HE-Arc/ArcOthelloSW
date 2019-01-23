@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Tools;
 
 namespace OthelloMillenniumServer
@@ -57,7 +58,7 @@ namespace OthelloMillenniumServer
 
         private void StartMatchmaking()
         {
-            new Thread(() =>
+            new Task(() =>
             {
                 while (TCPServer.Instance.Running)
                 {
@@ -134,8 +135,10 @@ namespace OthelloMillenniumServer
         /// </summary>
         /// <param name="othelloPlayer"></param>
         /// <returns></returns>
-        private bool Register(OthelloPlayerServer othelloPlayer)
+        private bool Register(OthelloTCPClient othelloTCPClient)
         {
+            OthelloPlayerServer othelloPlayer = new OthelloPlayerServer(othelloTCPClient);
+
             if (!IsKnown(othelloPlayer))
             {
                 // Add the client to the dictionnary
@@ -182,16 +185,16 @@ namespace OthelloMillenniumServer
         {
             // If null, sender is this object otherwise the order has been redirected
             sender = sender ?? this;
-            OthelloPlayerServer castedSender = sender as OthelloPlayerServer;
 
             switch (order)
             {
                 case RegisterRequestOrder castedOrder:
-                    Register(castedSender);
+                    Register(sender as OthelloTCPClient);
                     break;
 
                 case SearchRequestOrder castedOrder:
                     // Look for the sender
+                    OthelloPlayerServer castedSender = sender as OthelloPlayerServer;
                     if (IsKnown(castedSender))
                     {
                         registratedClients.Remove(castedSender);

@@ -21,7 +21,6 @@ namespace Tools
     }
 
     #region Handshake
-
     [Serializable]
     public class RegisterRequestOrder : Order
     {

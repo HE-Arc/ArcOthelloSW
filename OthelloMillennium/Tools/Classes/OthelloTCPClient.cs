@@ -85,10 +85,10 @@ namespace Tools
         /// <param name="tcpClient"></param>
         public void Bind(TcpClient tcpClient)
         {
-            if (tcpClient == null)
-                throw new ArgumentNullException("tcpClient");
             if (this.tcpClient != null)
                 throw new Exception("TcpClient already binded");
+
+            this.tcpClient = tcpClient ?? throw new ArgumentNullException("tcpClient");
 
             Start();
         }
@@ -98,7 +98,7 @@ namespace Tools
         /// </summary>
         private void Sender()
         {
-            Console.WriteLine("Server connected, sending enabled");
+            Console.WriteLine("Starting sender task");
             while (true)
             {
                 if (IsConnected())
@@ -153,7 +153,7 @@ namespace Tools
         /// </summary>
         private void Listener()
         {
-            Console.WriteLine("Server connected, listening enabled");
+            Console.WriteLine("Starting listener task");
             while (true)
             {
                 if (IsConnected() && tcpClient.Available > 0)
@@ -218,18 +218,17 @@ namespace Tools
         /// </summary>
         private void OrderHandler()
         {
-            while (orderHandler == null)
-            {
-                Thread.Sleep(50);
-            }
-
             while (true)
             {
-                while (!orderReceived.IsEmpty)
-                {
-                    orderReceived.TryDequeue(out Order order);
-                    orderHandler.HandleOrder(null, order);
+                if(orderHandler != null)
+                { 
+                    while (!orderReceived.IsEmpty)
+                    {
+                        orderReceived.TryDequeue(out Order order);
+                        orderHandler.HandleOrder(null, order);
+                    }
                 }
+                
                 Thread.Sleep(50);
             }
         }

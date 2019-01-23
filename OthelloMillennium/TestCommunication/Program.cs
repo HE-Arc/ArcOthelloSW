@@ -15,7 +15,7 @@ namespace TestCommunication
             ApplicationManager.Instance.JoinGameLocal(client1, client2);
 
             // Search, ready, etc
-            ApplicationManager.Instance.LaunchGame();
+            //ApplicationManager.Instance.LaunchGame();
 
             // Wait
             Console.ReadLine();

@@ -141,41 +141,41 @@ namespace Tools
                 #region Forwarded orders
                 case RegisterSuccessfulOrder order:
                     PlayerState = PlayerState.REGISTERED;
-                    orderHandler?.HandleOrder(sender, order);
+                    orderHandler.HandleOrder(sender, order);
                     break;
 
                 case OpponentFoundOrder order:
                     PlayerState = PlayerState.LOBBY_CHOICE;
-                    orderHandler?.HandleOrder(sender, order);
+                    orderHandler.HandleOrder(sender, order);
                     break;
 
                 case GameReadyOrder order:
                     PlayerState = PlayerState.ABOUT_TO_START;
-                    orderHandler?.HandleOrder(sender, order);
+                    orderHandler.HandleOrder(sender, order);
                     break;
 
                 case GameStartedOrder order:
                     //TODO Update when game loaded, It's not always black which start player
                     PlayerState = Color == Color.Black ? PlayerState.MY_TURN : PlayerState.OPPONENT_TURN;
-                    orderHandler?.HandleOrder(sender, order);
+                    orderHandler.HandleOrder(sender, order);
                     break;
 
                 case UpdateGameStateOrder order:
                     PlayerState = order.GameState.PlayerTurn == (int)this.Color ? PlayerState.MY_TURN : PlayerState.OPPONENT_TURN;
-                    orderHandler?.HandleOrder(sender, order);
+                    orderHandler.HandleOrder(sender, order);
                     break;
 
                 case GameEndedOrder order:
                     PlayerState = PlayerState.GAME_ENDED;
-                    orderHandler?.HandleOrder(sender, order);
+                    orderHandler.HandleOrder(sender, order);
                     break;
 
                 case TransferSaveOrder order:
-                    orderHandler?.HandleOrder(sender, order);
+                    orderHandler.HandleOrder(sender, order);
                     break;
 
                 case OpponentAvatarChangedOrder order:
-                    orderHandler?.HandleOrder(sender, order);
+                    orderHandler.HandleOrder(sender, order);
                     break;
                 #endregion
 

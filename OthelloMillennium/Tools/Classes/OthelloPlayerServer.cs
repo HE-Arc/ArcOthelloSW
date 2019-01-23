@@ -163,7 +163,7 @@ namespace Tools
                 case UndoRequestOrder d:
                 case RedoRequestOrder e:
                 case SaveRequestOrder f:
-                    orderHandler?.HandleOrder(sender, order);
+                    orderHandler.HandleOrder(sender, order);
                     break;
 
                 #endregion
@@ -172,17 +172,17 @@ namespace Tools
                 case RegisterRequestOrder castedOrder:
                     Name = !string.IsNullOrEmpty(castedOrder.Name) ? castedOrder.Name : throw new ArgumentException("name can't be null or empty");
                     PlayerType = (PlayerType)castedOrder.PlayerType;
-                    orderHandler?.HandleOrder(sender, order);
+                    orderHandler.HandleOrder(sender, order);
                     break;
                 #endregion
 
                 #region To Matchmaker
                 case SearchRequestOrder castedOrder:
-                    orderHandler?.HandleOrder(sender, order);
+                    orderHandler.HandleOrder(sender, order);
                     break;
 
                 case LoadRequestOrder castedOrder:
-                    orderHandler?.HandleOrder(sender, order);
+                    orderHandler.HandleOrder(sender, order);
                     break;
                     #endregion
 
