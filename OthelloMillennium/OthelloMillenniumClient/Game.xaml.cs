@@ -99,7 +99,7 @@ namespace OthelloMillenniumClient
             = DependencyProperty.Register(
                   "Image",
                   typeof(string),
-                  typeof(PlayerCardBlack),
+                  typeof(Game),
                   new PropertyMetadata("Images/BB-8.png")
               );
 
@@ -107,7 +107,7 @@ namespace OthelloMillenniumClient
             = DependencyProperty.Register(
                   "Time",
                   typeof(string),
-                  typeof(PlayerCardBlack),
+                  typeof(Game),
                   new PropertyMetadata("2:300")
               );
 
@@ -115,7 +115,7 @@ namespace OthelloMillenniumClient
             = DependencyProperty.Register(
                   "Pseudo",
                   typeof(string),
-                  typeof(PlayerCardBlack),
+                  typeof(Game),
                   new PropertyMetadata("Darth Vader")
               );
 
@@ -123,7 +123,7 @@ namespace OthelloMillenniumClient
             = DependencyProperty.Register(
                   "Inactive",
                   typeof(bool),
-                  typeof(PlayerCardBlack),
+                  typeof(Game),
                   new PropertyMetadata(true)
               );
         
@@ -131,7 +131,7 @@ namespace OthelloMillenniumClient
             = DependencyProperty.Register(
                   "Image2",
                   typeof(string),
-                  typeof(PlayerCardBlack),
+                  typeof(Game),
                   new PropertyMetadata("Images/BB-8.png")
               );
 
@@ -139,7 +139,7 @@ namespace OthelloMillenniumClient
             = DependencyProperty.Register(
                   "Time2",
                   typeof(string),
-                  typeof(PlayerCardBlack),
+                  typeof(Game),
                   new PropertyMetadata("2:300")
               );
 
@@ -147,7 +147,7 @@ namespace OthelloMillenniumClient
             = DependencyProperty.Register(
                   "Pseudo2",
                   typeof(string),
-                  typeof(PlayerCardBlack),
+                  typeof(Game),
                   new PropertyMetadata("Darth Vader")
               );
 
@@ -155,7 +155,7 @@ namespace OthelloMillenniumClient
             = DependencyProperty.Register(
                   "Inactive2",
                   typeof(bool),
-                  typeof(PlayerCardBlack),
+                  typeof(Game),
                   new PropertyMetadata(true)
               );
 

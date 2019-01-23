@@ -27,10 +27,11 @@ namespace OthelloMillenniumClient
         public Gameboard()
         {
             InitializeComponent();
+
+            GameState = ApplicationManager.Instance.GameState;
             Init();
 
             DataContext = this;
-            GameState = ApplicationManager.Instance.GameState;
         }
 
         private void Init()
