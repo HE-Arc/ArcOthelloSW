@@ -16,6 +16,14 @@ namespace OthelloMillenniumClient
             InitializeComponent();
             ApplicationManager.Instance.Lobby = this;
 
+            PlayerDataExport playersInfo = ApplicationManager.Instance.GetPlayers();
+
+            string BlackPlayerName = playersInfo.Color1 == Color.Black ? playersInfo.Name1 : playersInfo.Name2;
+            BlackPlayer.SetValue(PlayerVisualiserBlack.PropertyPseudo, BlackPlayerName);
+
+            string WhitePlayerName = playersInfo.Color1 == Color.White ? playersInfo.Name1 : playersInfo.Name2;
+            WhitePlayer.SetValue(PlayerVisualiserWhite.PropertyPseudo, WhitePlayerName);
+
             if (ApplicationManager.Instance.GameType == GameType.Local)
             {
                 KeyUp += PlayerPicker.OnKeyDownLocal;

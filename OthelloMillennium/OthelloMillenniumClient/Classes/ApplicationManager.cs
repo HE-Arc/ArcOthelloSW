@@ -150,6 +150,7 @@ namespace OthelloMillenniumClient
 
         public void AvatarIdChange(Color color, int avatarId) => gameHandler.AvatarIdChange(color, avatarId);
 
+        public PlayerDataExport GetPlayers() => gameHandler.GetPlayers();
         public Tuple<Color, Color> PlayersColor() => gameHandler.PlayersColor();
         public int PlayersAvatarId(Color color) => gameHandler.PlayersAvatarId(color);
 

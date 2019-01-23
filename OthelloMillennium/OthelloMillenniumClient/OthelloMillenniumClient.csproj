@@ -64,6 +64,7 @@
     <Compile Include="Classes\GameHandlers\GameHandler.cs" />
     <Compile Include="Classes\GameHandlers\OnlineGameHandler.cs" />
     <Compile Include="Classes\GameHandlers\LocalGameHandler.cs" />
+    <Compile Include="Classes\GameHandlers\PlayersDataExport.cs" />
     <Compile Include="Classes\GameHandlers\RemotePlayerData.cs" />
     <Compile Include="Classes\IGame.cs" />
     <Compile Include="Classes\ILobby.cs" />
