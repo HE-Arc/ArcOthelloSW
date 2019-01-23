@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Tools;
 
 namespace OthelloMillenniumClient.Classes.GameHandlers
@@ -26,6 +27,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             player1.SetOrderHandler(this);
 
             player1.Connect(GameType);
+            Thread.Sleep(1000);
             player1.Register();
         }
 

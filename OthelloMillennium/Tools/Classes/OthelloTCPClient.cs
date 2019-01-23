@@ -108,7 +108,7 @@ namespace Tools
                     try
                     {
                         orderToSend.TryDequeue(out Order order);
-
+                        Console.WriteLine("Send order "+order.GetAcronym());
                         // Serialize object
                         byte[] data = null;
                         using (var memoryStream = new MemoryStream())
@@ -186,7 +186,6 @@ namespace Tools
                     }
 
                     Console.WriteLine("Received " + order.GetAcronym());
-
                     orderReceived.Enqueue(order);
                 }
                 catch (Exception exception)

@@ -52,6 +52,7 @@ namespace OthelloMillenniumClient
         public void OnUpdateOpponentColorServer(Color color, int AvatarId)
         {
             PlayerPicker.OnUpdateOpponentColorServer(color, AvatarId);
+            //TODO Update score interface
         }
     }
 }

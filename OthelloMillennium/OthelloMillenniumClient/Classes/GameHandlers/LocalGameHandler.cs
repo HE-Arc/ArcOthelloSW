@@ -35,6 +35,8 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             player1.Connect(GameType);
             player2.Connect(GameType);
 
+            Thread.Sleep(1000);
+
             player1.Register();
             player2.Register();
         }
