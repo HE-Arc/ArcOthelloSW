@@ -57,6 +57,10 @@ namespace Tools
         /// </summary>
         private void Start()
         {
+            if(taskSender != null)
+            {
+                throw new Exception("Error TcpClient Start called twice");
+            }
             taskSender = new Task(Sender);
             taskListener = new Task(Listener);
             taskOrderHandler = new Task(OrderHandler);
@@ -94,17 +98,11 @@ namespace Tools
         /// </summary>
         private void Sender()
         {
-            while (!tcpClient.Connected)
-            {
-                Thread.Sleep(200);
-            }
-            
             Console.WriteLine("Server connected, sending enabled");
-
             while (true)
             {
                 if (IsConnected())
-                {
+                { 
                     // Get the stream
                     stream = tcpClient.GetStream();
 
@@ -156,7 +154,6 @@ namespace Tools
         private void Listener()
         {
             Console.WriteLine("Server connected, listening enabled");
-
             while (true)
             {
                 if (IsConnected() && tcpClient.Available > 0)
@@ -190,7 +187,7 @@ namespace Tools
                         {
                             order = (Order)new BinaryFormatter().Deserialize(memoryStream);
                         }
-                        
+
                         Console.WriteLine("Received " + order.GetAcronym());
                         orderReceived.Enqueue(order);
                     }
