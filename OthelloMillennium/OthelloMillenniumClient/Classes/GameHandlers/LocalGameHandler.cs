@@ -90,6 +90,16 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             }
         }
 
+        public override void Undo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Redo()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Start a local server
         /// </summary>
@@ -128,16 +138,13 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                     case OpponentFoundOrder order:
                         if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.BINDED)
                         {
-                            readyToNextState = 0;
                             orderHandler.HandleOrder(sender, order);
                         }
                         break;
 
                     case GameReadyOrder order:
-                        readyToNextState++;
                         if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.LOBBY_CHOICE && readyToNextState == 2)
                         {
-                            readyToNextState=0;
                             orderHandler.HandleOrder(sender, order);
                         }
                         break;

@@ -64,6 +64,16 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             }
         }
 
+        public override void Undo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Redo()
+        {
+            throw new NotImplementedException();
+        }
+
         public override void HandleOrder(IOrderHandler sender, Order handledOrder)
         {
             lock (stateMutex)
