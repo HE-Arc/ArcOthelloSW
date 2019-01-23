@@ -287,7 +287,9 @@ namespace Tools
             info.AddValue("InitialState", InitialState);
         }
 
-        public GameStartedOrder() { }
+        public GameStartedOrder(GameState initialGameState) {
+            InitialState = initialGameState;
+        }
     }
 
     [Serializable]

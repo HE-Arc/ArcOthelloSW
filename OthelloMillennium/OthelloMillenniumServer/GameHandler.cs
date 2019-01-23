@@ -110,9 +110,12 @@ namespace OthelloMillenniumServer
             // Start the game
             GameManager.Start();
 
+            // Get initial gameState
+            var gs = GameManager.Export();
+
             // Informs the players that the game is starting
-            OthelloPlayer1.GameStarted();
-            OthelloPlayer2.GameStarted();
+            OthelloPlayer1.GameStarted(gs);
+            OthelloPlayer2.GameStarted(gs);
         }
 
         public void SetOrderHandler(IOrderHandler handler)
