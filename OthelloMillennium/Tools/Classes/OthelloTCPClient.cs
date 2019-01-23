@@ -190,13 +190,10 @@ namespace Tools
                     }
                     catch (SerializationException exception)
                     {
-                        //TODO Remove console log juste under this line
-                        Console.WriteLine("Error during Serialization ");// + Encoding.Default.GetString(data));
                         Toolbox.LogError(exception);
                     }
                     catch (Exception exception)
                     {
-                        Console.Error.WriteLine("Error while reading from socket");
                         Toolbox.LogError(exception);
                     }
                 }
