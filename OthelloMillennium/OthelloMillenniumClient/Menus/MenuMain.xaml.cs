@@ -11,6 +11,7 @@ namespace OthelloMillenniumClient
 
         public event Action PlayEvent;
         public event Action HelpEvent;
+        public event Action LoadEvent;
 
         public void RaisePlayEvent(object sender, System.Windows.RoutedEventArgs e)
         {
@@ -22,6 +23,11 @@ namespace OthelloMillenniumClient
         {
             // Your logic
             HelpEvent?.Invoke();
+        }
+
+        public void RaiseLoadEvent(object sender, System.Windows.RoutedEventArgs e)
+        {
+            LoadEvent?.Invoke();
         }
 
         public MenuMain()

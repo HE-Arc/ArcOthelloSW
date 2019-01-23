@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using Tools;
 
 namespace OthelloMillenniumClient
@@ -91,8 +92,21 @@ namespace OthelloMillenniumClient
 
                     case GameStartedOrder order:
                         GameState = (order as GameStartedOrder).InitialState;
-                        Lobby.OnLaunchGameServer();
-                        //Game.OnGameStartServer();
+                        if (Lobby == null)
+                        {
+                            Application.Current.Dispatcher.Invoke((Action)delegate
+                            {
+                                //Switch to the windows Game
+                                Game game = new Game();
+                                game.Show();
+                                (Home as MainWindow).Close();
+                            });
+                        }
+                        else
+                        {
+                            Lobby.OnLaunchGameServer();
+                            //Game.OnGameStartServer();
+                        }
                         break;
 
                     case OpponentAvatarChangedOrder order:
@@ -109,7 +123,8 @@ namespace OthelloMillenniumClient
                         break;
 
                     case SaveResponseOrder order:
-                        order.SaveFile.Save();
+                        var dump = GetPlayers();
+                        order.SaveFile.Save(dump.Name1, dump.AvatarId1, dump.Color1, dump.Name2, dump.AvatarId2, dump.Color2);
                         break;
                 }
             }
@@ -187,6 +202,14 @@ namespace OthelloMillenniumClient
 
         public void Undo() => gameHandler.Undo();
         public void Redo() => gameHandler.Redo();
+
+        public void Load()
+        {
+            gameHandler = new LocalGameHandler();
+            gameHandler.SetOrderHandler(this);
+
+            gameHandler.Load();
+        }
 
         /// <summary>
         /// Save a game

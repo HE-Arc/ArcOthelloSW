@@ -36,5 +36,6 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         public abstract void Undo();
         public abstract void Redo();
         public abstract void Save();
+        public abstract void Load();
     }
 }

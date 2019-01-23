@@ -373,5 +373,8 @@
   <ItemGroup>
     <Resource Include="Icons\save.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Load.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

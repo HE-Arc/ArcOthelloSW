@@ -33,11 +33,17 @@ namespace OthelloMillenniumClient
             menuMain = new MenuMain();
             menuMain.PlayEvent += OnPlay;
             menuMain.HelpEvent += OnHelp;
+            menuMain.LoadEvent += OnLoad;
 
             pageTransitionControl.TransitionType = PageTransitionType.Grow;
             pageTransitionControl.ShowPage(menuMain);
 
             ApplicationManager.Instance.Home = this;
+        }
+
+        private void OnLoad()
+        {
+            ApplicationManager.Instance.Load();
         }
 
         private void OnPlay()
