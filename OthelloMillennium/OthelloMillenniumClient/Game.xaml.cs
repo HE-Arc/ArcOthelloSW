@@ -1,9 +1,11 @@
 ﻿using OthelloMillenniumClient.Classes;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -195,24 +197,64 @@ namespace OthelloMillenniumClient
 
         #endregion
 
+        #region Properties
+        private Timer timer;
+        private int playerTurn;
+        private long timeCounterBlack;
+        private long timeCounterWhite;
+        private long TimeCounterBlack
+        {
+            get => timeCounterBlack;
+            set
+            {
+                timeCounterBlack = value;
+                Application.Current.Dispatcher.Invoke(()=>
+                {
+                    TimeBlack = FormatDoubleToTime(timeCounterBlack);
+                });
+            }
+        }
+
+        private long TimeCounterWhite
+        {
+            get => timeCounterWhite;
+            set
+            {
+                timeCounterWhite = value;
+                Application.Current.Dispatcher.Invoke(()=>
+                {
+                    TimeWhite = FormatDoubleToTime(timeCounterWhite);
+                });
+            }
+        }
+
+        #endregion
+
         public Game()
         {
             InitializeComponent();
             DataContext = this;
+
+            timer = new Timer();
+            timer.Interval = 1000;
 
             ApplicationManager.Instance.Game = this;
             
             PlayerDataExport data = ApplicationManager.Instance.GetPlayers();
             GameState gameState = ApplicationManager.Instance.GameState;
 
-            //Undo/Redo disbled if online game
             if (ApplicationManager.Instance.GameType == GameType.Online)
             {
+                timer.Elapsed += OnDecrementTime;
+
+                //Undo/Redo disbled if online game
                 ColumnUndo.Width = new GridLength(0);
                 ColumnRedo.Width = new GridLength(0);
             }
             else
             {
+                timer.Elapsed += OnIncrementTime;
+
                 UndoButton.IsEnabled = gameState.TurnNumber > 0;
                 RedoButton.IsEnabled = gameState.TurnNumber < gameState.NbTurn;
             }
@@ -239,16 +281,45 @@ namespace OthelloMillenniumClient
             refreshScoreUI();
 
             //Time
-            TimeBlack = FormatDoubleToTime(gameState.RemainingTimes.Item1);
-            TimeWhite = FormatDoubleToTime(gameState.RemainingTimes.Item2);
-            //TODO Start timer
+            TimeCounterBlack = gameState.RemainingTimes.Item1;
+            TimeCounterWhite = gameState.RemainingTimes.Item2;
+
+            //Start timer
+            playerTurn = gameState.PlayerTurn;
+            timer.Start();
         }
 
-        private string FormatDoubleToTime(double time)
+        private void OnIncrementTime(object source, System.Timers.ElapsedEventArgs e)
         {
-            int sec = (int)time / 1000;
-            int mili = (int)time % 1000;
-            return sec+":"+mili;
+            //If local Player decrement white
+            if (playerTurn == 1)
+            {
+                TimeCounterBlack += 1000;
+            }
+            else
+            {
+                TimeCounterWhite += 1000;
+            }
+        }
+
+        private void OnDecrementTime(object source, System.Timers.ElapsedEventArgs e)
+        {
+            //If online Player decrement white
+            if(playerTurn == 1)
+            {
+                TimeCounterBlack -= 1000;
+            }
+            else
+            {
+                TimeCounterWhite -= 1000;
+            }
+        }
+
+        private string FormatDoubleToTime(long time)
+        {
+            int sec = ((int)time / 1000)%60;
+            int min = (int)(time / 60000);
+            return string.Format("{0:D2}:{1:D2}", min, sec);
         }
 
         public void OnGameStartServer()
@@ -260,6 +331,9 @@ namespace OthelloMillenniumClient
         public void OnGameStateUpdateServer(GameState gameState)
         {
             Application.Current.Dispatcher.Invoke((Action)delegate {
+                //Stop timer
+                timer.Stop();
+
                 //Update gameboard
                 GameBoard.OnUpdateGameStateServer(gameState);
 
@@ -278,7 +352,12 @@ namespace OthelloMillenniumClient
                     RedoButton.IsEnabled = gameState.TurnNumber < gameState.NbTurn;
                 }
 
-                //TODO Update timer
+                //Time
+                TimeCounterBlack = gameState.RemainingTimes.Item1;
+                TimeCounterWhite = gameState.RemainingTimes.Item2;
+
+                playerTurn = gameState.PlayerTurn;
+                timer.Start();
             });
         }
 
