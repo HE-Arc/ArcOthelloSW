@@ -121,11 +121,11 @@ namespace OthelloMillenniumClient
 
         public void OnParamLocal(MenuParamGameLocal menuParam)
         {
-            string pseudo1 = "Player1";
-            string pseudo2 = "Player2";
+            string pseudo1 = "";
+            string pseudo2 = "";
             if (playerType == PlayerType.Human)
             {
-                string pseudo = (menuParam.player1 as PlayerName).Pseudo;
+                pseudo1 = (menuParam.player1 as PlayerName).Pseudo;
             }
             else
             {
