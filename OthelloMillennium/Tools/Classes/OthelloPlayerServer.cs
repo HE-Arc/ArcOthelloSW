@@ -115,9 +115,9 @@ namespace Tools
         /// <summary>
         /// Call by the gameHandler
         /// </summary>
-        public void GameStarted()
+        public void GameStarted(GameState initialState)
         {
-            client.Send(new GameStartedOrder());
+            client.Send(new GameStartedOrder(initialState));
         }
 
         /// <summary>
