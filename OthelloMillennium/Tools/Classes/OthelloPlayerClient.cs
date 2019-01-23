@@ -112,6 +112,11 @@ namespace Tools
             PlayerState = PlayerState.SEARCHING;
         }
 
+        public void Save()
+        {
+            client.Send(new SaveRequestOrder());
+        }
+
         public void Load()
         {
             if (PlayerState != PlayerState.REGISTERED) throw new Exception("Action not available");

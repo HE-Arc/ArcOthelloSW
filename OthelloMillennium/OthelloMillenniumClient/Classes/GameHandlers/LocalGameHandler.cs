@@ -25,10 +25,14 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             TCPServer.Instance.StartListening(GameType.Local);
         }
 
-        public void JoinGame(OthelloPlayerClient player1, OthelloPlayerClient player2, bool load = false)
+        public void LoadGame(OthelloPlayerClient player1, OthelloPlayerClient player2)
         {
-            this.load = load;
+            load = true;
+            JoinGame(player1, player2);
+        }
 
+        public void JoinGame(OthelloPlayerClient player1, OthelloPlayerClient player2)
+        {
             this.player1 = player1;
             this.player2 = player2;
 
@@ -168,6 +172,10 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                         orderHandler.HandleOrder(sender, order);
                         break;
 
+                    case SaveResponseOrder order:
+                        orderHandler.HandleOrder(sender, order);
+                        break;
+
                     case LoadResponseOrder order:
                         if(load && player2.PlayerState == PlayerState.REGISTERED)
                         {
@@ -182,6 +190,14 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                 }
             }
             
+        }
+
+        /// <summary>
+        /// Player1 perfom the save
+        /// </summary>
+        public override void Save()
+        {
+            player1.Save();
         }
     }
 }
