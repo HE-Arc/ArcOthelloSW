@@ -91,16 +91,12 @@ namespace OthelloMillenniumServer
 
                     if (GameType == GameType.Online)
                     {
-                        // TODO BASTIEN : Black time is Item1 ?
                         timeCounter[Color.Black] = new StoppableTimer(step.RemainingTimes.Item1);
-                        // TODO BASTIEN : White time is Item2 ?
                         timeCounter[Color.Black] = new StoppableTimer(step.RemainingTimes.Item2);
                     }
                     else
                     {
-                        // TODO BASTIEN : Black time is Item1 ?
                         timeCounter[Color.Black] = new StoppableCounter(step.RemainingTimes.Item1);
-                        // TODO BASTIEN : White time is Item2 ?
                         timeCounter[Color.Black] = new StoppableCounter(step.RemainingTimes.Item2);
                     }                   
 
@@ -262,7 +258,6 @@ namespace OthelloMillenniumServer
             GameBoard gameState = listGameBoard[indexState];
             int maxScore = gameState.Board.GetLength(0) * gameState.Board.GetLength(1);
             
-            //TODO Bastien CHange with 
             if (GameType == GameType.Online && (timeCounter[Color.Black].GetRemainingTime() == 0 || timeCounter[Color.White].GetRemainingTime() == 0))
             {
                 //One Color is out of time
@@ -317,7 +312,7 @@ namespace OthelloMillenniumServer
             List<Tuple<char, int>> possiblesMoves = listGameBoard[index].PossibleMoves(PlayerToCellState(CurrentPlayerTurn));
             Tuple<long, long> remainingTimes = new Tuple<long, long>(timeCounter[Color.Black].GetRemainingTime(), timeCounter[Color.White].GetRemainingTime());
 
-            return new GameState(GameEnded, (int)CurrentPlayerTurn, scores, board, possiblesMoves, remainingTimes, (int)winner);
+            return new GameState(GameEnded, (int)CurrentPlayerTurn, scores, board, possiblesMoves, remainingTimes, (int)winner, listGameBoard.Count - 1, indexState);
         }
 
         public List<GameState> Save()

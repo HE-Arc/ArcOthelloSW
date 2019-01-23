@@ -297,7 +297,11 @@ namespace OthelloMillenniumServer
         {
             // Manage all casses, when all token have been played
             // when a player as been eradicated or even when no one can move
-            GameEnded = cellStateCount[CellState.EMPTY] == 0 || !PlayerCanPlay(CellState.WHITE) || !PlayerCanPlay(CellState.BLACK);
+            GameEnded = cellStateCount[CellState.EMPTY] == 0 || !PlayerCanPlay(CellState.WHITE) && !PlayerCanPlay(CellState.BLACK);
+            if (GameEnded)
+            {
+                Console.WriteLine("Game Ended !");
+            }
         }
     }
 }

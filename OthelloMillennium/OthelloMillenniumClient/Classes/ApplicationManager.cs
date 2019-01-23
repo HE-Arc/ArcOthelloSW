@@ -73,42 +73,45 @@ namespace OthelloMillenniumClient
 
         private void ExecuteOrder(Order handledOrder)
         {
-            switch (handledOrder)
+            try
             {
-                case RegisterSuccessfulOrder order:
-                    //TODO Display registered
-                    break;
+                switch (handledOrder)
+                {
+                    case RegisterSuccessfulOrder order:
+                        //TODO Display registered
+                        break;
 
-                case OpponentFoundOrder order:
-                    //TODO Opponent found
-                    break;
+                    case OpponentFoundOrder order:
+                        //TODO Opponent found
+                        break;
 
-                case GameReadyOrder order:
-                    Home.OnLaunchLobbyServer();
-                    break;
+                    case GameReadyOrder order:
+                        Home.OnLaunchLobbyServer();
+                        break;
 
-                case GameStartedOrder order:
-                    GameState = (order as GameStartedOrder).InitialState;
-                    Lobby.OnLaunchGameServer();
-                    //Game.OnGameStartServer();
-                    break;
+                    case GameStartedOrder order:
+                        GameState = (order as GameStartedOrder).InitialState;
+                        Lobby.OnLaunchGameServer();
+                        //Game.OnGameStartServer();
+                        break;
 
-                case OpponentAvatarChangedOrder order:
-                    Lobby.OnUpdateOpponentColorServer(PlayersColor().Item2, order.AvatarID);
-                    break;
-                    
-                case UpdateGameStateOrder order:
-                    GameState = (order as UpdateGameStateOrder).GameState;
-                    Game.OnGameStateUpdateServer(GameState);
-                    break;
+                    case OpponentAvatarChangedOrder order:
+                        Lobby.OnUpdateOpponentColorServer(PlayersColor().Item2, order.AvatarID);
+                        break;
 
-                case GameEndedOrder order:
-                    Game.OnGameEndedServer();
-                    break;
+                    case UpdateGameStateOrder order:
+                        GameState = (order as UpdateGameStateOrder).GameState;
+                        Game.OnGameStateUpdateServer(GameState);
+                        break;
 
-                case LoadResponseOrder order:
-                    // TODO (NiceToHave) share id with friends order.GameID;
-                    break;
+                    case GameEndedOrder order:
+                        Game.OnGameEndedServer();
+                        break;
+                }
+            }
+            catch (Exception exception)
+            {
+                Toolbox.LogError(exception);
             }
         }
 
@@ -116,7 +119,7 @@ namespace OthelloMillenniumClient
         {
             throw new NotImplementedException("[SetOrderHandler] : ApplicationManager");
         }
-        
+
         public void JoinGameLocal(PlayerType playerTypeOne, string playerNameOne, PlayerType playerTypeTwo, string playerNameTwo)
         {
             OthelloPlayerClient player1 = new OthelloPlayerClient(playerTypeOne, playerNameOne);
@@ -133,7 +136,7 @@ namespace OthelloMillenniumClient
 
             (gameHandler as LocalGameHandler).JoinGame(player1, player2);
         }
-        
+
         public void JoinGameOnline(PlayerType playerType, string playerName, BattleType battleType)
         {
             OthelloPlayerClient player = new OthelloPlayerClient(playerType, playerName);
@@ -163,7 +166,7 @@ namespace OthelloMillenniumClient
             orderReceived.Enqueue(order);
         }
 
-        internal void Play(Tuple<char, int> columnRow)
+        public void Play(Tuple<char, int> columnRow)
         {
             try
             {
@@ -176,6 +179,17 @@ namespace OthelloMillenniumClient
             {
                 Toolbox.LogError(exception);
             }
+        }
+
+        public void Undo() => gameHandler.Undo();
+        public void Redo() => gameHandler.Redo();
+
+        /// <summary>
+        /// Save a game
+        /// </summary>
+        public void Save()
+        {
+            //TODO SEGAN SAVE GAME
         }
     }
 }
