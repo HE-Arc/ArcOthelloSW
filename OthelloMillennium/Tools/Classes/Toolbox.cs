@@ -13,6 +13,8 @@ namespace Tools
             sb.Append(DateTime.Now.ToLongDateString());
             sb.Append("] : ");
             sb.Append(ex.Message);
+            sb.Append(" - ");
+            sb.Append(ex.ToString());
             Console.Error.WriteLine(sb.ToString());
         }
 

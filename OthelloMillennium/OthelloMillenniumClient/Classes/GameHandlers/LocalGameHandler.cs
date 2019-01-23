@@ -12,10 +12,13 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 
         private OthelloPlayerClient player1;
         private OthelloPlayerClient player2;
+
+        private int readyToNextState;
         
         public LocalGameHandler():base()
         {
             GameType = GameType.Local;
+            readyToNextState = 0;
 
             // Test if server has been started
             if (StartLocalServer() < 0)
@@ -123,15 +126,18 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                         break;
 
                     case OpponentFoundOrder order:
-                        if(player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.BINDED)
+                        if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.BINDED)
                         {
+                            readyToNextState = 0;
                             orderHandler.HandleOrder(sender, order);
                         }
                         break;
 
                     case GameReadyOrder order:
-                        if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.LOBBY_CHOICE)
+                        readyToNextState++;
+                        if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.LOBBY_CHOICE && readyToNextState == 2)
                         {
+                            readyToNextState=0;
                             orderHandler.HandleOrder(sender, order);
                         }
                         break;

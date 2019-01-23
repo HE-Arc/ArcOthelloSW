@@ -59,6 +59,15 @@ namespace OthelloMillenniumClient
             }
         }
 
+        public int ScoreBlack
+        {
+            get => (int)GetValue(PropertyScoreBlack);
+            set
+            {
+                SetValue(PropertyScoreBlack, value);
+            }
+        }
+
         public string ImageWhite
         {
             get => (string)GetValue(PropertyImageWhite);
@@ -95,6 +104,15 @@ namespace OthelloMillenniumClient
             }
         }
 
+        public int ScoreWhite
+        {
+            get => (int)GetValue(PropertyScoreWhite);
+            set
+            {
+                SetValue(PropertyScoreWhite, value);
+            }
+        }
+
         public static readonly DependencyProperty PropertyImageBlack
             = DependencyProperty.Register(
                   "ImageBlack",
@@ -126,7 +144,15 @@ namespace OthelloMillenniumClient
                   typeof(Game),
                   new PropertyMetadata(true)
               );
-        
+
+        public static readonly DependencyProperty PropertyScoreBlack
+            = DependencyProperty.Register(
+                  "ScoreBlack",
+                  typeof(int),
+                  typeof(Game),
+                  new PropertyMetadata(2)
+              );
+
         public static readonly DependencyProperty PropertyImageWhite
             = DependencyProperty.Register(
                   "ImageWhite",
@@ -159,6 +185,14 @@ namespace OthelloMillenniumClient
                   new PropertyMetadata(true)
               );
 
+        public static readonly DependencyProperty PropertyScoreWhite
+            = DependencyProperty.Register(
+                  "ScoreWhite",
+                  typeof(int),
+                  typeof(Game),
+                  new PropertyMetadata(2)
+              );
+
         #endregion
 
         public Game()
@@ -172,8 +206,11 @@ namespace OthelloMillenniumClient
             GameState gameState = ApplicationManager.Instance.GameState;
             // ?? TODO BASTIEN : Reçues depuis les interfaces utilisateurs ?
 
+            //Pseudos
             PseudoBlack = data.Color1 == Tools.Color.Black ? data.Name1 : data.Name2;
             PseudoWhite = data.Color1 == Tools.Color.White ? data.Name1 : data.Name2;
+
+            //Avatar
             ImageBlack = AvatarSettings.IMAGE_FOLDER + AvatarSettings.IMAGES_PERSO[
                 data.Color1 == Tools.Color.Black ? data.AvatarId1 : data.AvatarId2
                 ];
@@ -181,12 +218,19 @@ namespace OthelloMillenniumClient
                 data.Color1 == Tools.Color.White ? data.AvatarId1 : data.AvatarId2
                 ];
 
-            InactiveBlack = gameState.PlayerTurn == 2;
-            InactiveWhite = gameState.PlayerTurn == 2;
+            //Inactive
+            InactiveBlack = gameState.PlayerTurn != 1;
+            InactiveWhite = gameState.PlayerTurn != 2;
 
-            TimeBlack = "2:300"; // FormatDoubleToTime();
-            TimeWhite = "2:300"; // FormatDoubleToTime();
+            //Score
+            ScoreBlack = gameState.Scores.Item1;
+            ScoreWhite = gameState.Scores.Item2;
+            refreshScoreUI();
 
+            //Time
+            TimeBlack = FormatDoubleToTime(gameState.RemainingTimes.Item1);
+            TimeWhite = FormatDoubleToTime(gameState.RemainingTimes.Item2);
+            //TODO Start timer
         }
 
         private string FormatDoubleToTime(double time)
@@ -205,8 +249,20 @@ namespace OthelloMillenniumClient
         public void OnGameStateUpdateServer(GameState gameState)
         {
             Application.Current.Dispatcher.Invoke((Action)delegate {
-                this.GameBoard.OnUpdateGameStateServer(gameState);
+                ScoreBlack = gameState.Scores.Item1;
+                ScoreWhite = gameState.Scores.Item2;
+                refreshScoreUI();
+
+                GameBoard.OnUpdateGameStateServer(gameState);
+
+                //TODO Update timer
             });
+        }
+
+        private void refreshScoreUI()
+        {
+            ColumnBlackScore.Height = new GridLength(ScoreBlack, GridUnitType.Star);
+            ColumnWhiteScore.Height = new GridLength(ScoreWhite, GridUnitType.Star);
         }
 
         public void OnGameEndedServer()
