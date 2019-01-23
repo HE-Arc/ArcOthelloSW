@@ -7,7 +7,7 @@ namespace OthelloMillenniumServer
         static void Main(string[] args)
         {
             TCPServer serveur = TCPServer.Instance;
-            serveur.StartListening();
+            serveur.StartListening(Tools.GameType.Online);
 
             //Should be turned to deamon
             Console.ReadLine();

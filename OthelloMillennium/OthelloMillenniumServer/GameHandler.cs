@@ -80,8 +80,8 @@ namespace OthelloMillenniumServer
 
         public void Init()
         {
-            // Init gameManager. TODO BASTIEN : Server don't know if it's local or online
-            GameManager = new GameManager(GameType.Local);
+            // Init gameManager
+            GameManager = new GameManager();
             GameManager.OnGameFinished += GameManager_OnGameFinished;
 
             // Update clients
@@ -101,8 +101,8 @@ namespace OthelloMillenniumServer
         /// <param name="game"></param>
         public void Load(List<GameState> game)
         {
-            // Init gameManager. TODO BASTIEN : Server don't know if it's local or online
-            GameManager = new GameManager(GameType.Local);
+            // Init gameManager
+            GameManager = new GameManager();
             GameManager.OnGameFinished += GameManager_OnGameFinished;
 
             // Load the game

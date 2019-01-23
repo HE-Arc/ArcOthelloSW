@@ -30,18 +30,32 @@ namespace OthelloMillenniumServer
         }
 
         private TCPServer() {
-            listener = new TcpListener(IPAddress.Any, Port);
+            
         }
         #endregion
 
         #region Properties
-        private readonly TcpListener listener; 
+        private TcpListener listener; 
         public bool Running { get; private set; }
-        public int Port { get; set; } = Tools.Properties.Settings.Default.LocalPort;
+        public GameType Environnement { get; private set; }
         #endregion
 
-        public bool StartListening()
+        /// <summary>
+        /// Start to listen and accept clients
+        /// </summary>
+        /// <param name="env">Local or Online</param>
+        /// <returns></returns>
+        public bool StartListening(GameType env)
         {
+            if(env == GameType.Local)
+            {
+                listener = new TcpListener(IPAddress.Parse(Tools.Properties.Settings.Default.LocalHostname), Tools.Properties.Settings.Default.LocalPort);
+            }
+            else
+            {
+                listener = new TcpListener(IPAddress.Parse(Tools.Properties.Settings.Default.OnlineHostname), Tools.Properties.Settings.Default.OnlinePort);
+            }
+
             try
             {
                 Running = true;
@@ -88,9 +102,6 @@ namespace OthelloMillenniumServer
             catch (Exception ex)
             {
                 Toolbox.LogError(ex);
-
-                // Restart Server
-                return StartListening();
             }
 
             return true;

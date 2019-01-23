@@ -42,9 +42,9 @@ namespace OthelloMillenniumServer
 
         #endregion
 
-        public GameManager(GameType gameType)
+        public GameManager()
         {
-            GameType = gameType;
+            GameType = TCPServer.Instance.Environnement;
 
             //Init GameState
             indexState = 0;

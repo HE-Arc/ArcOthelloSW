@@ -20,11 +20,8 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             GameType = GameType.Local;
             readyToNextState = 0;
 
-            // Test if server has been started
-            if (StartLocalServer() < 0)
-            {
-                throw new Exception($"Unable to start server on port {TCPServer.Instance.Port}");
-            }
+            // Start a local server
+            TCPServer.Instance.StartListening(GameType.Local);
         }
 
         public void JoinGame(OthelloPlayerClient player1, OthelloPlayerClient player2)
@@ -98,26 +95,6 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         public override void Redo()
         {
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Start a local server
-        /// </summary>
-        /// <returns>Port where server is listening or -1 if it failed</returns>
-        private int StartLocalServer()
-        {
-            try
-            {
-                int port = (new Random()).Next(49152, 65535);
-                TCPServer.Instance.Port = port;
-                TCPServer.Instance.StartListening();
-                return port;
-            }
-            catch (Exception ex)
-            {
-                Toolbox.LogError(ex);
-                return -1;
-            }
         }
 
         public override void HandleOrder(IOrderHandler sender, Order handledOrder)
