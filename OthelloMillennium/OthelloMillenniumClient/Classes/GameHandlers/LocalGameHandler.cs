@@ -92,12 +92,26 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 
         public override void Undo()
         {
-            throw new NotImplementedException();
+            if(player1.PlayerState == PlayerState.MY_TURN)
+            {
+                player1.Undo();
+            }
+            else
+            {
+                player2.Undo();
+            }
         }
 
         public override void Redo()
         {
-            throw new NotImplementedException();
+            if (player1.PlayerState == PlayerState.MY_TURN)
+            {
+                player1.Redo();
+            }
+            else
+            {
+                player2.Redo();
+            }
         }
 
         /// <summary>

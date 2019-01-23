@@ -66,12 +66,12 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 
         public override void Undo()
         {
-            throw new NotImplementedException();
+            throw new Exception("Undo/Redo order not allowed during online games");
         }
 
         public override void Redo()
         {
-            throw new NotImplementedException();
+            throw new Exception("Undo/Redo order not allowed during online games");
         }
 
         public override void HandleOrder(IOrderHandler sender, Order handledOrder)
