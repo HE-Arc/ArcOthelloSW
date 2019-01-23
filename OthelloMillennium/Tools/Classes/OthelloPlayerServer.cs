@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 
 namespace Tools
@@ -104,6 +105,16 @@ namespace Tools
             client.Send(new RegisterSuccessfulOrder());
         }
 
+        public void LoadSuccessful(int gameID)
+        {
+            client.Send(new LoadResponseOrder(gameID));
+        }
+
+        public void JoinSuccessful()
+        {
+            client.Send(new JoinResponseOrder());
+        }
+
         /// <summary>
         /// Call by the gameHandler
         /// </summary>
@@ -141,9 +152,9 @@ namespace Tools
         /// Call by the gameHandler
         /// </summary>
         /// <param name="exportedGame"></param>
-        public void TransferSaveOrder(ExportedGame exportedGame)
+        public void TransferSaveOrder(List<GameState> states)
         {
-            client.Send(new TransferSaveOrder(exportedGame));
+            client.Send(new TransferSaveOrder(states));
         }
 
         /// <summary>

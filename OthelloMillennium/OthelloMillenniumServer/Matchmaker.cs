@@ -2,12 +2,32 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Tools;
 
 namespace OthelloMillenniumServer
 {
+    internal class LoadRequest
+    {
+        public OthelloPlayerServer Player1 { get; private set; }
+        public OthelloPlayerServer Player2 { get; private set; }
+        public List<GameState> GameStates { get; private set; }
+
+        public LoadRequest(OthelloPlayerServer emitter, List<GameState> game)
+        {
+            Player1 = emitter;
+            GameStates = game;
+        }
+
+        public void AssignOpponent(OthelloPlayerServer opponent)
+        {
+            Player2 = opponent;
+
+            // Inform the client
+            Player2.JoinSuccessful();
+        }
+    }
+
     // Used as a workaround
     internal class Container
     {
@@ -53,6 +73,7 @@ namespace OthelloMillenniumServer
 
         private readonly HashSet<GameHandler> matches = new HashSet<GameHandler>();
         private readonly HashSet<OthelloPlayerServer> registratedClients = new HashSet<OthelloPlayerServer>();
+        private readonly ConcurrentDictionary<int, LoadRequest> loadedGames = new ConcurrentDictionary<int, LoadRequest>();
         private readonly ConcurrentDictionary<OthelloPlayerServer, PlayerType> searchingClients = new ConcurrentDictionary<OthelloPlayerServer, PlayerType>();
         #endregion
 
@@ -107,12 +128,44 @@ namespace OthelloMillenniumServer
         private void StartNewMatch(OthelloPlayerServer othelloPlayer1, OthelloPlayerServer othelloPlayer2)
         {
             // Informs clients that an opponent has be found
-            othelloPlayer2.OpponentFound(othelloPlayer2.Name, othelloPlayer2.PlayerType);
-            othelloPlayer1.OpponentFound(othelloPlayer1.Name, othelloPlayer1.PlayerType);
+            othelloPlayer1.OpponentFound(othelloPlayer2.Name, othelloPlayer2.PlayerType);
+            othelloPlayer2.OpponentFound(othelloPlayer1.Name, othelloPlayer1.PlayerType);
 
             // GameManager will now handle clients and put them as InGame
-            var match = new GameHandler(othelloPlayer1, othelloPlayer2);
+            CreateMatch(othelloPlayer1, othelloPlayer2).Init();
+        }
+
+        private void StartNewMatch(LoadRequest loadRequest)
+        {
+            // Informs clients that an opponent has be found
+            loadRequest.Player1.OpponentFound(loadRequest.Player2.Name, loadRequest.Player2.PlayerType);
+            loadRequest.Player2.OpponentFound(loadRequest.Player1.Name, loadRequest.Player1.PlayerType);
+
+            // GameManager will now handle clients and put them as InGame
+            CreateMatch(loadRequest.Player1, loadRequest.Player2).Load(loadRequest.GameStates);
+        }
+
+        /// <summary>
+        /// GameManager will now handle clients and put them as InGame
+        /// </summary>
+        /// <param name="othelloPlayer1"></param>
+        /// <param name="othelloPlayer2"></param>
+        private GameHandler CreateMatch(OthelloPlayerServer othelloPlayer1, OthelloPlayerServer othelloPlayer2)
+        {
+            GameHandler match;
+            if (new Random().Next() % 2 == 0)
+            {
+                match = new GameHandler(othelloPlayer1, othelloPlayer2);
+            }
+            else
+            {
+                match = new GameHandler(othelloPlayer2, othelloPlayer1);
+            }
+
+            // Store the match
             matches.Add(match);
+
+            return match;
         }
 
         /// <summary>
@@ -175,6 +228,52 @@ namespace OthelloMillenniumServer
             }
         }
 
+        private bool RegisterGame(OthelloPlayerServer emitter, List<GameState> game)
+        {
+            // Test if the player is known
+            if(!IsKnown(emitter)) throw new Exception("Unknown client");
+
+            // Generate the "savefile"
+            LoadRequest loadRequest = new LoadRequest(emitter, game);
+            int requestID = loadRequest.GetHashCode();
+
+            // Verifiy that the game does not exist
+            if (loadedGames.ContainsKey(requestID)) throw new Exception("Game already loaded");
+
+            // Add it to the list
+            loadedGames.TryAdd(requestID, loadRequest);
+
+            // Send the id to the emitter
+            emitter.LoadSuccessful(requestID);
+
+            return true;
+        }
+
+        private bool JoinGame(OthelloPlayerServer emitter, int gameID)
+        {
+            // Test if the player is known
+            if (!IsKnown(emitter)) throw new Exception("Unknown client");
+
+            // Try to get the loadRequest
+            if(loadedGames.TryGetValue(gameID, out LoadRequest loadRequest))
+            {
+                // Assign an opponent
+                loadRequest.AssignOpponent(emitter);
+
+                // Start a new match
+                StartNewMatch(loadRequest);
+
+                // Remove the match
+                loadedGames.TryRemove(gameID, out LoadRequest dump);
+
+                // Success
+                return true;
+            }
+
+            // Failure
+            return false;
+        }
+
         public void SetOrderHandler(IOrderHandler handler)
         {
             throw new Exception("This object can not receive an handler");
@@ -198,7 +297,14 @@ namespace OthelloMillenniumServer
                     break;
 
                 case LoadRequestOrder castedOrder:
-                    throw new NotImplementedException("[HandleOrder] : Matchmaker");
+                    RegisterGame(castedSender, castedOrder.States);
+                    break;
+
+                case JoinRequestOrder castedOrder:
+                    JoinGame(castedSender, castedOrder.GameID);
+                    break;
+
+
             }
         }
 
@@ -246,6 +352,6 @@ namespace OthelloMillenniumServer
             }
         }
 
-        
+
     }
 }

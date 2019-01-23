@@ -9,18 +9,17 @@ namespace OthelloMillenniumServer
     public class GameBoard
     {
         #region Internal Classes
-        public enum CellState
+        internal static class CellState
         {
             //Default State = 0 -> EMPTY // DON'T CHANGE THOSE VALUES
-            EMPTY = 0,
-            BLACK = 1,
-            WHITE = 2
+            public const int EMPTY = 0;
+            public const int BLACK = 1;
+            public const int WHITE = 2;
         }
 
         #endregion
 
         #region Attributs
-        public CellState[,] Board { get; private set; }
 
         //Directions to explore
         private static readonly Tuple<int, int>[] directions =
@@ -30,26 +29,28 @@ namespace OthelloMillenniumServer
             new Tuple<int, int>(-1,  1), new Tuple<int, int>(0,  1), new Tuple<int, int>(1,  1),
         };
 
-        private Dictionary<CellState, int> cellStateCount;
+        private readonly Dictionary<int, int> cellStateCount;
 
         #endregion
 
         #region Properties
+        public int[,] Board { get; private set; }
+
         public bool GameEnded { get; private set; }
 
-        // Neccessary when we want to manage move back and a player can't move
-        public CellState LastPlayer { get; }
+        // Necessary when we want to manage move back and a player can't move
+        public int LastPlayer { get; private set; }
 
         #endregion
 
         #region Static
         /// <summary>
-        /// Create a basic 
+        /// Create a basic
         /// </summary>
         /// <returns></returns>
         public static GameBoard CreateStartState()
         {
-            CellState[,] state = new CellState[Settings.SIZE_WIDTH, Settings.SIZE_HEIGHT];
+            int[,] state = new int[Settings.SIZE_WIDTH, Settings.SIZE_HEIGHT];
 
             state[3, 3] = CellState.WHITE;
             state[3, 4] = CellState.BLACK;
@@ -91,13 +92,13 @@ namespace OthelloMillenniumServer
         /// Constructor to create a new GameState
         /// </summary>
         /// <param name="cellState"></param>
-        public GameBoard(CellState[,] cellState, CellState cellStatePlayer = CellState.WHITE)
+        public GameBoard(int[,] cellState, int lastPlayer = CellState.WHITE)
         {
             Board = cellState;
-            LastPlayer = cellStatePlayer;
-            cellStateCount = new Dictionary<CellState, int>
-            {
+            LastPlayer = lastPlayer;
 
+            cellStateCount = new Dictionary<int, int>
+            {
                 // Init scores
                 { CellState.BLACK, 0 },
                 { CellState.WHITE, 0 },
@@ -105,7 +106,7 @@ namespace OthelloMillenniumServer
             };
 
             // Calculate scores, counting the empty allow to know how many cells are empty
-            foreach (CellState cell in Board)
+            foreach (int cell in Board)
             {
                 cellStateCount[cell]++;
             }
@@ -118,7 +119,7 @@ namespace OthelloMillenniumServer
         /// </summary>
         /// <param name="cellStatePlayer"></param>
         /// <returns></returns>
-        public List<Tuple<char, int>> PossibleMoves(CellState cellStatePlayer)
+        public List<Tuple<char, int>> PossibleMoves(int cellStatePlayer)
         {
             List<Tuple<char, int>> validMoves = new List<Tuple<char, int>>();
             // Check if the user can make a move
@@ -140,7 +141,7 @@ namespace OthelloMillenniumServer
         /// Return true if a given player can play or not
         /// </summary>
         /// <returns></returns>
-        public bool PlayerCanPlay(CellState cellStatePlayer)
+        public bool PlayerCanPlay(int cellStatePlayer)
         {
             // Check if the user has been eradicated
             if(cellStateCount[cellStatePlayer] == 0)
@@ -170,13 +171,13 @@ namespace OthelloMillenniumServer
         /// <param name="point"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        public GameBoard ApplyMove(Tuple<char, int> coord, CellState cellStatePlayer)
+        public GameBoard ApplyMove(Tuple<char, int> coord, int cellStatePlayer)
         {
             Tuple<int, int> indices = CoordToInt(coord);
 
             List<Tuple<int, int>> tokenToReturn = new List<Tuple<int, int>>();
             List<Tuple<int, int>> tokenToReturnPotential = new List<Tuple<int, int>>();
-            
+
             // Check in all 8 directions that there is at least one cellState of our own
             foreach (Tuple<int, int> direction in directions)
             {
@@ -188,7 +189,7 @@ namespace OthelloMillenniumServer
                 while (ij.Item1 >= 0 && ij.Item1 < Settings.SIZE_WIDTH && ij.Item2 >= 0 && ij.Item2 < Settings.SIZE_HEIGHT && !end)
                 {
                     // Compute cell
-                    CellState cellState = Board[ij.Item1, ij.Item2];
+                    int cellState = Board[ij.Item1, ij.Item2];
 
                     if (cellState == cellStatePlayer) // Token of the player
                     {
@@ -208,7 +209,7 @@ namespace OthelloMillenniumServer
             }
 
             //Create new CellState
-            CellState[,] newCellState = (CellState[,])Board.Clone();
+            int[,] newCellState = (int[,])Board.Clone();
             tokenToReturn.Add(indices);
 
             // Return the tokens
@@ -226,7 +227,7 @@ namespace OthelloMillenniumServer
         /// </summary>
         /// <param name="cellStatePlayer"></param>
         /// <returns>Nb of cell conrtaining the given cellState</returns>
-        public int GetNbToken(CellState cellStatePlayer)
+        public int GetNbToken(int cellStatePlayer)
         {
             return cellStateCount[cellStatePlayer];
         }
@@ -237,7 +238,7 @@ namespace OthelloMillenniumServer
         /// <param name="coord"></param>
         /// <param name="cellStatePlayer"></param>
         /// <returns></returns>
-        public bool ValidateMove(Tuple<char, int> coord, CellState cellStatePlayer)
+        public bool ValidateMove(Tuple<char, int> coord, int cellStatePlayer)
         {
             return ValidateMove(CoordToInt(coord), cellStatePlayer);
         }
@@ -248,7 +249,7 @@ namespace OthelloMillenniumServer
         /// <param name="indices"></param>
         /// <param name="cellStatePlayer"></param>
         /// <returns></returns>
-        private bool ValidateMove(Tuple<int, int> indices, CellState cellStatePlayer)
+        private bool ValidateMove(Tuple<int, int> indices, int cellStatePlayer)
         {
             // Check if cell at given coord is empty
             if (Board[indices.Item1, indices.Item2] != CellState.EMPTY)
@@ -267,7 +268,7 @@ namespace OthelloMillenniumServer
 
                 while (ij.Item1 >= 0 && ij.Item1 < Settings.SIZE_WIDTH && ij.Item2 >= 0 && ij.Item2 < Settings.SIZE_HEIGHT && !end)
                 {
-                    CellState cellState = Board[ij.Item1, ij.Item2];
+                    int cellState = Board[ij.Item1, ij.Item2];
                     if (cellState == cellStatePlayer)
                     {
                         end = true;
