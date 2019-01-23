@@ -78,7 +78,7 @@ namespace OthelloMillenniumServer
             // pinger.Start();
         }
 
-        private void Init()
+        public void Init()
         {
             // Init gameManager. TODO BASTIEN : Server don't know if it's local or online
             GameManager = new GameManager(GameType.Local);
@@ -99,14 +99,14 @@ namespace OthelloMillenniumServer
         /// Send avatardID from both client after this function
         /// </summary>
         /// <param name="game"></param>
-        private void Load(List<GameState> game)
+        public void Load(List<GameState> game)
         {
-            throw new NotImplementedException();
-
-            /*
             // Init gameManager. TODO BASTIEN : Server don't know if it's local or online
             GameManager = new GameManager(GameType.Local);
             GameManager.OnGameFinished += GameManager_OnGameFinished;
+
+            // Load the game
+            GameManager.Load(game);
 
             // Game is ready
             OthelloPlayer1.GameReady();
@@ -114,7 +114,6 @@ namespace OthelloMillenniumServer
 
             // Immediatly start the game
             StartGame();
-            */
         }
 
         private OthelloPlayerServer GetOpponent(OthelloPlayerServer othelloPlayer)

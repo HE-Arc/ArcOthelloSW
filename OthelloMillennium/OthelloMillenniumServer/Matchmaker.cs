@@ -132,7 +132,7 @@ namespace OthelloMillenniumServer
             othelloPlayer2.OpponentFound(othelloPlayer1.Name, othelloPlayer1.PlayerType);
 
             // GameManager will now handle clients and put them as InGame
-            InitMatch(othelloPlayer1, othelloPlayer2);
+            CreateMatch(othelloPlayer1, othelloPlayer2).Init();
         }
 
         private void StartNewMatch(LoadRequest loadRequest)
@@ -142,7 +142,7 @@ namespace OthelloMillenniumServer
             loadRequest.Player2.OpponentFound(loadRequest.Player1.Name, loadRequest.Player1.PlayerType);
 
             // GameManager will now handle clients and put them as InGame
-            InitMatch(loadRequest.Player1, loadRequest.Player2);
+            CreateMatch(loadRequest.Player1, loadRequest.Player2).Load(loadRequest.GameStates);
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace OthelloMillenniumServer
         /// </summary>
         /// <param name="othelloPlayer1"></param>
         /// <param name="othelloPlayer2"></param>
-        private void InitMatch(OthelloPlayerServer othelloPlayer1, OthelloPlayerServer othelloPlayer2)
+        private GameHandler CreateMatch(OthelloPlayerServer othelloPlayer1, OthelloPlayerServer othelloPlayer2)
         {
             GameHandler match;
             if (new Random().Next() % 2 == 0)
@@ -164,6 +164,8 @@ namespace OthelloMillenniumServer
 
             // Store the match
             matches.Add(match);
+
+            return match;
         }
 
         /// <summary>
