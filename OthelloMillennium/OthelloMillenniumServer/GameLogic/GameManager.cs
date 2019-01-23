@@ -87,10 +87,10 @@ namespace OthelloMillenniumServer
                 indexState = 0;
 
                 // Start loading
+                game.Reverse();
                 foreach (GameState step in game)
                 {
                     listGameBoard.Add(new GameBoard(step.Gameboard, step.PlayerTurn));
-                    CurrentPlayerTurn = CellStateToPlayer(step.PlayerTurn);
                     scores = step.Scores;
                     winner = CellStateToPlayer(step.Winner);
 
