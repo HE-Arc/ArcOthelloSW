@@ -105,6 +105,10 @@ namespace OthelloMillenniumClient
                 case GameEndedOrder order:
                     Game.OnGameEndedServer();
                     break;
+
+                case LoadResponseOrder order:
+                    // TODO (NiceToHave) share id with friends order.GameID;
+                    break;
             }
         }
 

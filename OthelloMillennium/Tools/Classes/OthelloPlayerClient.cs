@@ -1,4 +1,5 @@
 ﻿using System;
+using Tools.Classes;
 
 namespace Tools
 {
@@ -111,6 +112,24 @@ namespace Tools
             PlayerState = PlayerState.SEARCHING;
         }
 
+        public void Load()
+        {
+            if (PlayerState != PlayerState.REGISTERED) throw new Exception("Action not available");
+            client.Send(new LoadRequestOrder(SaveFile.Load()));
+
+            // Switch client state to searching
+            PlayerState = PlayerState.SEARCHING;
+        }
+
+        public void JoinGame(int gameID)
+        {
+            if (PlayerState != PlayerState.REGISTERED) throw new Exception("Action not available");
+            client.Send(new JoinRequestOrder(gameID));
+
+            // Switch client state to searching
+            PlayerState = PlayerState.SEARCHING;
+        }
+
         public void ReadyToPlay()
         {
             if (PlayerState != PlayerState.LOBBY_CHOICE) throw new Exception("Action not allowed");
@@ -154,6 +173,10 @@ namespace Tools
                     orderHandler.HandleOrder(sender, order);
                     break;
 
+                case SaveResponseOrder order:
+                    orderHandler.HandleOrder(sender, order);
+                    break;
+
                 case LoadResponseOrder order:
                     orderHandler.HandleOrder(sender, order);
                     break;
@@ -184,10 +207,6 @@ namespace Tools
 
                 case GameEndedOrder order:
                     PlayerState = PlayerState.GAME_ENDED;
-                    orderHandler.HandleOrder(sender, order);
-                    break;
-
-                case TransferSaveOrder order:
                     orderHandler.HandleOrder(sender, order);
                     break;
 

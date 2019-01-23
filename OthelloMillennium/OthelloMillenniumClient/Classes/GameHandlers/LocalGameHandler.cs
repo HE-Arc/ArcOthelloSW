@@ -14,6 +14,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         private OthelloPlayerClient player2;
 
         private int readyToNextState;
+        private bool load = false;
         
         public LocalGameHandler():base()
         {
@@ -24,8 +25,10 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             TCPServer.Instance.StartListening(GameType.Local);
         }
 
-        public void JoinGame(OthelloPlayerClient player1, OthelloPlayerClient player2)
+        public void JoinGame(OthelloPlayerClient player1, OthelloPlayerClient player2, bool load = false)
         {
+            this.load = load;
+
             this.player1 = player1;
             this.player2 = player2;
 
@@ -118,12 +121,19 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                 switch (handledOrder)
                 {
                     case RegisterSuccessfulOrder order:
-                        if (player1.PlayerState == player2.PlayerState && player2.PlayerState == PlayerState.REGISTERED)
+                        if (!load)
                         {
-                            player1.SearchOpponent(player2.PlayerType);
-                            player2.SearchOpponent(player1.PlayerType);
-                            orderHandler.HandleOrder(sender, order);
+                            if (player1.PlayerState == player2.PlayerState && player2.PlayerState == PlayerState.REGISTERED)
+                            {
+                                player1.SearchOpponent(player2.PlayerType);
+                                player2.SearchOpponent(player1.PlayerType);
+                            }
                         }
+                        else
+                        {
+                            player1.Load();
+                        }
+                        orderHandler.HandleOrder(sender, order);
                         break;
 
                     case OpponentFoundOrder order:
@@ -155,6 +165,14 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                         break;
 
                     case GameEndedOrder order:
+                        orderHandler.HandleOrder(sender, order);
+                        break;
+
+                    case LoadResponseOrder order:
+                        if(load && player2.PlayerState == PlayerState.REGISTERED)
+                        {
+                            player2.JoinGame(order.GameID);
+                        }
                         orderHandler.HandleOrder(sender, order);
                         break;
 

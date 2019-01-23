@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Tools.Classes;
 
 namespace Tools
 {
@@ -447,40 +448,7 @@ namespace Tools
         }
     }
 
-    /// <summary>
-    /// Server send this to export the current game
-    /// </summary>
-    [Serializable]
-    public class TransferSaveOrder : Order
-    {
-        public List<GameState> States { get; private set; }
-
-        public TransferSaveOrder(List<GameState> states)
-        {
-            States = states;
-        }
-
-        protected TransferSaveOrder(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            States = (List<GameState>)info.GetValue("States", typeof(List<GameState>));
-        }
-
-        public override string GetAcronym()
-        {
-            return "TSO";
-        }
-
-        public override string GetDefinition()
-        {
-            return "Transfer game States";
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("States", States);
-        }
-    }
+   
 
     #region Opponent
 
@@ -602,19 +570,54 @@ namespace Tools
     /// Server send this to export the current game
     /// </summary>
     [Serializable]
+    public class SaveResponseOrder : Order
+    {
+        public SaveFile SaveFile { get; private set; }
+
+        public SaveResponseOrder(SaveFile saveFile)
+        {
+            SaveFile = saveFile;
+        }
+
+        protected SaveResponseOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            SaveFile = (SaveFile)info.GetValue("SaveFile", typeof(SaveFile));
+        }
+
+        public override string GetAcronym()
+        {
+            return "SRO";
+        }
+
+        public override string GetDefinition()
+        {
+            return "Request asking the server to load a game";
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("SaveFile", SaveFile);
+        }
+    }
+
+    /// <summary>
+    /// Client send this to load the current game
+    /// </summary>
+    [Serializable]
     public class LoadRequestOrder : Order
     {
-        public List<GameState> States { get; private set; }
+        public SaveFile SaveFile { get; private set; }
 
-        public LoadRequestOrder(List<GameState> states)
+        public LoadRequestOrder(SaveFile saveFile)
         {
-            States = states;
+            SaveFile = saveFile;
         }
 
         protected LoadRequestOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            States = (List<GameState>)info.GetValue("States", typeof(List<GameState>));
+            SaveFile = (SaveFile)info.GetValue("SaveFile", typeof(SaveFile));
         }
 
         public override string GetAcronym()
@@ -629,7 +632,7 @@ namespace Tools
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("States", States);
+            info.AddValue("SaveFile", SaveFile);
         }
     }
 

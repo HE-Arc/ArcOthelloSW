@@ -192,7 +192,7 @@ namespace OthelloMillenniumServer
 
                 case SaveRequestOrder castedOrder:
                     // Send the saved game
-                    (sender as OthelloPlayerServer).TransferSaveOrder(GameManager.Save());
+                    (sender as OthelloPlayerServer).SaveSuccessful(GameManager.Save());
                     break;
 
                 case UndoRequestOrder castedOrder:

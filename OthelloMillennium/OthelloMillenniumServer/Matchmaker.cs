@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tools;
+using Tools.Classes;
 
 namespace OthelloMillenniumServer
 {
@@ -297,14 +298,12 @@ namespace OthelloMillenniumServer
                     break;
 
                 case LoadRequestOrder castedOrder:
-                    RegisterGame(castedSender, castedOrder.States);
+                    RegisterGame(castedSender, castedOrder.SaveFile.States);
                     break;
 
                 case JoinRequestOrder castedOrder:
                     JoinGame(castedSender, castedOrder.GameID);
                     break;
-
-
             }
         }
 

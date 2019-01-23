@@ -105,6 +105,11 @@ namespace Tools
             client.Send(new RegisterSuccessfulOrder());
         }
 
+        public void SaveSuccessful(List<GameState> states)
+        {
+            client.Send(new SaveResponseOrder(new Classes.SaveFile(states)));
+        }
+
         public void LoadSuccessful(int gameID)
         {
             client.Send(new LoadResponseOrder(gameID));
@@ -149,15 +154,6 @@ namespace Tools
         }
 
         /// <summary>
-        /// Call by the gameHandler
-        /// </summary>
-        /// <param name="exportedGame"></param>
-        public void TransferSaveOrder(List<GameState> states)
-        {
-            client.Send(new TransferSaveOrder(states));
-        }
-
-        /// <summary>
         /// Handle received orders
         /// </summary>
         /// <param name="order"></param>
@@ -191,6 +187,10 @@ namespace Tools
                     orderHandler.HandleOrder(this, order);
                     break;
 
+                case JoinRequestOrder castedOrder:
+                    orderHandler.HandleOrder(this, order);
+                    break;
+
                 case SearchRequestOrder castedOrder:
                     orderHandler.HandleOrder(this, order);
                     break;
@@ -198,6 +198,7 @@ namespace Tools
                 case LoadRequestOrder castedOrder:
                     orderHandler.HandleOrder(this, order);
                     break;
+
                     #endregion
 
                     #endregion
