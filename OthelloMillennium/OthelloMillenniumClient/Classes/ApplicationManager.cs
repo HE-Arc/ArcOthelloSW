@@ -99,7 +99,7 @@ namespace OthelloMillenniumClient
                     
                 case UpdateGameStateOrder order:
                     GameState = (order as UpdateGameStateOrder).GameState;
-                    Game?.OnGameStateUpdateServer(GameState);
+                    Game.OnGameStateUpdateServer(GameState);
                     break;
 
                 case GameEndedOrder order:
@@ -110,7 +110,7 @@ namespace OthelloMillenniumClient
 
         public void SetOrderHandler(IOrderHandler handler)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("[SetOrderHandler] : ApplicationManager");
         }
         
         public void JoinGameLocal(PlayerType playerTypeOne, string playerNameOne, PlayerType playerTypeTwo, string playerNameTwo)
@@ -161,10 +161,17 @@ namespace OthelloMillenniumClient
 
         internal void Play(Tuple<char, int> columnRow)
         {
-            if(!GameState.PossiblesMoves.Contains(columnRow)){
-                return;
+            try
+            {
+                if(!GameState.PossiblesMoves.Contains(columnRow)){
+                    return;
+                }
+                gameHandler.Play(columnRow);
             }
-            gameHandler.Play(columnRow);
+            catch(Exception exception)
+            {
+                Toolbox.LogError(exception);
+            }
         }
     }
 }

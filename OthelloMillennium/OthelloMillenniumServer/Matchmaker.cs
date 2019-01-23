@@ -302,7 +302,7 @@ namespace OthelloMillenniumServer
                     JoinGame(castedSender, castedOrder.GameID);
                     break;
 
-                    
+
             }
         }
 
@@ -350,6 +350,6 @@ namespace OthelloMillenniumServer
             }
         }
 
-        
+
     }
 }

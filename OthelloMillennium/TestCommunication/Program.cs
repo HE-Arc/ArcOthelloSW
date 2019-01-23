@@ -1,5 +1,6 @@
 ﻿using OthelloMillenniumClient;
 using System;
+using System.Collections.Generic;
 using Tools;
 
 namespace TestCommunication

@@ -63,7 +63,7 @@ namespace OthelloMillenniumClient
                   "Image",
                   typeof(string),
                   typeof(PlayerCardBlack),
-                  new PropertyMetadata("Images/BB-8.png")
+                  new PropertyMetadata("Images/DarkVader.png")
               );
 
         public static readonly DependencyProperty PropertyTime

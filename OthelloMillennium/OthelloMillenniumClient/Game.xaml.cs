@@ -23,137 +23,137 @@ namespace OthelloMillenniumClient
     public partial class Game : Window, IGame
     {
         #region Binding properties
-        public string Image1
+        public string ImageBlack
         {
-            get => (string)GetValue(PropertyImage);
+            get => (string)GetValue(PropertyImageBlack);
             set
             {
-                SetValue(PropertyImage, value);
+                SetValue(PropertyImageBlack, value);
             }
         }
 
-        public string Time1
+        public string TimeBlack
         {
-            get => (string)GetValue(PropertyTime);
+            get => (string)GetValue(PropertyTimeBlack);
             set
             {
-                SetValue(PropertyTime, value);
+                SetValue(PropertyTimeBlack, value);
             }
         }
 
-        public string Pseudo1
+        public string PseudoBlack
         {
-            get => (string)GetValue(PropertyPseudo);
+            get => (string)GetValue(PropertyPseudoBlack);
             set
             {
-                SetValue(PropertyPseudo, value);
+                SetValue(PropertyPseudoBlack, value);
             }
         }
 
-        public bool Inactive1
+        public bool InactiveBlack
         {
-            get => (bool)GetValue(PropertyInactive);
+            get => (bool)GetValue(PropertyInactiveBlack);
             set
             {
-                SetValue(PropertyInactive, value);
+                SetValue(PropertyInactiveBlack, value);
             }
         }
 
-        public string Image2
+        public string ImageWhite
         {
-            get => (string)GetValue(PropertyImage2);
+            get => (string)GetValue(PropertyImageWhite);
             set
             {
-                SetValue(PropertyImage2, value);
+                SetValue(PropertyImageWhite, value);
             }
         }
 
-        public string Time2
+        public string TimeWhite
         {
-            get => (string)GetValue(PropertyTime2);
+            get => (string)GetValue(PropertyTimeWhite);
             set
             {
-                SetValue(PropertyTime2, value);
+                SetValue(PropertyTimeWhite, value);
             }
         }
 
-        public string Pseudo2
+        public string PseudoWhite
         {
-            get => (string)GetValue(PropertyPseudo2);
+            get => (string)GetValue(PropertyPseudoWhite);
             set
             {
-                SetValue(PropertyPseudo2, value);
+                SetValue(PropertyPseudoWhite, value);
             }
         }
 
-        public bool Inactive2
+        public bool InactiveWhite
         {
-            get => (bool)GetValue(PropertyInactive2);
+            get => (bool)GetValue(PropertyInactiveWhite);
             set
             {
-                SetValue(PropertyInactive2, value);
+                SetValue(PropertyInactiveWhite, value);
             }
         }
 
-        public static readonly DependencyProperty PropertyImage
+        public static readonly DependencyProperty PropertyImageBlack
             = DependencyProperty.Register(
-                  "Image",
+                  "ImageBlack",
                   typeof(string),
                   typeof(Game),
-                  new PropertyMetadata("Images/BB-8.png")
+                  new PropertyMetadata("Images/Yoda.png")
               );
 
-        public static readonly DependencyProperty PropertyTime
+        public static readonly DependencyProperty PropertyTimeBlack
             = DependencyProperty.Register(
-                  "Time",
+                  "TimeBlack",
                   typeof(string),
                   typeof(Game),
                   new PropertyMetadata("2:300")
               );
 
-        public static readonly DependencyProperty PropertyPseudo
+        public static readonly DependencyProperty PropertyPseudoBlack
             = DependencyProperty.Register(
-                  "Pseudo",
+                  "PseudoBlack",
                   typeof(string),
                   typeof(Game),
                   new PropertyMetadata("Darth Vader")
               );
 
-        public static readonly DependencyProperty PropertyInactive
+        public static readonly DependencyProperty PropertyInactiveBlack
             = DependencyProperty.Register(
-                  "Inactive",
+                  "InactiveBlack",
                   typeof(bool),
                   typeof(Game),
                   new PropertyMetadata(true)
               );
         
-        public static readonly DependencyProperty PropertyImage2
+        public static readonly DependencyProperty PropertyImageWhite
             = DependencyProperty.Register(
-                  "Image2",
+                  "ImageWhite",
                   typeof(string),
                   typeof(Game),
-                  new PropertyMetadata("Images/BB-8.png")
+                  new PropertyMetadata("Images/Snoke.png")
               );
 
-        public static readonly DependencyProperty PropertyTime2
+        public static readonly DependencyProperty PropertyTimeWhite
             = DependencyProperty.Register(
-                  "Time2",
+                  "TimeWhite",
                   typeof(string),
                   typeof(Game),
                   new PropertyMetadata("2:300")
               );
 
-        public static readonly DependencyProperty PropertyPseudo2
+        public static readonly DependencyProperty PropertyPseudoWhite
             = DependencyProperty.Register(
-                  "Pseudo2",
+                  "PseudoWhite",
                   typeof(string),
                   typeof(Game),
                   new PropertyMetadata("Darth Vader")
               );
 
-        public static readonly DependencyProperty PropertyInactive2
+        public static readonly DependencyProperty PropertyInactiveWhite
             = DependencyProperty.Register(
-                  "Inactive2",
+                  "InactiveWhite",
                   typeof(bool),
                   typeof(Game),
                   new PropertyMetadata(true)
@@ -164,20 +164,29 @@ namespace OthelloMillenniumClient
         public Game()
         {
             InitializeComponent();
+            DataContext = this;
+
             ApplicationManager.Instance.Game = this;
-
-            // ?? TODO BASTIEN : Reçues depuis les interfaces utilisateurs ?
             
-            Pseudo1 = "TODO";
-            Pseudo2 = "TODO";
-            Image1 = "TODO";
-            Image2 = "TODO";
+            PlayerDataExport data = ApplicationManager.Instance.GetPlayers();
+            GameState gameState = ApplicationManager.Instance.GameState;
+            // ?? TODO BASTIEN : Reçues depuis les interfaces utilisateurs ?
 
-            Inactive1 = true; // ApplicationManager.Instance.Player1.CanPlay;
-            Inactive2 = false; // ApplicationManager.Instance.Player2.CanPlay;
+            PseudoBlack = data.Color1 == Tools.Color.Black ? data.Name1 : data.Name2;
+            PseudoWhite = data.Color1 == Tools.Color.White ? data.Name1 : data.Name2;
+            ImageBlack = AvatarSettings.IMAGE_FOLDER + AvatarSettings.IMAGES_PERSO[
+                data.Color1 == Tools.Color.Black ? data.AvatarId1 : data.AvatarId2
+                ];
+            ImageWhite = AvatarSettings.IMAGE_FOLDER + AvatarSettings.IMAGES_PERSO[
+                data.Color1 == Tools.Color.White ? data.AvatarId1 : data.AvatarId2
+                ];
 
-            Time1 = "12:000"; // FormatDoubleToTime(ApplicationManager.Instance.CurrentGame.GameState.RemainingTimes.Item1);
-            Time2 = "12:000"; // FormatDoubleToTime(ApplicationManager.Instance.CurrentGame.GameState.RemainingTimes.Item2);
+            InactiveBlack = gameState.PlayerTurn == 2;
+            InactiveWhite = gameState.PlayerTurn == 2;
+
+            TimeBlack = "2:300"; // FormatDoubleToTime();
+            TimeWhite = "2:300"; // FormatDoubleToTime();
+
         }
 
         private string FormatDoubleToTime(double time)
@@ -190,18 +199,20 @@ namespace OthelloMillenniumClient
         public void OnGameStartServer()
         {
             //TODO Start counter system
-            throw new NotImplementedException();
+            throw new NotImplementedException("[OnGameStartServer] : Game");
         }
 
         public void OnGameStateUpdateServer(GameState gameState)
         {
-            this.GameBoard.OnUpdateGameStateServer(gameState);
+            Application.Current.Dispatcher.Invoke((Action)delegate {
+                this.GameBoard.OnUpdateGameStateServer(gameState);
+            });
         }
 
         public void OnGameEndedServer()
         {
             //TODO Game ended 
-            throw new NotImplementedException();
+            throw new NotImplementedException("[OnGameEndedServer] : Game");
         }
     }
 }

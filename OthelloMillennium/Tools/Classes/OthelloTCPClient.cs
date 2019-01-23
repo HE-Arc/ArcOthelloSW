@@ -45,7 +45,7 @@ namespace Tools
                 throw new Exception("TcpClient already binded");
 
             tcpClient = new TcpClient();
-            
+
             // Register this client to the server
             tcpClient.Connect(serverHostname, serverPort);
 
@@ -102,7 +102,7 @@ namespace Tools
             while (true)
             {
                 if (IsConnected())
-                { 
+                {
                     // Get the stream
                     stream = tcpClient.GetStream();
 
@@ -137,9 +137,6 @@ namespace Tools
                 {
                     Thread.Sleep(200);
                 }
-
-                // while loop vacation
-                Thread.Sleep(5);
             }
         }
 
@@ -207,9 +204,6 @@ namespace Tools
                 {
                     Thread.Sleep(200);
                 }
-
-                // While loop vacation
-                Thread.Sleep(5);
             }
         }
 
@@ -221,14 +215,14 @@ namespace Tools
             while (true)
             {
                 if(orderHandler != null)
-                { 
+                {
                     while (!orderReceived.IsEmpty)
                     {
                         orderReceived.TryDequeue(out Order order);
                         orderHandler.HandleOrder(null, order);
                     }
                 }
-                
+
                 Thread.Sleep(50);
             }
         }

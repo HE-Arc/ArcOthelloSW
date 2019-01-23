@@ -18,7 +18,7 @@ namespace Tools
 
         public static bool Connected(OthelloTCPClient client)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("[Connected] : Toolbox");
             //bool part1 = client.Socket.Poll(1000, System.Net.Sockets.SelectMode.SelectRead);
             //bool part2 = client.Socket.Available == 0;
             //return !(part1 & part2);

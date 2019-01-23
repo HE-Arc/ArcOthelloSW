@@ -79,7 +79,7 @@ namespace OthelloMillenniumClient
                   "Pseudo",
                   typeof(string),
                   typeof(PlayerCardWhite),
-                  new PropertyMetadata("Darth Vader")
+                  new PropertyMetadata("BB-8")
               );
 
         public static readonly DependencyProperty PropertyInactive
