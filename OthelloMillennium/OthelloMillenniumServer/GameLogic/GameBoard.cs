@@ -65,7 +65,7 @@ namespace OthelloMillenniumServer
         /// <returns></returns>
         private static Tuple<int, int> CoordToInt(Tuple<char, int> coord)
         {
-            Tuple<int, int> indices = new Tuple<int, int>(coord.Item1 - 65, coord.Item2);
+            Tuple<int, int> indices = new Tuple<int, int>(coord.Item1 - 65, coord.Item2 - 1);
             Debug.Assert(indices.Item1 >= 0 && indices.Item1 < Settings.SIZE_WIDTH);
             Debug.Assert(indices.Item2 >= 0 && indices.Item2 < Settings.SIZE_HEIGHT);
             return indices;
@@ -80,7 +80,7 @@ namespace OthelloMillenniumServer
         {
             Debug.Assert(coord.Item1 >= 0 && coord.Item1 < Settings.SIZE_WIDTH);
             Debug.Assert(coord.Item2 >= 0 && coord.Item2 < Settings.SIZE_HEIGHT);
-            Tuple<char, int> indices = new Tuple<char, int>((char)(coord.Item1 + 65), coord.Item2);
+            Tuple<char, int> indices = new Tuple<char, int>((char)(coord.Item1 + 65), coord.Item2 + 1);
             return indices;
         }
 

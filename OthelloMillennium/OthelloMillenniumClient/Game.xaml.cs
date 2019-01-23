@@ -195,7 +195,9 @@ namespace OthelloMillenniumClient
 
         public void OnGameStateUpdateServer(GameState gameState)
         {
-            this.GameBoard.OnUpdateGameStateServer(gameState);
+            Application.Current.Dispatcher.Invoke((Action)delegate {
+                this.GameBoard.OnUpdateGameStateServer(gameState);
+            });
         }
 
         public void OnGameEndedServer()
