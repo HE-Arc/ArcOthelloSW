@@ -36,6 +36,7 @@ namespace Tools
         REGISTERING,
         REGISTERED,
         SEARCHING,
+        BINDED,
         LOBBY_CHOICE,
         READY,
         ABOUT_TO_START,

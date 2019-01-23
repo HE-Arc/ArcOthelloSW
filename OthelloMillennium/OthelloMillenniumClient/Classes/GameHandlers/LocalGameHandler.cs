@@ -94,37 +94,37 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                         {
                             player1.SearchOpponent(player2.PlayerType);
                             player2.SearchOpponent(player1.PlayerType);
-                            orderHandler?.HandleOrder(sender, order);
+                            orderHandler.HandleOrder(sender, order);
                         }
                         break;
 
                     case OpponentFoundOrder order:
-                        if(player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.LOBBY_CHOICE)
+                        if(player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.BINDED)
                         {
-                            orderHandler?.HandleOrder(sender, order);
+                            orderHandler.HandleOrder(sender, order);
                         }
                         break;
 
                     case GameReadyOrder order:
-                        if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.READY)
+                        if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.LOBBY_CHOICE)
                         {
-                            orderHandler?.HandleOrder(sender, order);
+                            orderHandler.HandleOrder(sender, order);
                         }
                         break;
 
                     case GameStartedOrder order:
                         if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.ABOUT_TO_START)
                         {
-                            orderHandler?.HandleOrder(sender, order);
+                            orderHandler.HandleOrder(sender, order);
                         }
                         break;
                         
                     case UpdateGameStateOrder order:
-                        orderHandler?.HandleOrder(sender, order);
+                        orderHandler.HandleOrder(sender, order);
                         break;
 
                     case GameEndedOrder order:
-                        orderHandler?.HandleOrder(sender, order);
+                        orderHandler.HandleOrder(sender, order);
                         break;
 
                     case OpponentAvatarChangedOrder order:

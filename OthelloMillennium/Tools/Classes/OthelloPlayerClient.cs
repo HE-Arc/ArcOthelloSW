@@ -145,12 +145,12 @@ namespace Tools
                     break;
 
                 case OpponentFoundOrder order:
-                    PlayerState = PlayerState.LOBBY_CHOICE;
+                    PlayerState = PlayerState.BINDED;
                     orderHandler.HandleOrder(sender, order);
                     break;
 
                 case GameReadyOrder order:
-                    PlayerState = PlayerState.ABOUT_TO_START;
+                    PlayerState = PlayerState.LOBBY_CHOICE;
                     orderHandler.HandleOrder(sender, order);
                     break;
 

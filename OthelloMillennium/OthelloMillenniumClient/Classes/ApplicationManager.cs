@@ -79,10 +79,11 @@ namespace OthelloMillenniumClient
                     break;
 
                 case OpponentFoundOrder order:
-                    Home.OnLaunchLobbyServer();
+                    //TODO Opponent found
                     break;
 
                 case GameReadyOrder order:
+                    Home.OnLaunchLobbyServer();
                     if (gameState == null)
                     {
                         Console.Error.WriteLine("GameState has not been initialized before launching Game");
@@ -128,6 +129,8 @@ namespace OthelloMillenniumClient
         {
             GameType = GameType.Local;
             gameHandler = new LocalGameHandler();
+            gameHandler.SetOrderHandler(this);
+
             (gameHandler as LocalGameHandler).JoinGame(player1, player2);
         }
         
@@ -142,6 +145,7 @@ namespace OthelloMillenniumClient
         {
             GameType = GameType.Online;
             gameHandler = new OnlineGameHandler();
+            gameHandler.SetOrderHandler(this);
 
             (gameHandler as OnlineGameHandler).JoinGame(player, battleType);
         }

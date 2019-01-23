@@ -47,35 +47,33 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                 {
                     case RegisterSuccessfulOrder order:
                         player1.SearchOpponent(player2.PlayerType);
-                        orderHandler?.HandleOrder(sender, order);
+                        orderHandler.HandleOrder(sender, order);
                         break;
 
                     case OpponentFoundOrder order:
                         OpponentFoundOrder opponentFoundOrder = order;
                         player2.Name = opponentFoundOrder.OpponentName;
-                        player2.AvatarId = 19; // TODO SEGAN initial playerType discuss
-                        //TODO SEGAN need to know initial PlayerId
-                        orderHandler?.HandleOrder(sender, order);
+                        orderHandler.HandleOrder(sender, order);
                         break;
 
                     case GameReadyOrder order:
-                        orderHandler?.HandleOrder(sender, order);
+                        orderHandler.HandleOrder(sender, order);
                         break;
 
                     case GameStartedOrder order:
-                        orderHandler?.HandleOrder(sender, order);
+                        orderHandler.HandleOrder(sender, order);
                         break;
 
                     case OpponentAvatarChangedOrder order:
-                        orderHandler?.HandleOrder(sender, order);
+                        orderHandler.HandleOrder(sender, order);
                         break;
 
                     case UpdateGameStateOrder order:
-                        orderHandler?.HandleOrder(sender, order);
+                        orderHandler.HandleOrder(sender, order);
                         break;
 
                     case GameEndedOrder order:
-                        orderHandler?.HandleOrder(sender, order);
+                        orderHandler.HandleOrder(sender, order);
                         break;
                 }
             }
