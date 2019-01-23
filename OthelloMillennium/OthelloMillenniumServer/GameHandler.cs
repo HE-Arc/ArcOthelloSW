@@ -45,8 +45,6 @@ namespace OthelloMillenniumServer
             // Init Client 2
             OthelloPlayer2 = white;
 
-            // TODO SEGAN (NiceToHave) : Ping clients to detect disconnect
-
             // Update clients
             OthelloPlayer1.SetColor(Color.Black);
             OthelloPlayer1.SetAvatarID(0);
@@ -67,8 +65,9 @@ namespace OthelloMillenniumServer
             OthelloPlayer1.GameReady();
             OthelloPlayer2.GameReady();
 
+            // TODO SEGAN (NiceToHave) : Ping clients to detect disconnect
             // Start to ping clients
-            pinger.Start();
+            // pinger.Start();
         }
 
         private OthelloPlayerServer GetOpponent(OthelloPlayerServer othelloPlayer)
