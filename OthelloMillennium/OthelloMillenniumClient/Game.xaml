@@ -13,8 +13,10 @@
             <ImageBrush ImageSource="/Images/Background.png" Stretch="UniformToFill"/>
         </Grid.Background>
         <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="198*" />
@@ -22,10 +24,7 @@
             <ColumnDefinition Width="709*"/>
         </Grid.ColumnDefinitions>
 
-        <!--<Image Grid.Column="0" Grid.ColumnSpan="3" Grid.Row ="0" Grid.RowSpan="2" x:Name="Background" Source="Images/Background.png" Stretch="Fill"/>-->
-        <!-- TODO Add gameboard grid -->
-
-        <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="10">
+        <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition x:Name="ColumnBlackScore" Height="2*"/>
                 <RowDefinition x:Name="ColumnWhiteScore" Height="2*"/>
@@ -35,17 +34,39 @@
             <Label Grid.Column="1" Grid.Row="0" Content="{ Binding Path=ScoreBlack, ElementName=GameWindows }" Foreground="white" VerticalAlignment="Stretch" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18"/>
             <Label Grid.Column="1" Grid.Row="1" Content="{ Binding Path=ScoreWhite, ElementName=GameWindows }" Foreground="black" VerticalAlignment="Stretch" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18"/>
         </Grid>
-        
 
-        <Viewbox Grid.Row="1" Grid.Column="0" Margin="5" x:Name="WhitePlayer">
+        <Grid Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="ColumnUndo" Width="50"/>
+                <ColumnDefinition x:Name="ColumnRedo" Width="50"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            <Button Click="OnUndo" Grid.Column="0" Height="40" Width="40" Background="#ffbe29" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button.Content>
+                    <Image Source="Icons/undo.png" Margin="4" />
+                </Button.Content>
+            </Button>
+            <Button Click="OnRedo" Grid.Column="1" Height="40" Width="40" Background="#ffbe29" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button.Content>
+                    <Image Source="Icons/redo.png" Margin="4" />
+                </Button.Content>
+            </Button>
+            <Button Click="OnSaveGame" Grid.Column="2" Height="40" Width="35" Background="#ffbe29" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button.Content>
+                    <Image Source="Icons/save.png" Margin="4" />
+                </Button.Content>
+            </Button>
+        </Grid>
+
+        <Viewbox  Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Margin="5" x:Name="BlackPlayer">
+            <local:PlayerCardBlack Image="{ Binding Path=ImageBlack, ElementName=GameWindows }" Pseudo="{ Binding Path=PseudoBlack, ElementName=GameWindows }" Time="{ Binding Path=TimeBlack, ElementName=GameWindows }" Inactive="{ Binding Path=InactiveBlack, ElementName=GameWindows }"/>
+        </Viewbox>
+
+        <Viewbox Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" Margin="5" x:Name="WhitePlayer">
             <local:PlayerCardWhite Image="{ Binding Path=ImageWhite, ElementName=GameWindows }" Pseudo="{ Binding Path=PseudoWhite, ElementName=GameWindows }" Time="{ Binding Path=TimeWhite, ElementName=GameWindows }" Inactive="{ Binding Path=InactiveWhite, ElementName=GameWindows }"/>
         </Viewbox>
 
-        <Viewbox  Grid.Row="0" Grid.Column="0" Margin="5" x:Name="BlackPlayer">
-            <local:PlayerCardBlack Image="{ Binding Path=ImageBlack, ElementName=GameWindows }" Pseudo="{ Binding Path=PseudoBlack, ElementName=GameWindows }" Time="{ Binding Path=TimeBlack, ElementName=GameWindows }" Inactive="{ Binding Path=InactiveBlack, ElementName=GameWindows }"/>
-        </Viewbox>
-        
-        <Viewbox Grid.Column="2" Grid.Row="0" Grid.RowSpan="2">
+        <Viewbox Grid.Column="2" Grid.Row="1" Grid.RowSpan="3">
             <local:Gameboard x:Name="GameBoard"/>
         </Viewbox>
 

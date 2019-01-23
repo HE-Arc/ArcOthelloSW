@@ -17,12 +17,6 @@ namespace OthelloMillenniumClient
     {
         private Ellipse[,] listEllipse;
 
-        // is this gonna work? Dow we have an initial GameState?
-        /* Réponse : TODO BASTIEN
-         * Oui ça fonctionnera si le gameboard est appelé après que le client reçoive l'ordre StartOfTheGameOrder
-         * Car lors du démarrage d'une partie le serveur transmet l'état du gameBoard initial aux clients
-         */
-        
         public Gameboard()
         {
             InitializeComponent();

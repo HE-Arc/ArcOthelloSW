@@ -204,7 +204,13 @@ namespace OthelloMillenniumClient
             
             PlayerDataExport data = ApplicationManager.Instance.GetPlayers();
             GameState gameState = ApplicationManager.Instance.GameState;
-            // ?? TODO BASTIEN : Reçues depuis les interfaces utilisateurs ?
+
+            //Undo/Redo disbled if online game
+            if(ApplicationManager.Instance.GameType == GameType.Online)
+            {
+                ColumnUndo.Width = new GridLength(0);
+                ColumnRedo.Width = new GridLength(0);
+            }
 
             //Pseudos
             PseudoBlack = data.Color1 == Tools.Color.Black ? data.Name1 : data.Name2;
@@ -276,5 +282,21 @@ namespace OthelloMillenniumClient
             //TODO Game ended 
             throw new NotImplementedException("[OnGameEndedServer] : Game");
         }
+
+        private void OnUndo(object sender, RoutedEventArgs e)
+        {
+            ApplicationManager.Instance.Undo();
+        }
+
+        private void OnRedo(object sender, RoutedEventArgs e)
+        {
+            ApplicationManager.Instance.Redo();
+        }
+
+        private void OnSaveGame(object sender, RoutedEventArgs e)
+        {
+            ApplicationManager.Instance.Save();
+        }
+
     }
 }
