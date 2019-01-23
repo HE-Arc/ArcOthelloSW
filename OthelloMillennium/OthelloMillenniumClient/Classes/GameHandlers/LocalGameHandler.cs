@@ -113,7 +113,8 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                         break;
 
                     case GameStartedOrder order:
-                        if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.ABOUT_TO_START)
+                        if (player1.PlayerState == PlayerState.MY_TURN && player2.PlayerState == PlayerState.OPPONENT_TURN ||
+                            player1.PlayerState == PlayerState.OPPONENT_TURN && player2.PlayerState == PlayerState.MY_TURN)
                         {
                             orderHandler.HandleOrder(sender, order);
                         }
