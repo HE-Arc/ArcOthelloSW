@@ -51,6 +51,7 @@ namespace Tools
         /// <param name="color"></param>
         public void SetColor(Color color)
         {
+            Color = color;
             client.Send(new AssignColorOrder(color));
         }
 
@@ -96,8 +97,10 @@ namespace Tools
             throw new NotImplementedException();
         }
 
-        public void RegisterSuccessful()
+        public void RegisterSuccessful(string name, PlayerType playerType)
         {
+            Name = name;
+            PlayerType = playerType;
             client.Send(new RegisterSuccessfulOrder());
         }
 

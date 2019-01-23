@@ -45,6 +45,10 @@ namespace OthelloMillenniumServer
             // Init Client 2
             OthelloPlayer2 = white;
 
+            // Update handler
+            OthelloPlayer1.SetOrderHandler(this);
+            OthelloPlayer2.SetOrderHandler(this);
+
             // Update clients
             OthelloPlayer1.SetColor(Color.Black);
             OthelloPlayer1.SetAvatarID(0);
@@ -191,8 +195,6 @@ namespace OthelloMillenniumServer
                     lock (locker)
                     {
                         var castedSender = (sender as OthelloPlayerServer);
-
-                        Console.WriteLine(castedSender.Name);
 
                         if (castedSender.Color == Color.Black)
                             client1Ready = true;

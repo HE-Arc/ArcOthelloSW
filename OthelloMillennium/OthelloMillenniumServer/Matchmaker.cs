@@ -143,7 +143,7 @@ namespace OthelloMillenniumServer
                 registratedClients.Add(othelloPlayer);
 
                 // Informs the client that he is now known to the server
-                othelloPlayer.RegisterSuccessful();
+                othelloPlayer.RegisterSuccessful(othelloPlayer.Name, othelloPlayer.PlayerType);
 
                 return true;
             }
