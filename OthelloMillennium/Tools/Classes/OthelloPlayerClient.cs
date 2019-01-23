@@ -144,6 +144,14 @@ namespace Tools
                     orderHandler.HandleOrder(sender, order);
                     break;
 
+                case LoadResponseOrder order:
+                    orderHandler.HandleOrder(sender, order);
+                    break;
+
+                case JoinResponseOrder order:
+                    orderHandler.HandleOrder(sender, order);
+                    break;
+
                 case OpponentFoundOrder order:
                     PlayerState = PlayerState.BINDED;
                     orderHandler.HandleOrder(sender, order);
