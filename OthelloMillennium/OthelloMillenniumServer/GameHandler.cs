@@ -192,6 +192,8 @@ namespace OthelloMillenniumServer
                     {
                         var castedSender = (sender as OthelloPlayerServer);
 
+                        Console.WriteLine(castedSender.Name);
+
                         if (castedSender.Color == Color.Black)
                             client1Ready = true;
                         else if (castedSender.Color == Color.White)

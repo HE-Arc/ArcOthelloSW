@@ -264,9 +264,13 @@ namespace Tools
     [Serializable]
     public class GameStartedOrder : Order
     {
+        public GameState InitialState { get; private set; }
+
         protected GameStartedOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
-        { }
+        {
+            InitialState = (GameState)info.GetValue("InitialState", typeof(GameState));
+        }
 
         public override string GetAcronym()
         {
@@ -279,7 +283,9 @@ namespace Tools
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        { }
+        {
+            info.AddValue("InitialState", InitialState);
+        }
 
         public GameStartedOrder() { }
     }
