@@ -210,6 +210,7 @@ namespace OthelloMillenniumServer
                     }
                     catch (Exception ex)
                     {
+                        Console.Error.WriteLine("Undo not available");
                         Toolbox.LogError(ex);
                     }
                     break;
@@ -229,6 +230,7 @@ namespace OthelloMillenniumServer
                     }
                     catch (Exception ex)
                     {
+                        Console.Error.WriteLine("Redo not available");
                         Toolbox.LogError(ex);
                     }
                     break;

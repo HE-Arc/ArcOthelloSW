@@ -312,7 +312,7 @@ namespace OthelloMillenniumServer
             List<Tuple<char, int>> possiblesMoves = listGameBoard[index].PossibleMoves(PlayerToCellState(CurrentPlayerTurn));
             Tuple<long, long> remainingTimes = new Tuple<long, long>(timeCounter[Color.Black].GetRemainingTime(), timeCounter[Color.White].GetRemainingTime());
 
-            return new GameState(GameEnded, (int)CurrentPlayerTurn, scores, board, possiblesMoves, remainingTimes, (int)winner);
+            return new GameState(GameEnded, (int)CurrentPlayerTurn, scores, board, possiblesMoves, remainingTimes, (int)winner, listGameBoard.Count - 1, indexState);
         }
 
         public List<GameState> Save()

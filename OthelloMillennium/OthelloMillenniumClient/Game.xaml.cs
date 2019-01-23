@@ -206,10 +206,15 @@ namespace OthelloMillenniumClient
             GameState gameState = ApplicationManager.Instance.GameState;
 
             //Undo/Redo disbled if online game
-            if(ApplicationManager.Instance.GameType == GameType.Online)
+            if (ApplicationManager.Instance.GameType == GameType.Online)
             {
                 ColumnUndo.Width = new GridLength(0);
                 ColumnRedo.Width = new GridLength(0);
+            }
+            else
+            {
+                UndoButton.IsEnabled = gameState.TurnNumber > 0;
+                RedoButton.IsEnabled = gameState.TurnNumber < gameState.NbTurn;
             }
 
             //Pseudos
@@ -266,6 +271,12 @@ namespace OthelloMillenniumClient
                 //Update PlayerTurn design
                 InactiveBlack = gameState.PlayerTurn != 1;
                 InactiveWhite = gameState.PlayerTurn != 2;
+
+                if (ApplicationManager.Instance.GameType == GameType.Local)
+                {
+                    UndoButton.IsEnabled = gameState.TurnNumber > 0;
+                    RedoButton.IsEnabled = gameState.TurnNumber < gameState.NbTurn;
+                }
 
                 //TODO Update timer
             });

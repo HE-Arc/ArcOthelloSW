@@ -12,19 +12,23 @@ namespace Tools
         public int PlayerTurn { get; }
         public bool GameEnded { get; } 
         public int[,] Gameboard { get; }
+        public int TurnNumber { get; }
+        public int NbTurn { get; }
         public Tuple<int, int> Scores { get; }
         public List<Tuple<char, int>> PossiblesMoves { get; }
         public Tuple<long, long> RemainingTimes { get; }
 
         #endregion
 
-        public GameState(bool gameEnded, int playerTurn, Tuple<int, int> scores, int[,] gameboard, List<Tuple<char, int>> possiblesMoves, Tuple<long, long> remainingTimes, int winner)
+        public GameState(bool gameEnded, int playerTurn, Tuple<int, int> scores, int[,] gameboard, List<Tuple<char, int>> possiblesMoves, Tuple<long, long> remainingTimes, int winner, int nbTurn, int turnNumber)
         {
             Scores = scores;
             Winner = winner;
+            NbTurn = nbTurn;
             GameEnded = gameEnded;
             Gameboard = gameboard;
             PlayerTurn = playerTurn;
+            TurnNumber = turnNumber;
             PossiblesMoves = possiblesMoves;
             RemainingTimes = remainingTimes;
         }
@@ -36,6 +40,8 @@ namespace Tools
 
             Scores = (Tuple<int, int>)info.GetValue("Scores", typeof(Tuple<int, int>));
             Winner = info.GetInt32("Winner");
+            NbTurn = info.GetInt32("NbTurn");
+            TurnNumber = info.GetInt32("TurnNumber");
             GameEnded = (bool)info.GetValue("GameEnded", typeof(bool));
             Gameboard = (int[,])info.GetValue("Gameboard", typeof(int[,]));
             PlayerTurn = info.GetInt32("PlayerTurn");
@@ -50,9 +56,11 @@ namespace Tools
 
             info.AddValue("Scores", Scores);
             info.AddValue("Winner", Winner);
+            info.AddValue("NbTurn", NbTurn);
             info.AddValue("GameEnded", GameEnded);
             info.AddValue("Gameboard", Gameboard);
             info.AddValue("PlayerTurn", PlayerTurn);
+            info.AddValue("TurnNumber", TurnNumber);
             info.AddValue("PossiblesMoves", PossiblesMoves);
             info.AddValue("RemainingTimes", RemainingTimes);
         }
