@@ -128,12 +128,12 @@ namespace Tools
 
         public void Undo()
         {
-            //TODO SEGAN
+            client.Send(new UndoRequestOrder());
         }
 
         public void Redo()
         {
-            //TODO SEGAN
+            client.Send(new RedoRequestOrder());
         }
 
         public void HandleOrder(IOrderHandler sender, Order orderHandled)
@@ -173,7 +173,6 @@ namespace Tools
                     break;
 
                 case GameStartedOrder order:
-                    //TODO Update when game loaded, It's not always black which start player
                     PlayerState = Color == Color.Black ? PlayerState.MY_TURN : PlayerState.OPPONENT_TURN;
                     orderHandler.HandleOrder(sender, order);
                     break;
