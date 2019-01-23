@@ -135,7 +135,7 @@ namespace Tools
                 }
                 else
                 {
-                    Thread.Sleep(450);
+                    Thread.Sleep(100);
                 }
             }
         }
@@ -202,7 +202,7 @@ namespace Tools
                 }
                 else
                 {
-                    Thread.Sleep(450);
+                    Thread.Sleep(100);
                 }
             }
         }

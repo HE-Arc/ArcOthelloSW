@@ -90,6 +90,16 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             }
         }
 
+        public override void Undo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Redo()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Start a local server
         /// </summary>
