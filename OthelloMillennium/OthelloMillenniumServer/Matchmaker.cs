@@ -161,11 +161,12 @@ namespace OthelloMillenniumServer
         /// </summary>
         /// <param name="othelloTCPClient"></param>
         /// <returns></returns>
-        private bool Matchmake(OthelloPlayerServer othelloPlayer)
+        private bool Matchmake(OthelloPlayerServer othelloPlayer, PlayerType opponentType)
         {
             if (IsKnown(othelloPlayer))
             {
-                
+                registratedClients.Remove(othelloPlayer);
+                searchingClients.TryAdd(othelloPlayer, opponentType);
 
                 return true;
             }
@@ -195,15 +196,7 @@ namespace OthelloMillenniumServer
                 case SearchRequestOrder castedOrder:
                     // Look for the sender
                     OthelloPlayerServer castedSender = sender as OthelloPlayerServer;
-                    if (IsKnown(castedSender))
-                    {
-                        registratedClients.Remove(castedSender);
-                        searchingClients.TryAdd(castedSender, (PlayerType)castedOrder.OpponentType);
-                    }
-                    else
-                    {
-                        throw new Exception("Client unknown");
-                    }
+                    Matchmake(castedSender, (PlayerType)castedOrder.OpponentType);
                     break;
 
                 case LoadRequestOrder castedOrder:
