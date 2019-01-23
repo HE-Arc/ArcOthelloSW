@@ -98,39 +98,56 @@ namespace Tools
             {
                 Thread.Sleep(200);
             }
-            stream = tcpClient.GetStream();
+            
             Console.WriteLine("Server connected, sending enabled");
 
             while (true)
             {
-                while (!orderToSend.IsEmpty)
+                if (IsConnected())
                 {
-                    try
+                    // Get the stream
+                    stream = tcpClient.GetStream();
+
+                    while (!orderToSend.IsEmpty)
                     {
-                        orderToSend.TryDequeue(out Order order);
-                        Console.WriteLine("Send order "+order.GetAcronym());
-                        // Serialize object
-                        byte[] data = null;
-                        using (var memoryStream = new MemoryStream())
+                        try
                         {
-                            new BinaryFormatter().Serialize(memoryStream, order);
-                            data = memoryStream.ToArray();
+                            orderToSend.TryDequeue(out Order order);
+                            Console.WriteLine("Send order " + order.GetAcronym());
+                            // Serialize object
+                            byte[] data = null;
+                            using (var memoryStream = new MemoryStream())
+                            {
+                                new BinaryFormatter().Serialize(memoryStream, order);
+                                data = memoryStream.ToArray();
+                            }
+
+                            // Send Data
+                            byte[] userDataLen = BitConverter.GetBytes(data.Length);
+                            stream.Write(userDataLen, 0, 4);
+                            stream.Write(data, 0, data.Length);
+
+                            stream.Flush();
                         }
-
-                        // Send Data
-                        byte[] userDataLen = BitConverter.GetBytes(data.Length);
-                        stream.Write(userDataLen, 0, 4);
-                        stream.Write(data, 0, data.Length);
-
-                        stream.Flush();
-                    }
-                    catch (Exception exception)
-                    {
-                        Toolbox.LogError(exception);
+                        catch (Exception exception)
+                        {
+                            Toolbox.LogError(exception);
+                        }
                     }
                 }
+                else
+                {
+                    Thread.Sleep(450);
+                }
+
+                // while loop vacation
                 Thread.Sleep(50);
             }
+        }
+
+        public bool IsConnected()
+        {
+            return tcpClient != null && tcpClient.Connected;
         }
 
         /// <summary>
@@ -138,45 +155,44 @@ namespace Tools
         /// </summary>
         private void Listener()
         {
-            while (!tcpClient.Connected)
-            {
-                Thread.Sleep(200);
-            }
-
-            stream = tcpClient.GetStream();
             Console.WriteLine("Server connected, listening enabled");
 
             while (true)
             {
-                try
+                if (IsConnected() && tcpClient.Available > 0)
                 {
-                    // Read message length
-                    byte[] lengthBuffer = new byte[sizeof(int)];
-                    int recv = stream.Read(lengthBuffer, 0, lengthBuffer.Length);
-
-                    // Prepare receiving
-                    byte[] data = null;
-
-                    if (recv == sizeof(int))
-                    {
-                        int messageLen = BitConverter.ToInt32(lengthBuffer, 0);
-                        data = new byte[messageLen];
-                        recv = stream.Read(data, 0, data.Length);
-
-                        if (recv != messageLen)
-                        {
-                            //Adapt size workaround
-                            Console.WriteLine("Shit missing some data" + messageLen);
-                        }
-                    }
-
-                    Order order = null;
+                    // Get the stream
+                    stream = tcpClient.GetStream();
                     try
                     {
+                        // Read message length
+                        byte[] lengthBuffer = new byte[sizeof(int)];
+                        int recv = stream.Read(lengthBuffer, 0, lengthBuffer.Length);
+
+                        // Prepare receiving
+                        byte[] data = null;
+
+                        if (recv == sizeof(int))
+                        {
+                            int messageLen = BitConverter.ToInt32(lengthBuffer, 0);
+                            data = new byte[messageLen];
+                            recv = stream.Read(data, 0, data.Length);
+
+                            if (recv != messageLen)
+                            {
+                                //Adapt size workaround
+                                Console.WriteLine("Shit missing some data" + messageLen);
+                            }
+                        }
+
+                        Order order = null;
                         using (var memoryStream = new MemoryStream(data))
                         {
                             order = (Order)new BinaryFormatter().Deserialize(memoryStream);
                         }
+                        
+                        Console.WriteLine("Received " + order.GetAcronym());
+                        orderReceived.Enqueue(order);
                     }
                     catch (SerializationException exception)
                     {
@@ -184,15 +200,19 @@ namespace Tools
                         Console.WriteLine("Error during Serialization ");// + Encoding.Default.GetString(data));
                         Toolbox.LogError(exception);
                     }
-
-                    Console.WriteLine("Received " + order.GetAcronym());
-                    orderReceived.Enqueue(order);
+                    catch (Exception exception)
+                    {
+                        Console.Error.WriteLine("Error while reading from socket");
+                        Toolbox.LogError(exception);
+                    }
                 }
-                catch (Exception exception)
+                else
                 {
-                    Console.Error.WriteLine("Error while reading from socket");
-                    Toolbox.LogError(exception);
+                    Thread.Sleep(450);
                 }
+
+                // While loop vacation
+                Thread.Sleep(50);
             }
         }
 
