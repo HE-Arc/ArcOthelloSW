@@ -9,5 +9,6 @@ namespace OthelloMillenniumClient
     public interface IHome
     {
         void OnLaunchLobbyServer();
+        void OnRegisteredServer();
     }
 }

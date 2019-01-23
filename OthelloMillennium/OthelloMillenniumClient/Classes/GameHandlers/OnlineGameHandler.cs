@@ -7,8 +7,8 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
     {
         private OthelloPlayerClient player1;
         private RemotePlayerData player2;
-
-        public OnlineGameHandler()
+        
+        public OnlineGameHandler() : base()
         {
             GameType = GameType.Online;
         }
@@ -16,21 +16,22 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         public void JoinGame(OthelloPlayerClient player, BattleType battleType)
         {
             player1 = player;
-            player2 = new RemotePlayerData();
+            player2 = new RemotePlayerData()
+            {
+                Name = "[DEFAULT]",
+                AvatarId = 15,
+                PlayerType = battleType == BattleType.AgainstPlayer ? PlayerType.Human : PlayerType.AI
+            };
+
+            player1.SetOrderHandler(this);
 
             player1.Connect(GameType);
             player1.Register();
-
-            // TODO Wait for registration completed
-
-            player1.SearchOpponent(battleType == BattleType.AgainstPlayer ? PlayerType.Human : PlayerType.AI);
         }
 
         public override void LaunchGame()
         {
             player1.ReadyToPlay();
-
-            //TODO Goto Game when both player are ready
         }
 
         public override Tuple<Color, Color> PlayersColor() => new Tuple<Color, Color>(player1.Color, player1.Color==Color.Black?Color.White:Color.Black);
@@ -38,32 +39,43 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 
         public override void HandleOrder(IOrderHandler sender, Order handledOrder)
         {
-            switch (handledOrder)
+            lock (stateMutex)
             {
-                case RegisterSuccessfulOrder order:
-                    //TODO
-                    orderHandler?.HandleOrder(sender, order);
-                    break;
+                switch (handledOrder)
+                {
+                    case RegisterSuccessfulOrder order:
+                        player1.SearchOpponent(player2.PlayerType);
+                        orderHandler?.HandleOrder(sender, order);
+                        break;
 
-                case OpponentFoundOrder order:
-                    //TODO
-                    orderHandler?.HandleOrder(sender, order);
-                    break;
+                    case OpponentFoundOrder order:
+                        OpponentFoundOrder opponentFoundOrder = order;
+                        player2.Name = opponentFoundOrder.OpponentName;
+                        player2.AvatarId = 19; // TODO SEGAN initial playerType discuss
+                        //TODO SEGAN need to know initial PlayerId
+                        orderHandler?.HandleOrder(sender, order);
+                        break;
 
-                case GameReadyOrder order:
-                    //TODO
-                    orderHandler?.HandleOrder(sender, order);
-                    break;
+                    case GameReadyOrder order:
+                        orderHandler?.HandleOrder(sender, order);
+                        break;
 
-                case GameStartedOrder order:
-                    //TODO
-                    orderHandler?.HandleOrder(sender, order);
-                    break;
+                    case GameStartedOrder order:
+                        orderHandler?.HandleOrder(sender, order);
+                        break;
 
-                case OpponentAvatarChangedOrder order:
-                    //TODO
-                    orderHandler?.HandleOrder(sender, order);
-                    break;
+                    case OpponentAvatarChangedOrder order:
+                        orderHandler?.HandleOrder(sender, order);
+                        break;
+
+                    case UpdateGameStateOrder order:
+                        orderHandler?.HandleOrder(sender, order);
+                        break;
+
+                    case GameEndedOrder order:
+                        orderHandler?.HandleOrder(sender, order);
+                        break;
+                }
             }
         }
 

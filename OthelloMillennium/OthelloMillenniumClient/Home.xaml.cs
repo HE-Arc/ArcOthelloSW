@@ -36,6 +36,8 @@ namespace OthelloMillenniumClient
 
             pageTransitionControl.TransitionType = PageTransitionType.Grow;
             pageTransitionControl.ShowPage(menuMain);
+
+            ApplicationManager.Instance.Home = this;
         }
 
         private void OnPlay()
@@ -199,6 +201,11 @@ namespace OthelloMillenniumClient
                     Close();
                 });
             }
+        }
+
+        public void OnRegisteredServer()
+        {
+            //TODO Registered step ok
         }
     }
 }

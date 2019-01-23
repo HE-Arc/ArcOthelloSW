@@ -74,6 +74,9 @@ namespace Tools
             // Init a new client
             client = new OthelloTCPClient();
 
+            // Attach the client OrderHandler to this
+            client.SetOrderhandler(this);
+
             // Connect the client to the target gametype server
             if(localOrOnline == GameType.Local)
             {
@@ -85,9 +88,6 @@ namespace Tools
                 IsLocalPlayer = false;
                 client.ConnectTo(Properties.Settings.Default.OnlineHostname, Properties.Settings.Default.OnlinePort);
             }
-            
-            // Attach the client OrderHandler to this
-            client.SetOrderhandler(this);
         }
 
         public void SetOrderHandler(IOrderHandler orderHandler)
@@ -155,6 +155,7 @@ namespace Tools
                     break;
 
                 case GameStartedOrder order:
+                    //TODO Update when game loaded, It's not always black which start player
                     PlayerState = Color == Color.Black ? PlayerState.MY_TURN : PlayerState.OPPONENT_TURN;
                     orderHandler?.HandleOrder(sender, order);
                     break;

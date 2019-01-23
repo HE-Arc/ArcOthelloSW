@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Tools;
 
 namespace OthelloMillenniumClient.Classes.GameHandlers
@@ -8,9 +9,11 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         public GameType GameType { get; protected set; }
         protected IOrderHandler orderHandler;
 
+        protected Mutex stateMutex;
+
         public GameHandler()
         {
-            //Nothing
+            stateMutex = new Mutex();
         }
 
         public void SetOrderHandler(IOrderHandler orderHandler)

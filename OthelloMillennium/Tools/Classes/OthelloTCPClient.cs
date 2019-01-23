@@ -45,10 +45,9 @@ namespace Tools
                 throw new Exception("TcpClient already binded");
 
             tcpClient = new TcpClient();
-
+            
             // Register this client to the server
             tcpClient.Connect(serverHostname, serverPort);
-            stream = tcpClient.GetStream();
 
             Start();
         }
@@ -99,8 +98,9 @@ namespace Tools
             {
                 Thread.Sleep(200);
             }
-
+            stream = tcpClient.GetStream();
             Console.WriteLine("Server connected, sending enabled");
+
             while (true)
             {
                 while (!orderToSend.IsEmpty)
@@ -143,7 +143,9 @@ namespace Tools
                 Thread.Sleep(200);
             }
 
+            stream = tcpClient.GetStream();
             Console.WriteLine("Server connected, listening enabled");
+
             while (true)
             {
                 try

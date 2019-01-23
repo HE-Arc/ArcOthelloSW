@@ -14,11 +14,11 @@ namespace OthelloMillenniumClient
         public Lobby()
         {
             InitializeComponent();
+            ApplicationManager.Instance.Lobby = this;
 
-
-            if(ApplicationManager.Instance.GameType == GameType.Local)
+            if (ApplicationManager.Instance.GameType == GameType.Local)
             {
-
+                KeyUp += PlayerPicker.OnKeyDownLocal;
             }
             else
             {

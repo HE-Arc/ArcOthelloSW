@@ -29,7 +29,7 @@
         <Label Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" x:Name="score" Content="12" Foreground="#b5b5b7" Width="66" VerticalAlignment="Bottom" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" Height="156"/>
 
         <Viewbox Grid.Column="2" Grid.Row="0" Grid.RowSpan="2">
-            <local:Gameboard />
+            <local:Gameboard x:Name="GameBoard"/>
         </Viewbox>
         <Viewbox  Grid.Row="0" Grid.Column="0" Margin="5" x:Name="BlackPlayer">
             <local:PlayerCardBlack Image="Images/BB-8.png" Pseudo="Ph0tonic" Time="12:123" Inactive="False"/>

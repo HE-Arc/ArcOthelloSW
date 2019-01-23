@@ -185,7 +185,7 @@ namespace OthelloMillenniumClient
             }
         }
 
-        private void OnKeyDownLocal(object sender, KeyEventArgs e)
+        public void OnKeyDownLocal(object sender, KeyEventArgs e)
         {
             //Mode local, wasd pour le joueur à droite et et touches flèchés pour le joueur à gauche
             int newId = ManageKeyWASD(e.Key, PlayerBlackImageId);

@@ -20,6 +20,8 @@ namespace OthelloMillenniumClient
         private ConcurrentQueue<Order> orderReceived;
         private Task taskOrderHandler;
 
+        private GameState gameState = null;
+
         public static ApplicationManager Instance
         {
             get
@@ -38,6 +40,9 @@ namespace OthelloMillenniumClient
         #endregion
 
         public GameType GameType { get; private set; }
+        public IHome Home { get; set; }
+        public ILobby Lobby { get; set; }
+        public IGame Game { get; set; }
 
         private ApplicationManager()
         {
@@ -59,10 +64,48 @@ namespace OthelloMillenniumClient
                 while (!orderReceived.IsEmpty)
                 {
                     orderReceived.TryDequeue(out Order order);
-                    //orderHandler.HandleOrder(this, order);
-                    //TODO
+                    ExecuteOrder(order);
                 }
                 Thread.Sleep(50);
+            }
+        }
+
+        private void ExecuteOrder(Order handledOrder)
+        {
+            switch (handledOrder)
+            {
+                case RegisterSuccessfulOrder order:
+                    //TODO Display registered
+                    break;
+
+                case OpponentFoundOrder order:
+                    Home.OnLaunchLobbyServer();
+                    break;
+
+                case GameReadyOrder order:
+                    if (gameState == null)
+                    {
+                        Console.Error.WriteLine("GameState has not been initialized before launching Game");
+                    }
+                    Lobby.OnLaunchGameServer();
+                    break;
+
+                case GameStartedOrder order:
+                    Game.OnGameStartServer();
+                    break;
+
+                case OpponentAvatarChangedOrder order:
+                    Lobby.OnUpdateOpponentColorServer(PlayersColor().Item2, order.AvatarID);
+                    break;
+                    
+                case UpdateGameStateOrder order:
+                    gameState = (order as UpdateGameStateOrder).GameState;
+                    Game?.OnGameStateUpdateServer(gameState);
+                    break;
+
+                case GameEndedOrder order:
+                    Game.OnGameEndedServer();
+                    break;
             }
         }
 

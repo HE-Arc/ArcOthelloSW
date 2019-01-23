@@ -12,8 +12,8 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 
         private OthelloPlayerClient player1;
         private OthelloPlayerClient player2;
-
-        public LocalGameHandler()
+        
+        public LocalGameHandler():base()
         {
             GameType = GameType.Local;
 
@@ -29,24 +29,20 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             this.player1 = player1;
             this.player2 = player2;
 
+            player1.SetOrderHandler(this);
+            player2.SetOrderHandler(this);
+
             player1.Connect(GameType);
             player2.Connect(GameType);
 
             player1.Register();
             player2.Register();
-
-            // TODO Wait for registration completed
-
-            player1.SearchOpponent(player2.PlayerType);
-            player2.SearchOpponent(player1.PlayerType);
         }
 
         public override void LaunchGame()
         {
             player1.ReadyToPlay();
             player2.ReadyToPlay();
-
-            //TODO Goto Game when both are ready
         }
 
         public override Tuple<Color, Color> PlayersColor() => new Tuple<Color, Color>(player1.Color, player2.Color);
@@ -87,32 +83,54 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 
         public override void HandleOrder(IOrderHandler sender, Order handledOrder)
         {
-            switch (handledOrder)
+            lock (stateMutex)
             {
-                case RegisterSuccessfulOrder order:
-                    //TODO
-                    orderHandler?.HandleOrder(sender, order);
-                    break;
+                switch (handledOrder)
+                {
+                    case RegisterSuccessfulOrder order:
+                        if (player1.PlayerState == player2.PlayerState && player2.PlayerState == PlayerState.REGISTERED)
+                        {
+                            player1.SearchOpponent(player2.PlayerType);
+                            player2.SearchOpponent(player1.PlayerType);
+                            orderHandler?.HandleOrder(sender, order);
+                        }
+                        break;
 
-                case OpponentFoundOrder order:
-                    //TODO
-                    orderHandler?.HandleOrder(sender, order);
-                    break;
+                    case OpponentFoundOrder order:
+                        if(player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.LOBBY_CHOICE)
+                        {
+                            orderHandler?.HandleOrder(sender, order);
+                        }
+                        break;
 
-                case GameReadyOrder order:
-                    //TODO
-                    orderHandler?.HandleOrder(sender, order);
-                    break;
+                    case GameReadyOrder order:
+                        if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.READY)
+                        {
+                            orderHandler?.HandleOrder(sender, order);
+                        }
+                        break;
 
-                case GameStartedOrder order:
-                    //TODO
-                    orderHandler?.HandleOrder(sender, order);
-                    break;
+                    case GameStartedOrder order:
+                        if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.ABOUT_TO_START)
+                        {
+                            orderHandler?.HandleOrder(sender, order);
+                        }
+                        break;
+                        
+                    case UpdateGameStateOrder order:
+                        orderHandler?.HandleOrder(sender, order);
+                        break;
 
-                case OpponentAvatarChangedOrder order:
-                    // Nothing -> no need to update imagePlayer in local game
-                    break;
+                    case GameEndedOrder order:
+                        orderHandler?.HandleOrder(sender, order);
+                        break;
+
+                    case OpponentAvatarChangedOrder order:
+                        // Nothing -> no need to update imagePlayer in local game
+                        break;
+                }
             }
+            
         }
     }
 }

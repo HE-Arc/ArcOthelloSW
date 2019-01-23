@@ -7,7 +7,7 @@ using Tools;
 
 namespace OthelloMillenniumClient
 {
-    interface ILobby
+    public interface ILobby
     {
         void OnLaunchGameServer();
         void OnUpdateOpponentColorServer(Color color, int AvatarId);

@@ -132,30 +132,29 @@ namespace OthelloMillenniumClient
             }
         }
 
-        //TODO
-        //private void OnReceiveGameState(object sender, OthelloTCPClientGameStateArgs e)
-        //{
-        //    //Update grid with played tokens
-        //    int[,] gameboard = e.GameState.Gameboard;
-        //    for (int i = 0; i < gameboard.GetLength(0); ++i)
-        //    {
-        //        for (int j = 0; j < gameboard.GetLength(1); ++i)
-        //        {
-        //            if (gameboard[i, j] > 0)
-        //            {
-        //                listButtons[i, j].Style = e.GameState.Gameboard[i, j] == 1 ? this.Resources["circle-black"] as Style : this.Resources["circle-white"] as Style;
-        //            }
-        //        }
-        //    }
+        public void OnUpdateGameStateServer(GameState gameState)
+        {
+            //Update grid with played tokens
+            int[,] gameboard = gameState.Gameboard;
+            for (int i = 0; i < gameboard.GetLength(0); ++i)
+            {
+                for (int j = 0; j < gameboard.GetLength(1); ++i)
+                {
+                    if (gameboard[i, j] > 0)
+                    {
+                        listButtons[i, j].Style = gameState.Gameboard[i, j] == 1 ? this.Resources["circle-black"] as Style : this.Resources["circle-white"] as Style;
+                    }
+                }
+            }
 
-        //    //Update grid with potential moves
-        //    foreach (Tuple<char, int> move in e.GameState.PossiblesMoves)
-        //    {
-        //        int i = move.Item1 - 65;
-        //        int j = move.Item2;
-        //        listButtons[i, j].Style = this.Resources["circle-grey"] as Style;
-        //    }
-        //}
+            //Update grid with potential moves
+            foreach (Tuple<char, int> move in gameState.PossiblesMoves)
+            {
+                int i = move.Item1 - 65;
+                int j = move.Item2;
+                listButtons[i, j].Style = this.Resources["circle-grey"] as Style;
+            }
+        }
 
         private void OnCellClick(object sender, RoutedEventArgs e)
         {

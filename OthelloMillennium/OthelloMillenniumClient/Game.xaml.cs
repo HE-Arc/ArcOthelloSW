@@ -164,6 +164,7 @@ namespace OthelloMillenniumClient
         public Game()
         {
             InitializeComponent();
+            ApplicationManager.Instance.Game = this;
 
             // ?? TODO BASTIEN : Reçues depuis les interfaces utilisateurs ?
             Pseudo1 = "TODO";
@@ -171,8 +172,8 @@ namespace OthelloMillenniumClient
             Image1 = "TODO";
             Image2 = "TODO";
 
-            Inactive1 = true;// ApplicationManager.Instance.Player1.CanPlay;
-            Inactive2 = false;// ApplicationManager.Instance.Player2.CanPlay;
+            Inactive1 = true; // ApplicationManager.Instance.Player1.CanPlay;
+            Inactive2 = false; // ApplicationManager.Instance.Player2.CanPlay;
 
             Time1 = "12:000"; // FormatDoubleToTime(ApplicationManager.Instance.CurrentGame.GameState.RemainingTimes.Item1);
             Time2 = "12:000"; // FormatDoubleToTime(ApplicationManager.Instance.CurrentGame.GameState.RemainingTimes.Item2);
@@ -183,6 +184,23 @@ namespace OthelloMillenniumClient
             int sec = (int)time / 1000;
             int mili = (int)time % 1000;
             return sec+":"+mili;
+        }
+
+        public void OnGameStartServer()
+        {
+            //TODO Start counter system
+            throw new NotImplementedException();
+        }
+
+        public void OnGameStateUpdateServer(GameState gameState)
+        {
+            this.GameBoard.OnUpdateGameStateServer(gameState);
+        }
+
+        public void OnGameEndedServer()
+        {
+            //TODO Game ended 
+            throw new NotImplementedException();
         }
     }
 }
