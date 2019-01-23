@@ -35,8 +35,8 @@ namespace OthelloMillenniumClient
             = DependencyProperty.Register(
                   "Pseudo",
                   typeof(string),
-                  typeof(PlayerCardBlack),
-                  new PropertyMetadata("Player 1")
+                  typeof(PlayerName),
+                  new PropertyMetadata("")
               );
 
         #endregion
@@ -44,6 +44,8 @@ namespace OthelloMillenniumClient
         public PlayerName()
         {
             InitializeComponent();
+
+            DataContext = this;
         }
 
         public bool IsValid()

@@ -8,6 +8,6 @@
              d:DesignHeight="200" d:DesignWidth="200">
     <Grid>
         <Label Content="Enter your name" HorizontalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="15" FontFamily="Segoe UI Semibold"/>
-        <TextBox x:Name="YourName" VerticalContentAlignment="Center" VerticalAlignment="Center" Height="36" FontSize="15"/>
+        <TextBox x:Name="YourName" Text="{ Binding Pseudo }" VerticalContentAlignment="Center" VerticalAlignment="Center" Height="36" FontSize="15"/>
     </Grid>
 </UserControl>

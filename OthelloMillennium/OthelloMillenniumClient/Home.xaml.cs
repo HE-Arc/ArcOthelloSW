@@ -159,7 +159,8 @@ namespace OthelloMillenniumClient
                 ApplicationManager.Instance.JoinGameLocal(
                     playerType,
                     pseudo1,
-                    battleType == BattleType.AgainstPlayer ? PlayerType.Human:PlayerType.AI, pseudo2
+                    battleType == BattleType.AgainstPlayer ? PlayerType.Human:PlayerType.AI,
+                    pseudo2
                 );
             }).Start();
         }
