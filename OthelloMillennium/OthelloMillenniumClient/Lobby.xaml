@@ -16,7 +16,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <!-- TODO Change fix values and add min and percentages -> fixed for speed dev visualisation purposes -->
@@ -32,6 +32,6 @@
         <local:PlayerVisualiserBlack x:Name="BlackPlayer" Grid.Column="0" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerBlack }" Margin="5"/>
         <local:PlayerVisualiserWhite x:Name="WhitePlayer" Grid.Column="3" Grid.Row="1" Image="{ Binding ElementName=PlayerPicker, Path=ImagePlayerWhite }" Margin="5"/>
 
-        <Button Grid.Column="1" Grid.Row="0" Background="#ffbe29" Click="OnStartGame" Width="120" BorderThickness="0" Height="30" Content="Start game !"/>
+        <Button Grid.Column="1" Grid.Row="0" Background="#ffbe29" Click="OnStartGame" Width="120" BorderThickness="0" Height="30" Content="Start game !" FontSize="15"/>
     </Grid>
 </Window>
