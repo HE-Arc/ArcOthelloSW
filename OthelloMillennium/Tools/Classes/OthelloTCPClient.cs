@@ -57,6 +57,10 @@ namespace Tools
         /// </summary>
         private void Start()
         {
+            if(taskSender != null)
+            {
+                throw new Exception("Error TcpClient Start called twice");
+            }
             taskSender = new Task(Sender);
             taskListener = new Task(Listener);
             taskOrderHandler = new Task(OrderHandler);
@@ -94,15 +98,15 @@ namespace Tools
         /// </summary>
         private void Sender()
         {
-            while (!tcpClient.Connected)
-            {
-                Thread.Sleep(200);
-            }
-            stream = tcpClient.GetStream();
             Console.WriteLine("Server connected, sending enabled");
-
             while (true)
             {
+                while (!tcpClient.Connected)
+                {
+                    Thread.Sleep(200);
+                }
+                stream = tcpClient.GetStream();
+
                 while (!orderToSend.IsEmpty)
                 {
                     try
@@ -138,16 +142,16 @@ namespace Tools
         /// </summary>
         private void Listener()
         {
-            while (!tcpClient.Connected)
-            {
-                Thread.Sleep(200);
-            }
-
-            stream = tcpClient.GetStream();
             Console.WriteLine("Server connected, listening enabled");
-
             while (true)
             {
+                while (!tcpClient.Connected)
+                {
+                    Thread.Sleep(200);
+                }
+
+                stream = tcpClient.GetStream();
+
                 try
                 {
                     // Read message length
