@@ -89,7 +89,8 @@ namespace OthelloMillenniumClient
 
                 case GameStartedOrder order:
                     GameState = (order as GameStartedOrder).InitialState;
-                    Lobby.OnLaunchGameServer();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           Game.OnGameStartServer();
+                    Lobby.OnLaunchGameServer();
+                    Game.OnGameStartServer();
                     break;
 
                 case OpponentAvatarChangedOrder order:
