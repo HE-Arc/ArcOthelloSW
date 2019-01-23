@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OthelloMillenniumClient"
         mc:Ignorable="d"
-        Title="Saloon" Height="450" Width="800">
+        Title="Saloon"
+        Height="450" Width="800"
+        MinHeight="450" MinWidth="800">
 
     <Grid x:Name="MainGrid">
         <Grid.Background>

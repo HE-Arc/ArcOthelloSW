@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OthelloMillenniumClient"
         mc:Ignorable="d"
-        Title="Game" Height="600" Width="800"
-        x:Name="GameWindows">
+        Height="600" Width="800"
+        MinHeight="600" MinWidth="800"
+        Title="Game" x:Name="GameWindows">
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="/Images/Background.png" Stretch="UniformToFill"/>
@@ -24,10 +25,17 @@
         <!--<Image Grid.Column="0" Grid.ColumnSpan="3" Grid.Row ="0" Grid.RowSpan="2" x:Name="Background" Source="Images/Background.png" Stretch="Fill"/>-->
         <!-- TODO Add gameboard grid -->
 
-        <Rectangle Grid.Column="1"  Grid.Row="0"  Grid.RowSpan="2" Height="405" Width="66" Fill="#60b5b5b7" VerticalAlignment="Top" HorizontalAlignment="Center"/>
-        <Rectangle Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" Height="156" Fill="#60b5b5b7" Width="66" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
-        <Label Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" x:Name="score1" Content="12" Foreground="#b5b5b7" Width="66" VerticalAlignment="Top" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" Height="285" Margin="1.6,0,1.2,0"/>
-        <Label Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" x:Name="score" Content="12" Foreground="#b5b5b7" Width="66" VerticalAlignment="Bottom" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" Height="156"/>
+        <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="ColumnBlackScore" Height="2*"/>
+                <RowDefinition x:Name="ColumnWhiteScore" Height="2*"/>
+            </Grid.RowDefinitions>
+            <Rectangle Grid.Column="1" Grid.Row="0" Margin="5" Fill="#bf000000" VerticalAlignment="Stretch"/>
+            <Rectangle Grid.Column="1" Grid.Row="1" Margin="5" Fill="#bfffffff" VerticalAlignment="Stretch"/>
+            <Label Grid.Column="1" Grid.Row="0" Content="{ Binding Path=ScoreBlack, ElementName=GameWindows }" Foreground="white" VerticalAlignment="Stretch" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18"/>
+            <Label Grid.Column="1" Grid.Row="1" Content="{ Binding Path=ScoreWhite, ElementName=GameWindows }" Foreground="black" VerticalAlignment="Stretch" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18"/>
+        </Grid>
+        
 
         <Viewbox Grid.Row="1" Grid.Column="0" Margin="5" x:Name="WhitePlayer">
             <local:PlayerCardWhite Image="{ Binding Path=ImageWhite, ElementName=GameWindows }" Pseudo="{ Binding Path=PseudoWhite, ElementName=GameWindows }" Time="{ Binding Path=TimeWhite, ElementName=GameWindows }" Inactive="{ Binding Path=InactiveWhite, ElementName=GameWindows }"/>
