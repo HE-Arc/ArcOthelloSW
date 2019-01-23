@@ -67,6 +67,9 @@
     <Compile Include="Classes\IGame.cs" />
     <Compile Include="Classes\ILobby.cs" />
     <Compile Include="Classes\IHome.cs" />
+    <Compile Include="EndGame.xaml.cs">
+      <DependentUpon>EndGame.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Game.xaml.cs">
       <DependentUpon>Game.xaml</DependentUpon>
     </Compile>
@@ -91,7 +94,6 @@
     <Compile Include="Menus\MenuGameType.xaml.cs">
       <DependentUpon>MenuGameType.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main.cs" />
     <Compile Include="Menus\MenuOnlinePlayAgainst.xaml.cs">
       <DependentUpon>MenuOnlinePlayAgainst.xaml</DependentUpon>
     </Compile>
@@ -129,6 +131,10 @@
     <Compile Include="Selector.xaml.cs">
       <DependentUpon>Selector.xaml</DependentUpon>
     </Compile>
+    <Page Include="EndGame.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Game.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -372,6 +378,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\home.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\close.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

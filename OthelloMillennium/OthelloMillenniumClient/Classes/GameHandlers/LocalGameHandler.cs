@@ -15,6 +15,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 
         private int readyToNextState;
         private bool load = false;
+        private bool duplicatedGameEnded;
         
         public LocalGameHandler():base()
         {
@@ -35,6 +36,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         {
             this.player1 = player1;
             this.player2 = player2;
+            duplicatedGameEnded = false;
 
             player1.SetOrderHandler(this);
             player2.SetOrderHandler(this);
@@ -169,7 +171,11 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                         break;
 
                     case GameEndedOrder order:
-                        orderHandler.HandleOrder(sender, order);
+                        if (duplicatedGameEnded)
+                        {
+                            orderHandler.HandleOrder(sender, order);
+                        }
+                        duplicatedGameEnded = !duplicatedGameEnded;
                         break;
 
                     case SaveResponseOrder order:

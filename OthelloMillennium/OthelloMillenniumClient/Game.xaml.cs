@@ -330,7 +330,7 @@ namespace OthelloMillenniumClient
 
         public void OnGameStateUpdateServer(GameState gameState)
         {
-            Application.Current.Dispatcher.Invoke((Action)delegate {
+            Application.Current.Dispatcher.Invoke(()=> {
                 //Stop timer
                 timer.Stop();
 
@@ -369,8 +369,44 @@ namespace OthelloMillenniumClient
 
         public void OnGameEndedServer()
         {
-            //TODO Game ended 
-            throw new NotImplementedException("[OnGameEndedServer] : Game");
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                timer.Stop();
+
+                bool victory;
+                Tools.Color color;
+                string pseudo;
+                int avatarId;
+
+                GameState gameState = ApplicationManager.Instance.GameState;
+                PlayerDataExport data = ApplicationManager.Instance.GetPlayers();
+                if (ApplicationManager.Instance.GameType == GameType.Local)
+                {
+                    victory = true;
+                    if(gameState.Winner == (int)data.Color1)
+                    {
+                        pseudo = data.Name1;
+                        color = data.Color1;
+                        avatarId = data.AvatarId1;
+                    }
+                    else
+                    {
+                        pseudo = data.Name2;
+                        color = data.Color2;
+                        avatarId = data.AvatarId2;
+                    }
+                }
+                else
+                {
+                    pseudo = data.Name1;
+                    color = data.Color1;
+                    avatarId = data.AvatarId1;
+                    victory = gameState.Winner == (int)data.Color1;
+                }
+
+                EndGame endGame = new EndGame(victory, color, pseudo, avatarId);
+                endGame.Show();
+            });
         }
 
         private void OnUndo(object sender, RoutedEventArgs e)

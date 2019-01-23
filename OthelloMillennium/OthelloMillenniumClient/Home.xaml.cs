@@ -13,7 +13,7 @@ namespace OthelloMillenniumClient
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IHome
+    public partial class Home : Window, IHome
     {
         private GameType gameType;
         private BattleType battleType;
@@ -27,7 +27,7 @@ namespace OthelloMillenniumClient
         private MenuOnlinePlayAgainst menuOnlinePlayAgainst;
         private Semaphore lockWindow = new Semaphore(1, 1);
 
-        public MainWindow()
+        public Home()
         {
             InitializeComponent();
             menuMain = new MenuMain();
@@ -196,7 +196,7 @@ namespace OthelloMillenniumClient
         {
             if (lockWindow.WaitOne(0))
             {
-                Application.Current.Dispatcher.Invoke((Action)delegate {
+                Application.Current.Dispatcher.Invoke(()=>{
                     Lobby lobby = new Lobby();
                     lobby.Show();
                     Close();

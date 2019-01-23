@@ -16,7 +16,7 @@ namespace OthelloMillenniumClient
         #region Singleton
         private static readonly object padlock = new object();
         private static ApplicationManager instance = null;
-
+        
         private ConcurrentQueue<Order> orderReceived;
         private Task taskOrderHandler;
 
@@ -36,6 +36,11 @@ namespace OthelloMillenniumClient
                 }
                 return instance;
             }
+        }
+
+        public void GotoMainMenu()
+        {
+            
         }
 
         #endregion
