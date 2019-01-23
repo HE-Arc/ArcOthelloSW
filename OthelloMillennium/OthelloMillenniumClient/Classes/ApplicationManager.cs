@@ -20,7 +20,8 @@ namespace OthelloMillenniumClient
         private ConcurrentQueue<Order> orderReceived;
         private Task taskOrderHandler;
 
-        private GameState gameState = null;
+        private GameHandler gameHandler;
+        public GameState GameState { get; private set; }
 
         public static ApplicationManager Instance
         {
@@ -84,15 +85,11 @@ namespace OthelloMillenniumClient
 
                 case GameReadyOrder order:
                     Home.OnLaunchLobbyServer();
-                    if (gameState == null)
-                    {
-                        Console.Error.WriteLine("GameState has not been initialized before launching Game");
-                    }
-                    Lobby.OnLaunchGameServer();
                     break;
 
                 case GameStartedOrder order:
-                    Game.OnGameStartServer();
+                    GameState = (order as GameStartedOrder).InitialState;
+                    Lobby.OnLaunchGameServer();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           Game.OnGameStartServer();
                     break;
 
                 case OpponentAvatarChangedOrder order:
@@ -100,8 +97,8 @@ namespace OthelloMillenniumClient
                     break;
                     
                 case UpdateGameStateOrder order:
-                    gameState = (order as UpdateGameStateOrder).GameState;
-                    Game?.OnGameStateUpdateServer(gameState);
+                    GameState = (order as UpdateGameStateOrder).GameState;
+                    Game?.OnGameStateUpdateServer(GameState);
                     break;
 
                 case GameEndedOrder order:
@@ -114,9 +111,7 @@ namespace OthelloMillenniumClient
         {
             throw new NotImplementedException();
         }
-
-        private GameHandler gameHandler;
-
+        
         public void JoinGameLocal(PlayerType playerTypeOne, string playerNameOne, PlayerType playerTypeTwo, string playerNameTwo)
         {
             OthelloPlayerClient player1 = new OthelloPlayerClient(playerTypeOne, playerNameOne);

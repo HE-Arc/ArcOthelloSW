@@ -167,6 +167,7 @@ namespace OthelloMillenniumClient
             ApplicationManager.Instance.Game = this;
 
             // ?? TODO BASTIEN : Reçues depuis les interfaces utilisateurs ?
+            
             Pseudo1 = "TODO";
             Pseudo2 = "TODO";
             Image1 = "TODO";

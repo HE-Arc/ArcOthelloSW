@@ -22,7 +22,7 @@ namespace OthelloMillenniumClient
          * Oui ça fonctionnera si le gameboard est appelé après que le client reçoive l'ordre StartOfTheGameOrder
          * Car lors du démarrage d'une partie le serveur transmet l'état du gameBoard initial aux clients
          */
-        public GameState GameState => null;// ApplicationManager.Instance.CurrentGame.GameState;
+        public GameState GameState;// ApplicationManager.Instance.CurrentGame.GameState;
 
         public Gameboard()
         {
@@ -30,6 +30,7 @@ namespace OthelloMillenniumClient
             Init();
 
             DataContext = this;
+            GameState = ApplicationManager.Instance.GameState;
         }
 
         private void Init()
