@@ -32,5 +32,8 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
         public abstract Tuple<Color, Color> PlayersColor();
         public abstract int PlayersAvatarId(Color color);
         public abstract void Play(Tuple<char, int> columnRow);
+
+        public abstract void Undo();
+        public abstract void Redo();
     }
 }

@@ -128,16 +128,13 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                     case OpponentFoundOrder order:
                         if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.BINDED)
                         {
-                            readyToNextState = 0;
                             orderHandler.HandleOrder(sender, order);
                         }
                         break;
 
                     case GameReadyOrder order:
-                        readyToNextState++;
                         if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.LOBBY_CHOICE && readyToNextState == 2)
                         {
-                            readyToNextState=0;
                             orderHandler.HandleOrder(sender, order);
                         }
                         break;
