@@ -143,8 +143,10 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                         break;
 
                     case GameReadyOrder order:
+                        readyToNextState++;
                         if (player1.PlayerState == player2.PlayerState && player1.PlayerState == PlayerState.LOBBY_CHOICE && readyToNextState == 2)
                         {
+                            readyToNextState = 0;
                             orderHandler.HandleOrder(sender, order);
                         }
                         break;
