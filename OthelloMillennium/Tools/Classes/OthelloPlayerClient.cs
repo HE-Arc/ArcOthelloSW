@@ -126,6 +126,16 @@ namespace Tools
             client.Send(new PlayMoveOrder(new Tuple<char, int>(row, column)));
         }
 
+        public void Undo()
+        {
+            //TODO SEGAN
+        }
+
+        public void Redo()
+        {
+            //TODO SEGAN
+        }
+
         public void HandleOrder(IOrderHandler sender, Order orderHandled)
         {
             // If null, sender is this object otherwise the order has been redirected

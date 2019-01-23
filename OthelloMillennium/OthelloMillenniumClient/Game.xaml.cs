@@ -249,11 +249,17 @@ namespace OthelloMillenniumClient
         public void OnGameStateUpdateServer(GameState gameState)
         {
             Application.Current.Dispatcher.Invoke((Action)delegate {
+                //Update gameboard
+                GameBoard.OnUpdateGameStateServer(gameState);
+
+                //Update score
                 ScoreBlack = gameState.Scores.Item1;
                 ScoreWhite = gameState.Scores.Item2;
                 refreshScoreUI();
 
-                GameBoard.OnUpdateGameStateServer(gameState);
+                //Update PlayerTurn design
+                InactiveBlack = gameState.PlayerTurn != 1;
+                InactiveWhite = gameState.PlayerTurn != 2;
 
                 //TODO Update timer
             });
