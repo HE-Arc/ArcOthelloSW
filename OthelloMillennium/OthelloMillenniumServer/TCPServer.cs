@@ -69,7 +69,10 @@ namespace OthelloMillenniumServer
                             // PlayerType will be fetched during the register method inside the matchmaking
                             var client = new OthelloTCPClient();
                             client.Bind(newConnection);
-                            client.SetOrderhandler(Matchmaker.Instance);
+
+                            // Generate a new player
+                            var othelloPlayer = new OthelloPlayerServer(client);
+                            othelloPlayer.SetOrderHandler(Matchmaker.Instance);
 
                             // DEBUG
                             Console.WriteLine("NEW CLIENT CONNECTED");

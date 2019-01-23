@@ -37,7 +37,7 @@ namespace Tools
         public OthelloPlayerServer(OthelloTCPClient tcpClient)
         {
             client = tcpClient;
-            client.SetOrderhandler(this);
+            client.SetOrderHandler(this);
         }
 
         public void SetOrderHandler(IOrderHandler orderHandler)
@@ -168,15 +168,15 @@ namespace Tools
 
                 #endregion
 
-                #region To TCPServer
+                #region To Matchmaker
                 case RegisterRequestOrder castedOrder:
                     Name = !string.IsNullOrEmpty(castedOrder.Name) ? castedOrder.Name : throw new ArgumentException("name can't be null or empty");
                     PlayerType = (PlayerType)castedOrder.PlayerType;
+
+                    Console.WriteLine("Send registerRequest to matchmaker");
                     orderHandler.HandleOrder(this, order);
                     break;
-                #endregion
 
-                #region To Matchmaker
                 case SearchRequestOrder castedOrder:
                     orderHandler.HandleOrder(this, order);
                     break;

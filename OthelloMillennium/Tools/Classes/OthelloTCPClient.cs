@@ -29,7 +29,7 @@ namespace Tools
             //Nothing
         }
 
-        public void SetOrderhandler(IOrderHandler orderHandler)
+        public void SetOrderHandler(IOrderHandler orderHandler)
         {
             this.orderHandler = orderHandler;
         }

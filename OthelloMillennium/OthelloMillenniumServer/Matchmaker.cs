@@ -135,10 +135,8 @@ namespace OthelloMillenniumServer
         /// </summary>
         /// <param name="othelloPlayer"></param>
         /// <returns></returns>
-        private bool Register(OthelloTCPClient othelloTCPClient)
+        private bool Register(OthelloPlayerServer othelloPlayer)
         {
-            OthelloPlayerServer othelloPlayer = new OthelloPlayerServer(othelloTCPClient);
-
             if (!IsKnown(othelloPlayer))
             {
                 // Add the client to the dictionnary
@@ -186,24 +184,22 @@ namespace OthelloMillenniumServer
         {
             // If null, sender is this object otherwise the order has been redirected
             sender = sender ?? this;
+            OthelloPlayerServer castedSender = sender as OthelloPlayerServer;
 
             switch (order)
             {
                 case RegisterRequestOrder castedOrder:
-                    Register(sender as OthelloTCPClient);
+                    Register(castedSender);
                     break;
 
                 case SearchRequestOrder castedOrder:
                     // Look for the sender
-                    OthelloPlayerServer castedSender = sender as OthelloPlayerServer;
                     Matchmake(castedSender, (PlayerType)castedOrder.OpponentType);
                     break;
 
                 case LoadRequestOrder castedOrder:
                     throw new NotImplementedException();
             }
-
-            throw new NotImplementedException();
         }
 
         private void DisconnectClient(OthelloPlayerServer client)

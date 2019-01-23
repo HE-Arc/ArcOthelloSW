@@ -75,7 +75,7 @@ namespace Tools
             client = new OthelloTCPClient();
 
             // Attach the client OrderHandler to this
-            client.SetOrderhandler(this);
+            client.SetOrderHandler(this);
 
             // Connect the client to the target gametype server
             if(localOrOnline == GameType.Local)
