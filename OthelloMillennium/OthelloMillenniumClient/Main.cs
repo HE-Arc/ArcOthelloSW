@@ -9,10 +9,5 @@ namespace OthelloMillenniumClient
         {
 
         }
-
-        public static implicit operator UserControl(Main v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

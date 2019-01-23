@@ -94,7 +94,7 @@ namespace Tools
 
         public void OpponentReconnected()
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("[OpponentReconnected] : OthelloPlayerServer");
         }
 
         public void RegisterSuccessful(string name, PlayerType playerType)

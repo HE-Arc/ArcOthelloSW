@@ -110,7 +110,7 @@ namespace OthelloMillenniumClient
 
         public void SetOrderHandler(IOrderHandler handler)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("[SetOrderHandler] : ApplicationManager");
         }
         
         public void JoinGameLocal(PlayerType playerTypeOne, string playerNameOne, PlayerType playerTypeTwo, string playerNameTwo)

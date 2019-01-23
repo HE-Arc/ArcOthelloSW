@@ -198,7 +198,7 @@ namespace OthelloMillenniumServer
                     break;
 
                 case LoadRequestOrder castedOrder:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("[HandleOrder] : Matchmaker");
             }
         }
 

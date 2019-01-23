@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Tools;
 
 namespace OthelloMillenniumServer
 {
@@ -173,23 +174,20 @@ namespace OthelloMillenniumServer
         {
             Tuple<int, int> indices = CoordToInt(coord);
 
-            CellState[,] newCellState = (CellState[,])Board.Clone();
-            newCellState[indices.Item1, indices.Item2] = cellStatePlayer;
-
             List<Tuple<int, int>> tokenToReturn = new List<Tuple<int, int>>();
             List<Tuple<int, int>> tokenToReturnPotential = new List<Tuple<int, int>>();
-
+            
             // Check in all 8 directions that there is at least one cellState of our own
             foreach (Tuple<int, int> direction in directions)
             {
                 tokenToReturnPotential.Clear();
                 bool end = false;
                 Tuple<int, int> ij = indices;
+                ij = new Tuple<int, int>(ij.Item1 + direction.Item1, ij.Item2 + direction.Item2);
 
-                while (ij.Item1 > 0 && ij.Item2 < Settings.SIZE_WIDTH && ij.Item2 > 0 && ij.Item2 < Settings.SIZE_HEIGHT && !end)
+                while (ij.Item1 >= 0 && ij.Item1 < Settings.SIZE_WIDTH && ij.Item2 >= 0 && ij.Item2 < Settings.SIZE_HEIGHT && !end)
                 {
                     // Compute cell
-                    ij = new Tuple<int, int>(ij.Item1 + direction.Item1, ij.Item2 + direction.Item2);
                     CellState cellState = Board[ij.Item1, ij.Item2];
 
                     if (cellState == cellStatePlayer) // Token of the player
@@ -205,8 +203,13 @@ namespace OthelloMillenniumServer
                     {
                         tokenToReturnPotential.Add(ij);
                     }
+                    ij = new Tuple<int, int>(ij.Item1 + direction.Item1, ij.Item2 + direction.Item2);
                 }
             }
+
+            //Create new CellState
+            CellState[,] newCellState = (CellState[,])Board.Clone();
+            tokenToReturn.Add(indices);
 
             // Return the tokens
             foreach (Tuple<int, int> ij in tokenToReturn)
@@ -258,8 +261,8 @@ namespace OthelloMillenniumServer
             {
                 bool end = false;
                 int nbTokenReturnedTemp = 0;
-                Tuple<int, int> ij = indices;
 
+                Tuple<int, int> ij = indices;
                 ij = new Tuple<int, int>(ij.Item1 + direction.Item1, ij.Item2 + direction.Item2);
 
                 while (ij.Item1 >= 0 && ij.Item1 < Settings.SIZE_WIDTH && ij.Item2 >= 0 && ij.Item2 < Settings.SIZE_HEIGHT && !end)

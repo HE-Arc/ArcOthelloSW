@@ -137,9 +137,6 @@ namespace Tools
                 {
                     Thread.Sleep(450);
                 }
-
-                // while loop vacation
-                Thread.Sleep(50);
             }
         }
 
@@ -207,9 +204,6 @@ namespace Tools
                 {
                     Thread.Sleep(450);
                 }
-
-                // While loop vacation
-                Thread.Sleep(50);
             }
         }
 

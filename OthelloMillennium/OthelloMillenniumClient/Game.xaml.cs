@@ -199,7 +199,7 @@ namespace OthelloMillenniumClient
         public void OnGameStartServer()
         {
             //TODO Start counter system
-            throw new NotImplementedException();
+            throw new NotImplementedException("[OnGameStartServer] : Game");
         }
 
         public void OnGameStateUpdateServer(GameState gameState)
@@ -212,7 +212,7 @@ namespace OthelloMillenniumClient
         public void OnGameEndedServer()
         {
             //TODO Game ended 
-            throw new NotImplementedException();
+            throw new NotImplementedException("[OnGameEndedServer] : Game");
         }
     }
 }
