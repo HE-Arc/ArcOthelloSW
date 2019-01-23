@@ -122,5 +122,10 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             }
             player1.AvatarId = avatarId;
         }
+
+        public override void Save()
+        {
+            player1.Save();
+        }
     }
 }

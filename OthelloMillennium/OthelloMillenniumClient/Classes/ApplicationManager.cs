@@ -107,6 +107,10 @@ namespace OthelloMillenniumClient
                     case GameEndedOrder order:
                         Game.OnGameEndedServer();
                         break;
+
+                    case SaveResponseOrder order:
+                        order.SaveFile.Save();
+                        break;
                 }
             }
             catch (Exception exception)
@@ -189,7 +193,7 @@ namespace OthelloMillenniumClient
         /// </summary>
         public void Save()
         {
-            //TODO SEGAN SAVE GAME
+            gameHandler.Save();
         }
     }
 }
