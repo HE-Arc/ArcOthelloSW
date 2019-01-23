@@ -35,10 +35,10 @@ namespace Tools
                 throw new ArgumentNullException("info");
 
             Scores = (Tuple<int, int>)info.GetValue("Scores", typeof(Tuple<int, int>));
-            Winner = (int)info.GetValue("Winner", typeof(int));
+            Winner = info.GetInt32("Winner");
             GameEnded = (bool)info.GetValue("GameEnded", typeof(bool));
             Gameboard = (int[,])info.GetValue("Gameboard", typeof(int[,]));
-            PlayerTurn = (int)info.GetValue("PlayerTurn", typeof(int));
+            PlayerTurn = info.GetInt32("PlayerTurn");
             PossiblesMoves = (List<Tuple<char, int>>)info.GetValue("PossiblesMoves", typeof(List<Tuple<char, int>>));
             RemainingTimes = (Tuple<long, long>)info.GetValue("RemainingTimes", typeof(Tuple<long, long>));
         }

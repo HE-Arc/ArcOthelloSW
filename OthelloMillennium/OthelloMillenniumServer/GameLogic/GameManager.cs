@@ -1,9 +1,7 @@
-﻿//using NUnit.Framework;
-using OthelloMillenniumServer.GameLogic;
+﻿using OthelloMillenniumServer.GameLogic;
 using System;
 using System.Collections.Generic;
 using Tools;
-using static OthelloMillenniumServer.GameBoard;
 
 namespace OthelloMillenniumServer
 {
@@ -11,16 +9,21 @@ namespace OthelloMillenniumServer
     {
         #region Internal Classes
         
-        private static GameBoard.CellState PlayerToCellState(Color Color)
+        private static int PlayerToCellState(Color Color)
         {
             return Color == Color.Black ? GameBoard.CellState.BLACK : GameBoard.CellState.WHITE;
+        }
+
+        private static Color CellStateToPlayer(int player)
+        {
+            return player == GameBoard.CellState.BLACK ? Color.Black : Color.White;
         }
 
         #endregion
 
         #region Properties
         public bool GameEnded { get; private set; }
-        public GameType gameType { get; private set; }
+        public GameType GameType { get; private set; }
         public Color CurrentPlayerTurn { get; private set; }
 
         #endregion
@@ -41,7 +44,7 @@ namespace OthelloMillenniumServer
 
         public GameManager(GameType gameType)
         {
-            this.gameType = gameType;
+            GameType = gameType;
 
             //Init GameState
             indexState = 0;
@@ -51,7 +54,7 @@ namespace OthelloMillenniumServer
             };
 
             timeCounter = new Dictionary<Color, ITimer>();
-            if (gameType == GameType.Online)
+            if (GameType == GameType.Online)
             {
                 timeCounter.Add(Color.Black, new StoppableTimer(Settings.TimePerPlayer));
                 timeCounter.Add(Color.White, new StoppableTimer(Settings.TimePerPlayer));
@@ -79,32 +82,31 @@ namespace OthelloMillenniumServer
             }
             else
             {
-                foreach(GameState gs in game)
+                foreach (GameState step in game)
                 {
-                    // TODO BASTIEN : Unusable and inefficient if we keep gameboard the way it is
-                    // listGameBoard.Add(Import(gs));
-                }
-            }
-        }
+                    listGameBoard.Add(new GameBoard(step.Gameboard, step.PlayerTurn));
+                    CurrentPlayerTurn = CellStateToPlayer(step.PlayerTurn);
+                    scores = step.Scores;
+                    winner = CellStateToPlayer(step.Winner); // TODO BASTIEN IS IT CORRECT ? Is it a cellState value for winner ?
 
-        /// <summary>
-        /// UGLY method
-        /// <para/>TODO BASTIEN : we have to change this ...
-        /// <para/>Should be called only by Load method
-        /// </summary>
-        /// <param name="gameState"></param>
-        /// <returns>A Gameboard</returns>
-        private CellState[,] Import(GameState gameState)
-        {
-            CellState[,] tmp = new CellState[Settings.SIZE_WIDTH,Settings.SIZE_HEIGHT];
-            for (int x = 0; x < Settings.SIZE_WIDTH; x++)
-            {
-                for (int y = 0; y < Settings.SIZE_HEIGHT; y++)
-                {
-                    tmp[x, y] = (CellState)gameState.Gameboard[x, y];
+                    if (GameType == GameType.Online)
+                    {
+                        // TODO BASTIEN : Black time is Item1 ?
+                        timeCounter[Color.Black] = new StoppableTimer(step.RemainingTimes.Item1);
+                        // TODO BASTIEN : White time is Item2 ?
+                        timeCounter[Color.Black] = new StoppableTimer(step.RemainingTimes.Item2);
+                    }
+                    else
+                    {
+                        // TODO BASTIEN : Black time is Item1 ?
+                        timeCounter[Color.Black] = new StoppableCounter(step.RemainingTimes.Item1);
+                        // TODO BASTIEN : White time is Item2 ?
+                        timeCounter[Color.Black] = new StoppableCounter(step.RemainingTimes.Item2);
+                    }                   
+
+                    indexState++;
                 }
             }
-            return tmp;
         }
 
         /// <summary>
@@ -140,7 +142,7 @@ namespace OthelloMillenniumServer
             
             timeCounter[CurrentPlayerTurn].Stop();
             
-            GameBoard.CellState cellStatePlayer = PlayerToCellState(CurrentPlayerTurn);
+            int cellStatePlayer = PlayerToCellState(CurrentPlayerTurn);
             listGameBoard[indexState].ValidateMove(coord, cellStatePlayer);
 
             //Manage the case when we have made a moveback
@@ -178,7 +180,7 @@ namespace OthelloMillenniumServer
                 throw new Exception("Game ended");
             }
 
-            if (gameType == GameType.Online)
+            if (GameType == GameType.Online)
             {
                 throw new Exception("Action not allowed in online game");
             }
@@ -204,7 +206,7 @@ namespace OthelloMillenniumServer
                 throw new Exception("Game ended");
             }
 
-            if (gameType == GameType.Online)
+            if (GameType == GameType.Online)
             {
                 throw new Exception("Action not allowed in Multiplayer game type");
             }
@@ -235,8 +237,8 @@ namespace OthelloMillenniumServer
         /// </summary>
         private void SwitchPlayer()
         {
-            GameBoard.CellState lastPlayer = listGameBoard[indexState].LastPlayer;
-            GameBoard.CellState nextPlayer = (GameBoard.CellState)((int)lastPlayer % 2 + 1);
+            int lastPlayer = listGameBoard[indexState].LastPlayer;
+            int nextPlayer = (lastPlayer % 2 + 1);
             CurrentPlayerTurn = (Color) (listGameBoard[indexState].PlayerCanPlay(nextPlayer) ? nextPlayer : lastPlayer);
         }
 
@@ -261,7 +263,7 @@ namespace OthelloMillenniumServer
             int maxScore = gameState.Board.GetLength(0) * gameState.Board.GetLength(1);
             
             //TODO Bastien CHange with 
-            if (gameType == GameType.Online && (timeCounter[Color.Black].GetRemainingTime() == 0 || timeCounter[Color.White].GetRemainingTime() == 0))
+            if (GameType == GameType.Online && (timeCounter[Color.Black].GetRemainingTime() == 0 || timeCounter[Color.White].GetRemainingTime() == 0))
             {
                 //One Color is out of time
                 scores = timeCounter[Color.Black].GetRemainingTime() == 0 ? new Tuple<int, int>(0, maxScore) : new Tuple<int, int>(maxScore, 0);
@@ -301,14 +303,14 @@ namespace OthelloMillenniumServer
 
         private GameState Export(int index)
         {
-            GameBoard.CellState[,] gameboard = listGameBoard[index].Board;
+            int[,] gameboard = listGameBoard[index].Board;
             int[,] board = new int[gameboard.GetLength(0), gameboard.GetLength(1)];
 
             for (int i = 0; i < gameboard.GetLength(0); ++i)
             {
                 for (int j = 0; j < gameboard.GetLength(1); ++j)
                 {
-                    board[i, j] = (int)gameboard[i, j];
+                    board[i, j] = gameboard[i, j];
                 }
             }
 
