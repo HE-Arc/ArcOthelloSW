@@ -116,38 +116,32 @@ namespace OthelloMillenniumClient
 
         private GameHandler gameHandler;
 
+        public void JoinGameLocal(PlayerType playerTypeOne, string playerNameOne, PlayerType playerTypeTwo, string playerNameTwo)
+        {
+            OthelloPlayerClient player1 = new OthelloPlayerClient(playerTypeOne, playerNameOne);
+            OthelloPlayerClient player2 = new OthelloPlayerClient(playerTypeTwo, playerNameTwo);
+
+            JoinGameLocal(player1, player2);
+        }
+
         public void JoinGameLocal(OthelloPlayerClient player1, OthelloPlayerClient player2)
         {
             GameType = GameType.Local;
             gameHandler = new LocalGameHandler();
             (gameHandler as LocalGameHandler).JoinGame(player1, player2);
         }
-
-        public void JoinGameLocal(PlayerType playerTypeOne, string playerNameOne, PlayerType playerTypeTwo, string playerNameTwo)
+        
+        public void JoinGameOnline(PlayerType playerType, string playerName, BattleType battleType)
         {
-            GameType = GameType.Local;
-            gameHandler = new LocalGameHandler();
+            OthelloPlayerClient player = new OthelloPlayerClient(playerType, playerName);
 
-            OthelloPlayerClient player1 = new OthelloPlayerClient(playerTypeOne, playerNameOne);
-            OthelloPlayerClient player2 = new OthelloPlayerClient(playerTypeTwo, playerNameTwo);
-
-            (gameHandler as LocalGameHandler).JoinGame(player1, player2);
+            JoinGameOnline(player, battleType);
         }
 
         public void JoinGameOnline(OthelloPlayerClient player, BattleType battleType)
         {
             GameType = GameType.Online;
             gameHandler = new OnlineGameHandler();
-
-            (gameHandler as OnlineGameHandler).JoinGame(player, battleType);
-        }
-
-        public void JoinGameOnline(PlayerType playerType, string playerName, BattleType battleType)
-        {
-            GameType = GameType.Online;
-            gameHandler = new OnlineGameHandler();
-
-            OthelloPlayerClient player = new OthelloPlayerClient(playerType, playerName);
 
             (gameHandler as OnlineGameHandler).JoinGame(player, battleType);
         }
