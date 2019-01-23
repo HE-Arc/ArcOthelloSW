@@ -15,7 +15,7 @@ namespace OthelloMillenniumClient
     /// </summary>
     public partial class Gameboard : UserControl
     {
-        private Button[,] listButtons;
+        private Ellipse[,] listEllipse;
 
         // is this gonna work? Dow we have an initial GameState?
         /* Réponse : TODO BASTIEN
@@ -41,7 +41,7 @@ namespace OthelloMillenniumClient
             int width = GameState.Gameboard.GetLength(0);
             int height = GameState.Gameboard.GetLength(1);
 
-            listButtons = new Button[width, height];
+            listEllipse = new Ellipse[width, height];
 
             Grid grid = MainGrid;
             SolidColorBrush brushYellow = new SolidColorBrush(Color.FromArgb(0xFF, 0xFC, 0xB0, 0x01));
@@ -123,31 +123,33 @@ namespace OthelloMillenniumClient
                     button.SetValue(Grid.ColumnProperty, i);
                     button.SetValue(Grid.RowProperty, j);
 
-                    Ellipse token = new Ellipse();
-                    if(GameState.Gameboard[i, j] > 0)
-                    {
-                        token.SetValue(StyleProperty, GameState.Gameboard[i, j]==1?styleBlack:styleWhite);
-                    }
-                    button.Content = token;
+                    Ellipse ellipse= new Ellipse();
+                    button.Content = ellipse;
                     button.Click += OnCellClick;
 
-                    listButtons[i, j] = button;
+                    listEllipse[i, j] = ellipse;
                     grid.Children.Add(button);
                 }
             }
+
+            OnUpdateGameStateServer(GameState);
         }
 
         public void OnUpdateGameStateServer(GameState gameState)
         {
+            Style styleBlack = this.Resources["black-circle"] as Style;
+            Style styleWhite = this.Resources["white-circle"] as Style;
+            Style styleGrey = this.Resources["grey-circle"] as Style;
+
             //Update grid with played tokens
             int[,] gameboard = gameState.Gameboard;
             for (int i = 0; i < gameboard.GetLength(0); ++i)
             {
-                for (int j = 0; j < gameboard.GetLength(1); ++i)
+                for (int j = 0; j < gameboard.GetLength(1); ++j)
                 {
                     if (gameboard[i, j] > 0)
                     {
-                        listButtons[i, j].Style = gameState.Gameboard[i, j] == 1 ? this.Resources["circle-black"] as Style : this.Resources["circle-white"] as Style;
+                        listEllipse[i, j].Style = gameState.Gameboard[i, j] == 1 ? styleBlack : styleWhite;
                     }
                 }
             }
@@ -157,7 +159,7 @@ namespace OthelloMillenniumClient
             {
                 int i = move.Item1 - 65;
                 int j = move.Item2;
-                listButtons[i, j].Style = this.Resources["circle-grey"] as Style;
+                listEllipse[i, j].Style = styleGrey;
             }
         }
 
@@ -169,9 +171,7 @@ namespace OthelloMillenniumClient
             Console.WriteLine(columnRow.Item1.ToString(), columnRow.Item2.ToString());
 
             // Send the player new token location
-
-            //TODO
-            //ApplicationManager.Instance.CurrentGame.Place(new Tuple<char, int>(column, row));
+            ApplicationManager.Instance.Play(columnRow);
         }
     }
 }

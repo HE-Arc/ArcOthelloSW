@@ -52,6 +52,18 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
 
         public override int PlayersAvatarId(Color color) => player1.Color == color ? player1.AvatarId : player2.AvatarId;
 
+        public override void Play(Tuple<char, int> columnRow)
+        {
+            if (player1.PlayerState == PlayerState.MY_TURN)
+            {
+                player1.Play(columnRow.Item1, columnRow.Item2);
+            }
+            else
+            {
+                return;
+            }
+        }
+
         public override void HandleOrder(IOrderHandler sender, Order handledOrder)
         {
             lock (stateMutex)

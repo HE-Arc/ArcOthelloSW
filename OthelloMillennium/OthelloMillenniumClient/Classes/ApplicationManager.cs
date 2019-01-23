@@ -159,5 +159,12 @@ namespace OthelloMillenniumClient
             orderReceived.Enqueue(order);
         }
 
+        internal void Play(Tuple<char, int> columnRow)
+        {
+            if(!GameState.PossiblesMoves.Contains(columnRow)){
+                return;
+            }
+            gameHandler.Play(columnRow);
+        }
     }
 }
