@@ -135,11 +135,11 @@ namespace Tools
                 }
                 else
                 {
-                    Thread.Sleep(450);
+                    Thread.Sleep(200);
                 }
 
                 // while loop vacation
-                Thread.Sleep(50);
+                Thread.Sleep(5);
             }
         }
 
@@ -205,11 +205,11 @@ namespace Tools
                 }
                 else
                 {
-                    Thread.Sleep(450);
+                    Thread.Sleep(200);
                 }
 
                 // While loop vacation
-                Thread.Sleep(50);
+                Thread.Sleep(5);
             }
         }
 

@@ -3,6 +3,7 @@ using OthelloMillenniumServer.GameLogic;
 using System;
 using System.Collections.Generic;
 using Tools;
+using static OthelloMillenniumServer.GameBoard;
 
 namespace OthelloMillenniumServer
 {
@@ -49,9 +50,6 @@ namespace OthelloMillenniumServer
                 GameBoard.CreateStartState()
             };
 
-            //Assert.False(listGameBoard[indexState].GameEnded);
-            //Assert.True(listGameBoard[indexState].LastPlayer == GameBoard.CellState.WHITE);
-
             timeCounter = new Dictionary<Color, ITimer>();
             if (gameType == GameType.Online)
             {
@@ -69,6 +67,46 @@ namespace OthelloMillenniumServer
             ComputeScore();
         }
 
+        public void Load(List<GameState> game)
+        {
+            if (GameEnded)
+            {
+                throw new Exception("Game ended");
+            }
+            else if (indexState > 0)
+            {
+                throw new Exception("Can't load during a game");
+            }
+            else
+            {
+                foreach(GameState gs in game)
+                {
+                    // TODO BASTIEN : Unusable and inefficient if we keep gameboard the way it is
+                    // listGameBoard.Add(Import(gs));
+                }
+            }
+        }
+
+        /// <summary>
+        /// UGLY method
+        /// <para/>TODO BASTIEN : we have to change this ...
+        /// <para/>Should be called only by Load method
+        /// </summary>
+        /// <param name="gameState"></param>
+        /// <returns>A Gameboard</returns>
+        private CellState[,] Import(GameState gameState)
+        {
+            CellState[,] tmp = new CellState[Settings.SIZE_WIDTH,Settings.SIZE_HEIGHT];
+            for (int x = 0; x < Settings.SIZE_WIDTH; x++)
+            {
+                for (int y = 0; y < Settings.SIZE_HEIGHT; y++)
+                {
+                    tmp[x, y] = (CellState)gameState.Gameboard[x, y];
+                }
+            }
+            return tmp;
+        }
+
         /// <summary>
         /// Start the game counter
         /// </summary>
@@ -79,7 +117,7 @@ namespace OthelloMillenniumServer
                 throw new Exception("Game ended");
             }
 
-            //We start the counter
+            // We start the counter
             timeCounter[CurrentPlayerTurn].Start();
         }
 
@@ -280,7 +318,7 @@ namespace OthelloMillenniumServer
             return new GameState(GameEnded, (int)CurrentPlayerTurn, scores, board, possiblesMoves, remainingTimes, (int)winner);
         }
 
-        public ExportedGame Save()
+        public List<GameState> Save()
         {
             var listGameState = new List<GameState>(indexState);
             for(int i = indexState; i >= 0; i--)
@@ -288,7 +326,7 @@ namespace OthelloMillenniumServer
                 listGameState.Add(Export(i));
             }
 
-            return new ExportedGame(gameType, listGameState, CurrentPlayerTurn);
+            return listGameState;
         }
     }
 }

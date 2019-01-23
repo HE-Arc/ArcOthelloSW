@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Tools
@@ -333,7 +334,7 @@ namespace Tools
 
         public override string GetAcronym()
         {
-            return "PM";
+            return "PMO";
         }
 
         public override string GetDefinition()
@@ -452,17 +453,17 @@ namespace Tools
     [Serializable]
     public class TransferSaveOrder : Order
     {
-        public ExportedGame ExportedGame { get; private set; }
+        public List<GameState> States { get; private set; }
 
-        public TransferSaveOrder(ExportedGame exportedGame)
+        public TransferSaveOrder(List<GameState> states)
         {
-            ExportedGame = exportedGame;
+            States = states;
         }
 
         protected TransferSaveOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            ExportedGame = (ExportedGame)info.GetValue("ExportedGame", typeof(ExportedGame));
+            States = (List<GameState>)info.GetValue("States", typeof(List<GameState>));
         }
 
         public override string GetAcronym()
@@ -472,12 +473,12 @@ namespace Tools
 
         public override string GetDefinition()
         {
-            return "Transfer ExportedGame";
+            return "Transfer game States";
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("ExportedGame", ExportedGame);
+            info.AddValue("States", States);
         }
     }
 
@@ -583,7 +584,7 @@ namespace Tools
 
         public override string GetAcronym()
         {
-            return "SS";
+            return "SRO";
         }
 
         public override string GetDefinition()
@@ -597,14 +598,24 @@ namespace Tools
         public SaveRequestOrder() { }
     }
 
+    /// <summary>
+    /// Server send this to export the current game
+    /// </summary>
     [Serializable]
     public class LoadRequestOrder : Order
     {
-        public LoadRequestOrder() { }
+        public List<GameState> States { get; private set; }
+
+        public LoadRequestOrder(List<GameState> states)
+        {
+            States = states;
+        }
 
         protected LoadRequestOrder(SerializationInfo info, StreamingContext context)
             : base(info, context)
-        { }
+        {
+            States = (List<GameState>)info.GetValue("States", typeof(List<GameState>));
+        }
 
         public override string GetAcronym()
         {
@@ -613,7 +624,97 @@ namespace Tools
 
         public override string GetDefinition()
         {
-            return "Ask the server to load the game";
+            return "Request asking the server to load a game";
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("States", States);
+        }
+    }
+
+    [Serializable]
+    public class LoadResponseOrder : Order
+    {
+        public int GameID { get; private set; }
+
+        public LoadResponseOrder(int gameID)
+        {
+            GameID = gameID;
+        }
+
+        protected LoadResponseOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            GameID = info.GetInt32("GameID");
+        }
+
+        public override string GetAcronym()
+        {
+            return "LRO";
+        }
+
+        public override string GetDefinition()
+        {
+            return "Used by server to share the loadedGame's ID";
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("GameID", GameID);
+        }
+    }
+
+    [Serializable]
+    public class JoinRequestOrder : Order
+    {
+        public int GameID { get; private set; }
+
+        public JoinRequestOrder(int gameID)
+        {
+            GameID = gameID;
+        }
+
+        protected JoinRequestOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            GameID = info.GetInt32("GameID");
+        }
+
+        public override string GetAcronym()
+        {
+            return "JRO";
+        }
+
+        public override string GetDefinition()
+        {
+            return "Used by client to join a loaded game";
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("GameID", GameID);
+        }
+    }
+
+    [Serializable]
+    public class JoinResponseOrder : Order
+    {
+        public JoinResponseOrder()
+        { }
+
+        protected JoinResponseOrder(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
+
+        public override string GetAcronym()
+        {
+            return "JRO";
+        }
+
+        public override string GetDefinition()
+        {
+            return "Used by server to confirm a join request";
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)

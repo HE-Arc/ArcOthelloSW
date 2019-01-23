@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Tools;
@@ -37,6 +38,24 @@ namespace OthelloMillenniumServer
         private bool client2Ready = false;
         private readonly Task pinger;
 
+        /// <summary>
+        /// Assign player and handle their orders
+        /// <para/>Call Load(...) afterward
+        /// </summary>
+        /// <param name="black"></param>
+        /// <param name="white"></param>
+        internal GameHandler(LoadRequest loadRequest)
+            : this(loadRequest.Player1, loadRequest.Player2)
+        {
+            Load(loadRequest.GameStates);
+        }
+
+        /// <summary>
+        /// Assign player and handle their orders
+        /// <para/>Call either Init or Load afterward
+        /// </summary>
+        /// <param name="black"></param>
+        /// <param name="white"></param>
         public GameHandler(OthelloPlayerServer black, OthelloPlayerServer white)
         {
             // Init Client 1
@@ -49,18 +68,42 @@ namespace OthelloMillenniumServer
             OthelloPlayer1.SetOrderHandler(this);
             OthelloPlayer2.SetOrderHandler(this);
 
-            // Update clients
-            OthelloPlayer1.SetColor(Color.Black);
-            OthelloPlayer1.SetAvatarID(0);
-
-            OthelloPlayer2.SetColor(Color.White);
-            OthelloPlayer2.SetAvatarID(19);
-
             if (OthelloPlayer1.PlayerType == PlayerType.Human & OthelloPlayer2.PlayerType == PlayerType.Human)
                 BattleType = BattleType.AgainstPlayer;
             else
                 BattleType = BattleType.AgainstAI;
 
+            // TODO SEGAN (NiceToHave) : Ping clients to detect disconnect
+            // Start to ping clients
+            // pinger.Start();
+        }
+
+        private void Init()
+        {
+            // Init gameManager. TODO BASTIEN : Server don't know if it's local or online
+            GameManager = new GameManager(GameType.Local);
+            GameManager.OnGameFinished += GameManager_OnGameFinished;
+
+            // Update clients
+            OthelloPlayer1.SetColor(Color.Black);
+            OthelloPlayer1.SetAvatarID(0);
+            OthelloPlayer2.SetColor(Color.White);
+            OthelloPlayer2.SetAvatarID(19);
+
+            // Game is ready
+            OthelloPlayer1.GameReady();
+            OthelloPlayer2.GameReady();
+        }
+
+        /// <summary>
+        /// Send avatardID from both client after this function
+        /// </summary>
+        /// <param name="game"></param>
+        private void Load(List<GameState> game)
+        {
+            throw new NotImplementedException();
+
+            /*
             // Init gameManager. TODO BASTIEN : Server don't know if it's local or online
             GameManager = new GameManager(GameType.Local);
             GameManager.OnGameFinished += GameManager_OnGameFinished;
@@ -69,9 +112,9 @@ namespace OthelloMillenniumServer
             OthelloPlayer1.GameReady();
             OthelloPlayer2.GameReady();
 
-            // TODO SEGAN (NiceToHave) : Ping clients to detect disconnect
-            // Start to ping clients
-            // pinger.Start();
+            // Immediatly start the game
+            StartGame();
+            */
         }
 
         private OthelloPlayerServer GetOpponent(OthelloPlayerServer othelloPlayer)
