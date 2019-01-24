@@ -91,6 +91,7 @@ namespace OthelloMillenniumClient
                     Text = i.ToString(),
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
+                    TextAlignment = TextAlignment.Center,
                     Margin = margin,
                     Foreground = brushYellow,
                     FontSize = 25,
