@@ -75,7 +75,8 @@ namespace OthelloMillenniumClient
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     Margin = margin,
-                    Foreground = brushYellow
+                    Foreground = brushYellow,
+                    FontSize = 25
                 };
                 MainGrid.Children.Add(border);
             }
@@ -91,7 +92,9 @@ namespace OthelloMillenniumClient
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     Margin = margin,
-                    Foreground = brushYellow
+                    Foreground = brushYellow,
+                    FontSize = 25,
+                    Width=30
                 };
                 MainGrid.Children.Add(border);
             }

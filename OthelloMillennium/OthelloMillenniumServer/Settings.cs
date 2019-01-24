@@ -9,7 +9,7 @@ namespace OthelloMillenniumServer
         public static int SIZE_WIDTH = 9;
         public static int SIZE_HEIGHT = 7;
 
-        public const int TimePerPlayer = 120000;
+        public const int TimePerPlayer = 20000;//120000;
 
         /// <summary>
         /// Seconds for the timeout

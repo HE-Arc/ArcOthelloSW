@@ -251,10 +251,10 @@ namespace OthelloMillenniumClient
             }
             return player;
         }
-
-        private int IdImage(Tuple<int, int> player)
+        
+        private Tuple<int, int> IdImage(int player)
         {
-            return (player.Item1 * NB_COLUMN) + (player.Item2 % (NB_ROW * NB_COLUMN));
+            return new Tuple<int, int>((player/NB_COLUMN)%NB_ROW, player%NB_COLUMN);
         }
     }
 }

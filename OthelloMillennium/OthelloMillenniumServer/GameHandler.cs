@@ -83,7 +83,7 @@ namespace OthelloMillenniumServer
             OthelloPlayer1.SetAvatarID(0);
             OthelloPlayer2.SetColor(Color.White);
             OthelloPlayer2.SetAvatarID(19);
-
+            
             // Game is ready
             OthelloPlayer1.GameReady();
             OthelloPlayer2.GameReady();
@@ -98,7 +98,7 @@ namespace OthelloMillenniumServer
             // Init gameManager
             GameManager = new GameManager();
             GameManager.OnGameFinished += GameManager_OnGameFinished;
-
+            
             // Load the game
             GameManager.Load(saveFile.States);
 
@@ -107,6 +107,10 @@ namespace OthelloMillenniumServer
             OthelloPlayer1.SetAvatarID(saveFile.Player1AvatarID);
             OthelloPlayer2.SetColor((Color)saveFile.Player2Color);
             OthelloPlayer2.SetAvatarID(saveFile.Player2AvatarID);
+
+            // Notify clients of opponent avatar
+            OthelloPlayer1.OpponentAvatarChanged(saveFile.Player2AvatarID);
+            OthelloPlayer2.OpponentAvatarChanged(saveFile.Player1AvatarID);
 
             // Immediatly start the game
             StartGame();
@@ -117,17 +121,16 @@ namespace OthelloMillenniumServer
             return othelloPlayer.Equals(OthelloPlayer1) ? OthelloPlayer2 : OthelloPlayer1;
         }
 
-        private void GameManager_OnGameFinished(object sender, GameState e)
+        private void GameManager_OnGameFinished(object sender, GameState gameState)
         {
             var gameManager = sender as GameManager;
-            var finalGameState = gameManager.Export();
+
+            // Send the final state
+            BroadcastGameboard();
 
             // Notifiy the end of the game
             OthelloPlayer1.GameEnded();
             OthelloPlayer2.GameEnded();
-
-            // Send the final state
-            BroadcastGameboard();
         }
 
         /// <summary>

@@ -58,6 +58,8 @@ namespace OthelloMillenniumServer
             {
                 timeCounter.Add(Color.Black, new StoppableTimer(Settings.TimePerPlayer));
                 timeCounter.Add(Color.White, new StoppableTimer(Settings.TimePerPlayer));
+                (timeCounter[Color.Black] as StoppableTimer).Timeout += OnTimeout;
+                (timeCounter[Color.White] as StoppableTimer).Timeout += OnTimeout;
             }
             else
             {

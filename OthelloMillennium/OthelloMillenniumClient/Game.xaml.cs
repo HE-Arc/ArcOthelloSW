@@ -235,8 +235,10 @@ namespace OthelloMillenniumClient
             InitializeComponent();
             DataContext = this;
 
-            timer = new Timer();
-            timer.Interval = 1000;
+            timer = new Timer
+            {
+                Interval = 1000
+            };
 
             ApplicationManager.Instance.Game = this;
             
@@ -278,7 +280,7 @@ namespace OthelloMillenniumClient
             //Score
             ScoreBlack = gameState.Scores.Item1;
             ScoreWhite = gameState.Scores.Item2;
-            refreshScoreUI();
+            RefreshScoreUI();
 
             //Time
             TimeCounterBlack = gameState.RemainingTimes.Item1;
@@ -344,7 +346,7 @@ namespace OthelloMillenniumClient
                 //Update score
                 ScoreBlack = gameState.Scores.Item1;
                 ScoreWhite = gameState.Scores.Item2;
-                refreshScoreUI();
+                RefreshScoreUI();
 
                 //Update PlayerTurn design
                 InactiveBlack = gameState.PlayerTurn != 1;
@@ -365,7 +367,7 @@ namespace OthelloMillenniumClient
             });
         }
 
-        private void refreshScoreUI()
+        private void RefreshScoreUI()
         {
             ColumnBlackScore.Height = new GridLength(ScoreBlack, GridUnitType.Star);
             ColumnWhiteScore.Height = new GridLength(ScoreWhite, GridUnitType.Star);
@@ -409,7 +411,7 @@ namespace OthelloMillenniumClient
                 }
 
                 EndGame endGame = new EndGame(victory, color, pseudo, avatarId);
-                endGame.Show();
+                endGame.ShowDialog();
             });
         }
 
