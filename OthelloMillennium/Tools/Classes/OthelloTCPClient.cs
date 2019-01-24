@@ -136,6 +136,8 @@ namespace Tools
                 {
                     Thread.Sleep(100);
                 }
+
+                Thread.Sleep(10);
             }
         }
 
@@ -199,6 +201,8 @@ namespace Tools
                 {
                     Thread.Sleep(100);
                 }
+
+                Thread.Sleep(10);
             }
         }
 
