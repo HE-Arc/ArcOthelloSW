@@ -108,6 +108,8 @@ namespace OthelloMillenniumServer
                         searchingClients.TryRemove(client, out PlayerType playerType);
                         clientsToRemove.Remove(client);
                     }
+
+                    Thread.Sleep(10);
                 }
             }).Start();
         }
