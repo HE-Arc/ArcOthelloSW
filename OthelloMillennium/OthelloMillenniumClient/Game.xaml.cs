@@ -308,10 +308,14 @@ namespace OthelloMillenniumClient
             if(playerTurn == 1)
             {
                 TimeCounterBlack -= 1000;
+                if (TimeCounterBlack < 0)
+                    TimeCounterBlack = 0;
             }
             else
             {
                 TimeCounterWhite -= 1000;
+                if (TimeCounterBlack < 0)
+                    TimeCounterWhite = 0;
             }
         }
 

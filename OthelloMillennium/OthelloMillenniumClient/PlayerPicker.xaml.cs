@@ -142,21 +142,26 @@ namespace OthelloMillenniumClient
             MainGrid.Children.Add(whiteSelector);
             MainGrid.Children.Add(blackSelector);
 
-            PlayerBlackImageId = ApplicationManager.Instance.PlayersAvatarId(Color.Black);
-            PlayerWhiteImageId = ApplicationManager.Instance.PlayersAvatarId(Color.White);
+            PlayerDataExport data = ApplicationManager.Instance.GetPlayers();
+            
+            PlayerBlackImageId = data.Color1 == Color.Black ? data.AvatarId1 : data.AvatarId2;
+            PlayerWhiteImageId = data.Color1 == Color.White ? data.AvatarId1 : data.AvatarId2;
         }
 
         public void OnUpdateOpponentColorServer(Color color, int AvatardId)
         {
-            // Has to be the inverted since we modify the opponent
-            if (color == Color.Black)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                PlayerBlackImageId = AvatardId;
-            }
-            else
-            {
-                PlayerWhiteImageId = AvatardId;
-            }
+                // Has to be the inverted since we modify the opponent
+                if (color == Color.Black)
+                {
+                    PlayerBlackImageId = AvatardId;
+                }
+                else
+                {
+                    PlayerWhiteImageId = AvatardId;
+                }
+            });
         }
 
         public void OnKeyDownOnlineWhite(object sender, KeyEventArgs e)
@@ -250,11 +255,6 @@ namespace OthelloMillenniumClient
         private int IdImage(Tuple<int, int> player)
         {
             return (player.Item1 * NB_COLUMN) + (player.Item2 % (NB_ROW * NB_COLUMN));
-        }
-
-        private Tuple<int, int> IdImage(int id)
-        {
-            return new Tuple<int, int>((id / NB_COLUMN), id % NB_COLUMN);
         }
     }
 }

@@ -36,21 +36,17 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             player1.ReadyToPlay();
         }
 
-        public override Tuple<Color, Color> PlayersColor() => new Tuple<Color, Color>(player1.Color, player1.Color==Color.Black?Color.White:Color.Black);
-
         public override PlayerDataExport GetPlayers() => new PlayerDataExport()
         {
             Name1 = player1.Name,
             Name2 = player2.Name,
 
             Color1 = player1.Color,
-            Color2 = player1.Color == Color.Black ? Color.Black : Color.White,
+            Color2 = player1.Color == Color.Black ? Color.White : Color.Black,
 
             AvatarId1 = player1.AvatarId,
             AvatarId2 = player2.AvatarId
         };
-
-        public override int PlayersAvatarId(Color color) => player1.Color == color ? player1.AvatarId : player2.AvatarId;
 
         public override void Play(Tuple<char, int> columnRow)
         {
@@ -100,6 +96,7 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                         break;
 
                     case OpponentAvatarChangedOrder order:
+                        player2.AvatarId = order.AvatarID;
                         orderHandler.HandleOrder(sender, order);
                         break;
 

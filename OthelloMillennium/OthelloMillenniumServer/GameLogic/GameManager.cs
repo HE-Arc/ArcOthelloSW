@@ -98,6 +98,8 @@ namespace OthelloMillenniumServer
                     {
                         timeCounter[Color.Black] = new StoppableTimer(step.RemainingTimes.Item1);
                         timeCounter[Color.White] = new StoppableTimer(step.RemainingTimes.Item2);
+                        (timeCounter[Color.Black] as StoppableTimer).Timeout += OnTimeout;
+                        (timeCounter[Color.White] as StoppableTimer).Timeout += OnTimeout;
                     }
                     else
                     {

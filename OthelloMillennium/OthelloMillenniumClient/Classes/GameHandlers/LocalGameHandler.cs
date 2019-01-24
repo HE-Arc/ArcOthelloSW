@@ -58,8 +58,6 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
             player2.ReadyToPlay();
         }
 
-        public override Tuple<Color, Color> PlayersColor() => new Tuple<Color, Color>(player1.Color, player2.Color);
-
         public override PlayerDataExport GetPlayers() => new PlayerDataExport()
             {
                 Name1 = player1.Name,
@@ -71,8 +69,6 @@ namespace OthelloMillenniumClient.Classes.GameHandlers
                 AvatarId1 = player1.AvatarId,
                 AvatarId2 = player2.AvatarId
             };
-
-        public override int PlayersAvatarId(Color color) => player1.Color == color ? player1.AvatarId : player2.AvatarId;
 
         public override void Play(Tuple<char, int> columnRow)
         {

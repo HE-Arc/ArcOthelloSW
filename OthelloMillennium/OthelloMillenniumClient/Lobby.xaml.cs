@@ -30,7 +30,7 @@ namespace OthelloMillenniumClient
             }
             else
             {
-                if(ApplicationManager.Instance.PlayersColor().Item1 == Color.Black)
+                if(playersInfo.Color1 == Color.Black)
                 {
                     KeyUp += PlayerPicker.OnKeyDownOnlineBlack;
                 }
@@ -60,7 +60,6 @@ namespace OthelloMillenniumClient
         public void OnUpdateOpponentColorServer(Color color, int AvatarId)
         {
             PlayerPicker.OnUpdateOpponentColorServer(color, AvatarId);
-            //TODO Update score interface
         }
     }
 }

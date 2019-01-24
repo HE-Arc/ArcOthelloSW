@@ -47,7 +47,8 @@ namespace OthelloMillenniumServer
         /// <returns></returns>
         public bool StartListening(GameType env)
         {
-            if(env == GameType.Local)
+            Environnement = env;
+            if (Environnement == GameType.Local)
             {
                 listener = new TcpListener(IPAddress.Parse(Tools.Properties.Settings.Default.LocalHostname), Tools.Properties.Settings.Default.LocalPort);
             }

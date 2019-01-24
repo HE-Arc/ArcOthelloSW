@@ -127,7 +127,7 @@ namespace OthelloMillenniumServer
             OthelloPlayer2.GameEnded();
 
             // Send the final state
-            BroadcastGameboard(); 
+            BroadcastGameboard();
         }
 
         /// <summary>
