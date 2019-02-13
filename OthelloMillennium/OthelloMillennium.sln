@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPageTransitions", "WpfPa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OthelloMillenniumServer", "OthelloMillenniumServer\OthelloMillenniumServer.csproj", "{AE7945BE-8562-47FA-965F-76F8BED87F6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAOthelloMillenium", "OthelloMilleniumAI\IAOthelloMillenium.csproj", "{D00EB200-56AD-47F9-A587-F913BC02F445}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{AE7945BE-8562-47FA-965F-76F8BED87F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE7945BE-8562-47FA-965F-76F8BED87F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE7945BE-8562-47FA-965F-76F8BED87F6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D00EB200-56AD-47F9-A587-F913BC02F445}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D00EB200-56AD-47F9-A587-F913BC02F445}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D00EB200-56AD-47F9-A587-F913BC02F445}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D00EB200-56AD-47F9-A587-F913BC02F445}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
