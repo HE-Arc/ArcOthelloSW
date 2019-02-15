@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPageTransitions", "WpfPa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OthelloMillenniumServer", "OthelloMillenniumServer\OthelloMillenniumServer.csproj", "{AE7945BE-8562-47FA-965F-76F8BED87F6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAOthelloMillenium", "OthelloMilleniumAI\IAOthelloMillenium.csproj", "{D00EB200-56AD-47F9-A587-F913BC02F445}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OthelloMilleniumAI", "OthelloMilleniumAI\OthelloMilleniumAI.csproj", "{D00EB200-56AD-47F9-A587-F913BC02F445}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

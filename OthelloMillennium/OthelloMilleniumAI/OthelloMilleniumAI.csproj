@@ -7,8 +7,8 @@
     <ProjectGuid>{D00EB200-56AD-47F9-A587-F913BC02F445}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IAOthelloMillenium</RootNamespace>
-    <AssemblyName>IAOthelloMillenium</AssemblyName>
+    <RootNamespace>IAOthelloMilleniumAI</RootNamespace>
+    <AssemblyName>OthelloMilleniumAI</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
