@@ -45,8 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AI\AI.cs" />
-    <Compile Include="AI\GamePlate.cs" />
+    <Compile Include="AI\GameState.cs" />
     <Compile Include="AI\Settings.cs" />
     <Compile Include="AI\TreeNode.cs" />
     <Compile Include="AIMilleniumBoard.cs" />

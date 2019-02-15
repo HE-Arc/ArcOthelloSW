@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 namespace IAOthelloMillenium
 {
-    internal class GamePlate
+    /// <summary>
+    /// Main class which represent the gameboard -> renamed to GameState to avoid issues with the LibrairieTestOthello
+    /// </summary>
+    internal class GameState
     {
         //EMPTY = 0;
         //BLACK = 1;
@@ -11,7 +14,7 @@ namespace IAOthelloMillenium
 
         #region Attributs
         //Directions to explore
-        private static readonly Tuple<int, int>[] directions =
+        private static readonly Tuple<int, int>[] DIRECTIONS =
         {
             new Tuple<int, int>(-1, -1), new Tuple<int, int>(0, -1), new Tuple<int, int>(1, -1),
             new Tuple<int, int>(-1,  0),                             new Tuple<int, int>(1,  0),
@@ -24,14 +27,22 @@ namespace IAOthelloMillenium
 
         #region Properties
         public int[,] Board { get; private set; }
-
         public bool GameEnded { get; private set; }
+
+        public int BlackScore { get; private set; }
+        public int WhiteScore { get; private set; }
 
         private bool? whiteCanPlay = null;
         private bool? blackCanPlay = null;
         private int? player;
         private List<Tuple<int, int>> validMoves = null;
 
+        #endregion
+
+        /// <summary>
+        /// Single computation property if white can play
+        /// </summary>
+        /// <returns>White can play</returns>
         public bool WhiteCanPlay()
         {
             if (whiteCanPlay == null)
@@ -41,6 +52,10 @@ namespace IAOthelloMillenium
             return (bool)whiteCanPlay;
         }
 
+        /// <summary>
+        /// Single computation property if black can play
+        /// </summary>
+        /// <returns>Black can play</returns>
         public bool BlackCanPlay()
         {
             if (blackCanPlay == null)
@@ -50,17 +65,12 @@ namespace IAOthelloMillenium
             return (bool)blackCanPlay;
         }
 
-        public int BlackScore { get; private set; }
-        public int WhiteScore { get; private set; }
-
-        #endregion
-
         #region static
         /// <summary>
-        /// Create a basic
+        /// Create a basic start board
         /// </summary>
-        /// <returns></returns>
-        public static GamePlate CreateStartState()
+        /// <returns>A new fresh Board</returns>
+        public static GameState CreateStartState()
         {
             int[,] state = new int[Settings.SIZE_WIDTH, Settings.SIZE_HEIGHT];
             for(int i=0;i<Settings.SIZE_WIDTH; ++i)
@@ -76,7 +86,7 @@ namespace IAOthelloMillenium
             state[4, 4] = Settings.WHITE;
             state[4, 3] = Settings.BLACK;
 
-            return new GamePlate(state);
+            return new GameState(state);
         }
 
         #endregion
@@ -84,8 +94,8 @@ namespace IAOthelloMillenium
         /// <summary>
         /// Constructor to create a new GameState
         /// </summary>
-        /// <param name="board"></param>
-        public GamePlate(int[,] board)
+        /// <param name="board">New Board</param>
+        public GameState(int[,] board)
         {
             Board = board;
 
@@ -101,10 +111,10 @@ namespace IAOthelloMillenium
         }
 
         /// <summary>
-        /// Compute the valid move for one player
+        /// Compute the valid move for a given player
         /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
+        /// <param name="player">Player</param>
+        /// <returns>List of possibles moves</returns>
         public List<Tuple<int, int>> PossibleMoves(int player)
         {
             if (this.player != player || validMoves == null)
@@ -130,7 +140,7 @@ namespace IAOthelloMillenium
         /// <summary>
         /// Return true if a given player can play or not
         /// </summary>
-        /// <returns></returns>
+        /// <returns>True if the player can play</returns>
         private bool PlayerCanPlay(int player)
         {
             // Check if the user has been eradicated
@@ -158,16 +168,16 @@ namespace IAOthelloMillenium
         /// <summary>
         /// Apply a move and return the new GameState
         /// </summary>
-        /// <param name="point"></param>
-        /// <param name="state"></param>
-        /// <returns></returns>
-        public GamePlate ApplyMove(Tuple<int, int> indices, int player)
+        /// <param name="indices">Location</param>
+        /// <param name="player">Player</param>
+        /// <returns>The new GamePlate</returns>
+        public GameState ApplyMove(Tuple<int, int> indices, int player)
         {
             List<Tuple<int, int>> tokenToReturn = new List<Tuple<int, int>>();
             List<Tuple<int, int>> tokenToReturnPotential = new List<Tuple<int, int>>();
 
             // Check in all 8 directions that there is at least one cellState of our own
-            foreach (Tuple<int, int> direction in directions)
+            foreach (Tuple<int, int> direction in DIRECTIONS)
             {
                 tokenToReturnPotential.Clear();
                 bool end = false;
@@ -207,13 +217,13 @@ namespace IAOthelloMillenium
             }
 
             // Return the new state
-            return new GamePlate(newCellState);
+            return new GameState(newCellState);
         }
 
         /// <summary>
         /// Return the number of token of this sort
         /// </summary>
-        /// <param name="player"></param>
+        /// <param name="player">Player</param>
         /// <returns>Nb of cell conrtaining the given cellState</returns>
         public int GetNbToken(int player)
         {
@@ -223,9 +233,9 @@ namespace IAOthelloMillenium
         /// <summary>
         /// Internal validation of a potential move
         /// </summary>
-        /// <param name="indices"></param>
-        /// <param name="player"></param>
-        /// <returns></returns>
+        /// <param name="indices">location</param>
+        /// <param name="player">Player</param>
+        /// <returns>True if the move is valid</returns>
         public bool ValidateMove(Tuple<int, int> indices, int player)
         {
             // Check if cell at given coord is empty
@@ -235,7 +245,7 @@ namespace IAOthelloMillenium
             }
 
             // Check in all 8 directions that there is at least one cellState of our own
-            foreach (Tuple<int, int> direction in directions)
+            foreach (Tuple<int, int> direction in DIRECTIONS)
             {
                 bool end = false;
                 int nbTokenReturnedTemp = 0;
@@ -269,7 +279,7 @@ namespace IAOthelloMillenium
         /// <summary>
         /// Check if the game is finished
         /// </summary>
-        /// <returns></returns>
+        /// <returns>True of game is ended</returns>
         private void ComputeGameEnded()
         {
             // Manage all casses, when all token have been played

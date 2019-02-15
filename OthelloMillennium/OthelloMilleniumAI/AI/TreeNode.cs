@@ -3,23 +3,166 @@ using System.Collections.Generic;
 
 namespace IAOthelloMillenium
 {
+    /// <summary>
+    /// Single TreeNode for the AI
+    /// </summary>
     class TreeNode
     {
-        //TODO choice keep move at each level or board
+        public GameState GameBoard { get; private set; }
 
-        public GamePlate GameBoard { get; private set; }
+        //Current player turn
+        public bool WhiteTurn { get; private set; }
+
         public bool IsTerminal => GameBoard.GameEnded;
         public int Score(bool isWhite) => isWhite ? GameBoard.WhiteScore: GameBoard.BlackScore;
 
-        public bool WhiteTurn { get; private set; }
 
         private Dictionary<Tuple<int,int>, TreeNode> whiteMoves;
         private Dictionary<Tuple<int, int>, TreeNode> blackMoves;
 
-        public TreeNode(GamePlate gameBoard, bool whiteTurn)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="gameBoard">GameBoard</param>
+        /// <param name="whiteTurn">PlayerTurn</param>
+        public TreeNode(GameState gameBoard, bool whiteTurn)
         {
             GameBoard = gameBoard;
             WhiteTurn = whiteTurn;
+        }
+
+        //Score of this specific node
+        private int? evaluation = null;
+
+        //Matrix for computation
+        private static int[,] SQUARE_SCORE = {
+            {100, -10,  8,  6,  6,  6, 8,  -10,  100},
+            {-10, -25, -4, -4, -4, -4, -4, -25,  -10},
+            {  8,  -4,  6,  4,  4,  4,  6,  -4 ,   8},
+            {  6,  -4,  4,  0,  0,  4,  4,  -4 ,   6},
+            {  8,  -4,  6,  0,  0,  4,  6,  -4 ,   8},
+            {-10, -25, -4, -4, -4, -4, -4, -25 , -10},
+            {100, -10,  8,  6,  6,  6,  8, -10 , 100}};
+
+        private static int EARLY_GAME = Settings.SIZE_WIDTH* Settings.SIZE_HEIGHT / 3;
+        private static int MID_GAME = Settings.SIZE_WIDTH* Settings.SIZE_HEIGHT * 2 / 3;
+
+        /// <summary>
+        /// Eval the locations of the pawns
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        private int Placement(int player)
+        {
+            int opponent = (player == 1) ? 2 : 1;
+
+            int myScore = 0;
+            int opponentScore = 0;
+
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (GameBoard.Board[i, j] == player) myScore += SQUARE_SCORE[i, j];
+                    if (GameBoard.Board[i, j] == opponent) opponentScore += SQUARE_SCORE[i, j];
+                }
+            }
+
+            return myScore - opponentScore;
+        }
+
+        /// <summary>
+        /// Calc the difference between the number of disc
+        /// </summary>
+        /// <param name="isWhite"></param>
+        /// <returns></returns>
+        private int DiscDiff(bool isWhite)
+        {
+            return (GameBoard.WhiteScore - GameBoard.BlackScore) * (isWhite ? 1 : -1);
+        }
+
+        /// <summary>
+        /// Difference between the stable discs
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        private int DiscDiffFinal(int player)
+        {
+            //TODO Difference between stable discs
+            return 0;
+        }
+
+        /// <summary>
+        /// Calc the number of move available for the opponent
+        /// </summary>
+        /// <param name="isWhite">Player turn</param>
+        /// <returns>Mobility of the player</returns>
+        private int Mobility(bool isWhite)
+        {
+            //Return a positive number if we skip the other player turn
+            return Children(WhiteTurn).Count * (isWhite == WhiteTurn ? 1 : -1);
+        }
+
+        /// <summary>
+        /// Calcl th number of corner in possession
+        /// </summary>
+        /// <param name="Player"></param>
+        /// <returns></returns>
+        private int NbCorner(int Player)
+        {
+            int score = 0;
+            foreach(Tuple<int,int> corner in Settings.CORNERS)
+            {
+                if(GameBoard.Board[corner.Item1, corner.Item2] == Player)
+                {
+                    ++score;
+                }
+                else if(GameBoard.Board[corner.Item1, corner.Item2] > 0)
+                {
+                    score -= 2;
+                }
+            }
+            return score;
+        }
+
+        /// <summary>
+        /// Eval the board
+        /// </summary>
+        /// <param name="isWhite"></param>
+        /// <returns></returns>
+        public int Evaluate(bool isWhite)
+        {
+            if(evaluation == null)
+            {
+                int player = isWhite ? Settings.WHITE : Settings.BLACK;
+                int nbPawns = Score(true) + Score(false);
+
+                //Ended
+                if (GameBoard.GameEnded)
+                {
+                    return 1000 * DiscDiff(isWhite);
+                }
+
+                if (nbPawns < EARLY_GAME)
+                {
+                    evaluation = 1000 * NbCorner(player) + 0 * DiscDiff(isWhite) + 200 * Placement(player);// + 500 * Mobility(isWhite);
+                }
+                else if (nbPawns < MID_GAME)
+                {
+                    evaluation = 1000 * NbCorner(player) + 50 * DiscDiff(isWhite) + 200 * Placement(player) + 20 * Mobility(isWhite);
+                }
+                else
+                {
+                    evaluation = 1000 * NbCorner(player) + 100 * DiscDiff(isWhite);
+                }
+
+                //Evaluation juste one
+                //Evaluator.evaluate(this, isWhite);
+
+                //TODO Check if we pass the turn of the opponent
+                
+            }
+            return (int)evaluation;
         }
 
         //Return possibles moves
@@ -30,7 +173,8 @@ namespace IAOthelloMillenium
                 whiteMoves = new Dictionary<Tuple<int, int>, TreeNode>();
                 foreach(Tuple<int,int> move in GameBoard.PossibleMoves(Settings.WHITE))
                 {
-                    whiteMoves.Add(move, new TreeNode(GameBoard.ApplyMove(move, Settings.WHITE), whiteTurn));
+                    GameState gameBoard = GameBoard.ApplyMove(move, Settings.WHITE);
+                    whiteMoves.Add(move, new TreeNode(gameBoard, !gameBoard.BlackCanPlay()));
                 }
             }
             else if (!whiteTurn && blackMoves == null)
@@ -38,7 +182,8 @@ namespace IAOthelloMillenium
                 blackMoves = new Dictionary<Tuple<int, int>, TreeNode>();
                 foreach (Tuple<int, int> move in GameBoard.PossibleMoves(Settings.BLACK))
                 {
-                    blackMoves.Add(move, new TreeNode(GameBoard.ApplyMove(move, Settings.BLACK), whiteTurn));
+                    GameState gameBoard = GameBoard.ApplyMove(move, Settings.BLACK);
+                    blackMoves.Add(move, new TreeNode(gameBoard, gameBoard.WhiteCanPlay()));
                 }
             }
 

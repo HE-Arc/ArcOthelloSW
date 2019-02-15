@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace IAOthelloMillenium
 {
@@ -12,6 +11,14 @@ namespace IAOthelloMillenium
 
         public static readonly int SIZE_WIDTH = 9;
         public static readonly int SIZE_HEIGHT = 7;
+
+        public static List<Tuple<int, int>> CORNERS = new List<Tuple<int, int>>()
+            {
+                new Tuple<int,int>(0,0),
+                new Tuple<int,int>(0,SIZE_WIDTH),
+                new Tuple<int,int>(SIZE_HEIGHT,0),
+                new Tuple<int,int>(SIZE_HEIGHT,SIZE_WIDTH),
+            };
 
         public static readonly int DEPTH_SEARCH = 5;
     }
