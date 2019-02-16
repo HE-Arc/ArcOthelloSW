@@ -6,7 +6,7 @@ namespace IAOthelloMillenium
     /// <summary>
     /// Single TreeNode for the AI
     /// </summary>
-    class TreeNode
+    public class TreeNode
     {
         public GameState GameBoard { get; private set; }
 
@@ -54,17 +54,17 @@ namespace IAOthelloMillenium
         /// <returns></returns>
         private int Placement(int player)
         {
-            int opponent = (player == 1) ? 2 : 1;
+            int opponent = (player == Settings.WHITE) ? Settings.BLACK : Settings.WHITE;
 
             int myScore = 0;
             int opponentScore = 0;
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < Settings.SIZE_WIDTH; i++)
             {
-                for (int j = 0; j < 8; j++)
+                for (int j = 0; j < Settings.SIZE_HEIGHT; j++)
                 {
-                    if (GameBoard.Board[i, j] == player) myScore += SQUARE_SCORE[i, j];
-                    if (GameBoard.Board[i, j] == opponent) opponentScore += SQUARE_SCORE[i, j];
+                    if (GameBoard.Board[i, j] == player) myScore += SQUARE_SCORE[j, i];
+                    if (GameBoard.Board[i, j] == opponent) opponentScore += SQUARE_SCORE[j, i];
                 }
             }
 
@@ -106,20 +106,22 @@ namespace IAOthelloMillenium
         /// <summary>
         /// Calcl th number of corner in possession
         /// </summary>
-        /// <param name="Player"></param>
+        /// <param name="player"></param>
         /// <returns></returns>
-        private int NbCorner(int Player)
+        private int NbCorner(int player)
         {
+            int opponent = (player == Settings.WHITE) ? Settings.BLACK : Settings.WHITE;
+
             int score = 0;
             foreach(Tuple<int,int> corner in Settings.CORNERS)
             {
-                if(GameBoard.Board[corner.Item1, corner.Item2] == Player)
+                if(GameBoard.Board[corner.Item1, corner.Item2] == player)
                 {
                     ++score;
                 }
-                else if(GameBoard.Board[corner.Item1, corner.Item2] > 0)
+                else if(GameBoard.Board[corner.Item1, corner.Item2] == opponent)
                 {
-                    score -= 2;
+                    score -= 5;
                 }
             }
             return score;
@@ -145,15 +147,15 @@ namespace IAOthelloMillenium
 
                 if (nbPawns < EARLY_GAME)
                 {
-                    evaluation = 1000 * NbCorner(player) + 0 * DiscDiff(isWhite) + 200 * Placement(player);// + 500 * Mobility(isWhite);
+                    evaluation = 2000 * NbCorner(player) + 0 * DiscDiff(isWhite) + 200 * Placement(player);// + 500 * Mobility(isWhite);
                 }
                 else if (nbPawns < MID_GAME)
                 {
-                    evaluation = 1000 * NbCorner(player) + 50 * DiscDiff(isWhite) + 200 * Placement(player) + 20 * Mobility(isWhite);
+                    evaluation = 2000 * NbCorner(player) + 50 * DiscDiff(isWhite) + 200 * Placement(player);// + 20 * Mobility(isWhite);
                 }
                 else
                 {
-                    evaluation = 1000 * NbCorner(player) + 100 * DiscDiff(isWhite);
+                    evaluation = 2000 * NbCorner(player) + 100 * DiscDiff(isWhite);
                 }
 
                 //Evaluation juste one

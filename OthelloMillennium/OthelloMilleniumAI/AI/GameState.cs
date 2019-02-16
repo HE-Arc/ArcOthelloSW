@@ -6,7 +6,7 @@ namespace IAOthelloMillenium
     /// <summary>
     /// Main class which represent the gameboard -> renamed to GameState to avoid issues with the LibrairieTestOthello
     /// </summary>
-    internal class GameState
+    public class GameState
     {
         //EMPTY = 0;
         //BLACK = 1;
@@ -29,8 +29,8 @@ namespace IAOthelloMillenium
         public int[,] Board { get; private set; }
         public bool GameEnded { get; private set; }
 
-        public int BlackScore { get; private set; }
-        public int WhiteScore { get; private set; }
+        public int BlackScore => cellStateCount[Settings.BLACK+1];
+        public int WhiteScore => cellStateCount[Settings.WHITE+1];
 
         private bool? whiteCanPlay = null;
         private bool? blackCanPlay = null;
@@ -228,6 +228,303 @@ namespace IAOthelloMillenium
         public int GetNbToken(int player)
         {
             return cellStateCount[player+1];
+        }
+
+        /// <summary>
+        /// Return the number of stable tokens
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public int GetNbStableToken(int player)
+        {
+            HashSet<Tuple<int, int>> stablePawns = new HashSet<Tuple<int, int>>();
+
+            //TODO
+
+            int i = 0;
+            int j = 0;
+            int di = i;
+            int dj = j;
+
+            int stableMax = 0;
+            bool ended = false;
+            
+            //Corner up left
+            i = j = 0;
+
+            if (Board[i, j] == player)
+            {
+                di = i;
+                dj = j;
+                ended = false;
+                stableMax = Settings.SIZE_HEIGHT;
+
+                while (di < Settings.SIZE_WIDTH && !ended)
+                {
+                    dj = j;
+                    while (dj < Settings.SIZE_HEIGHT && dj < stableMax)
+                    {
+                        if (Board[di, dj] == player)
+                        {
+                            stablePawns.Add(new Tuple<int, int>(di, dj));
+                        }
+                        else
+                        {
+                            stableMax = dj - 1;
+                        }
+                        ++dj;
+                    }
+                    if (stableMax == dj && dj != Settings.SIZE_HEIGHT)
+                    {
+                        --stableMax;
+                    }
+                    if (stableMax < 0)
+                    {
+                        ended = true;
+                    }
+                    ++di;
+                }
+
+                di = i;
+                dj = j;
+                ended = false;
+                stableMax = Settings.SIZE_WIDTH;
+
+                while (dj < Settings.SIZE_HEIGHT && !ended)
+                {
+                    di = i;
+                    while (di < Settings.SIZE_WIDTH && di < stableMax)
+                    {
+                        if (Board[di, dj] == player)
+                        {
+                            stablePawns.Add(new Tuple<int, int>(di, dj));
+                        }
+                        else
+                        {
+                            stableMax = di - 1;
+                        }
+                        ++di;
+                    }
+                    if (stableMax == di && di != Settings.SIZE_WIDTH)
+                    {
+                        --stableMax;
+                    }
+                    if (stableMax < 0)
+                    {
+                        ended = true;
+                    }
+                    ++dj;
+                }
+            }
+
+            //Corner down left
+            i = 0;
+            j = Settings.SIZE_HEIGHT - 1;
+
+            if (Board[i, j] == player)
+            {
+                di = i;
+                dj = j;
+                ended = false;
+                stableMax = -1;
+
+                while (di < Settings.SIZE_WIDTH && !ended)
+                {
+                    dj = j;
+                    while (dj >= 0 && dj > stableMax)
+                    {
+                        if (Board[di, dj] == player)
+                        {
+                            stablePawns.Add(new Tuple<int, int>(di, dj));
+                        }
+                        else
+                        {
+                            stableMax = dj + 1;
+                        }
+                        --dj;
+                    }
+                    if (stableMax == dj && dj != -1)
+                    {
+                        ++stableMax;
+                    }
+                    if (stableMax >= Settings.SIZE_HEIGHT-1)
+                    {
+                        ended = true;
+                    }
+                    ++di;
+                }
+
+                di = i;
+                dj = j;
+                ended = false;
+                stableMax = Settings.SIZE_WIDTH;
+
+                while (dj >= 0 && !ended)
+                {
+                    di = i;
+                    while (di < Settings.SIZE_WIDTH && di < stableMax)
+                    {
+                        if (Board[di, dj] == player)
+                        {
+                            stablePawns.Add(new Tuple<int, int>(di, dj));
+                        }
+                        else
+                        {
+                            stableMax = di - 1;
+                        }
+                        ++di;
+                    }
+                    if (stableMax == di && di != Settings.SIZE_WIDTH)
+                    {
+                        --stableMax;
+                    }
+                    if (stableMax < 0)
+                    {
+                        ended = true;
+                    }
+                    --dj;
+                }
+            }
+
+            //Corner up right
+            i = Settings.SIZE_WIDTH - 1;
+            j = 0;
+
+            if (Board[i, j] == player)
+            {
+                di = i;
+                dj = j;
+                ended = false;
+                stableMax = Settings.SIZE_HEIGHT;
+
+                while (di >= 0 && !ended)
+                {
+                    dj = j;
+                    while (dj < Settings.SIZE_HEIGHT && dj < stableMax)
+                    {
+                        if (Board[di, dj] == player)
+                        {
+                            stablePawns.Add(new Tuple<int, int>(di, dj));
+                        }
+                        else
+                        {
+                            stableMax = dj - 1;
+                        }
+                        ++dj;
+                    }
+                    if (stableMax == dj && dj != Settings.SIZE_HEIGHT)
+                    {
+                        --stableMax;
+                    }
+                    if (stableMax < 0)
+                    {
+                        ended = true;
+                    }
+                    --di;
+                }
+
+                di = i;
+                dj = j;
+                ended = false;
+                stableMax = -1;
+
+                while (dj < Settings.SIZE_HEIGHT && !ended)
+                {
+                    di = i;
+                    while (di >= 0 && di > stableMax)
+                    {
+                        if (Board[di, dj] == player)
+                        {
+                            stablePawns.Add(new Tuple<int, int>(di, dj));
+                        }
+                        else
+                        {
+                            stableMax = di + 1;
+                        }
+                        --di;
+                    }
+                    if (stableMax == di && di != -1)
+                    {
+                        ++stableMax;
+                    }
+                    if (stableMax >= Settings.SIZE_WIDTH-1)
+                    {
+                        ended = true;
+                    }
+                    ++dj;
+                }
+            }
+
+            //Corner down right
+            i = Settings.SIZE_WIDTH -1;
+            j = Settings.SIZE_HEIGHT -1;
+
+            if (Board[i, j] == player)
+            {
+                di = i;
+                dj = j;
+                ended = false;
+                stableMax = -1;
+
+                while (di >= 0 && !ended)
+                {
+                    dj = j;
+                    while (dj >= 0 && dj > stableMax)
+                    {
+                        if (Board[di, dj] == player)
+                        {
+                            stablePawns.Add(new Tuple<int, int>(di, dj));
+                        }
+                        else
+                        {
+                            stableMax = dj + 1;
+                        }
+                        --dj;
+                    }
+                    if (stableMax == dj && dj != -1)
+                    {
+                        ++stableMax;
+                    }
+                    if (stableMax >= Settings.SIZE_HEIGHT-1)
+                    {
+                        ended = true;
+                    }
+                    --di;
+                }
+
+                di = i;
+                dj = j;
+                ended = false;
+                stableMax = -1;
+
+                while (dj >= 0 && !ended)
+                {
+                    di = i;
+                    while (di >= 0 && di > stableMax)
+                    {
+                        if (Board[di, dj] == player)
+                        {
+                            stablePawns.Add(new Tuple<int, int>(di, dj));
+                        }
+                        else
+                        {
+                            stableMax = di + 1;
+                        }
+                        --di;
+                    }
+                    if (stableMax == di && di != -1)
+                    {
+                        ++stableMax;
+                    }
+                    if (stableMax >= Settings.SIZE_WIDTH-1)
+                    {
+                        ended = true;
+                    }
+                    --dj;
+                }
+            }
+
+            return stablePawns.Count;
         }
 
         /// <summary>

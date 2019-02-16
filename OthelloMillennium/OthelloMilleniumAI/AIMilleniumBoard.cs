@@ -8,7 +8,7 @@ namespace IAOthelloMillenium
     /// </summary>
     public class IAMilleniumBoard : IPlayable.IPlayable
     {
-        private TreeNode node;
+        public TreeNode node;
 
         /// <summary>
         /// Constructor
@@ -31,7 +31,7 @@ namespace IAOthelloMillenium
         {
             if (depth == 0 || node.IsTerminal)
             {
-                return node.Score(isWhite);
+                return node.Evaluate(isWhite);
             }
             
             if (node.WhiteTurn == isWhite)

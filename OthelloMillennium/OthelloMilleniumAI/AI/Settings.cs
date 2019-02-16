@@ -15,9 +15,9 @@ namespace IAOthelloMillenium
         public static List<Tuple<int, int>> CORNERS = new List<Tuple<int, int>>()
             {
                 new Tuple<int,int>(0,0),
-                new Tuple<int,int>(0,SIZE_WIDTH),
-                new Tuple<int,int>(SIZE_HEIGHT,0),
-                new Tuple<int,int>(SIZE_HEIGHT,SIZE_WIDTH),
+                new Tuple<int,int>(SIZE_WIDTH-1,0),
+                new Tuple<int,int>(0,SIZE_HEIGHT-1),
+                new Tuple<int,int>(SIZE_WIDTH-1,SIZE_HEIGHT-1),
             };
 
         public static readonly int DEPTH_SEARCH = 5;
