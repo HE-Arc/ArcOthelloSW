@@ -36,13 +36,14 @@ namespace IAOthelloMillenium
 
         //Matrix for computation
         private static int[,] SQUARE_SCORE = {
-            {100, -10,  8,  6,  6,  6, 8,  -10,  100},
-            {-10, -25, -4, -4, -4, -4, -4, -25,  -10},
+            {100, -50,  8,  6,  6,  6,  8, -50,  100},
+            {-50,-100, -4, -4, -4, -4, -4,-100,  -50},
             {  8,  -4,  6,  4,  4,  4,  6,  -4 ,   8},
             {  6,  -4,  4,  0,  0,  4,  4,  -4 ,   6},
             {  8,  -4,  6,  0,  0,  4,  6,  -4 ,   8},
-            {-10, -25, -4, -4, -4, -4, -4, -25 , -10},
-            {100, -10,  8,  6,  6,  6,  8, -10 , 100}};
+            {-50,-100, -4, -4, -4, -4, -4, -100, -50},
+            {100, -50,  8,  6,  6,  6,  8,  -50, 100}
+        };
 
         private static int EARLY_GAME = Settings.SIZE_WIDTH* Settings.SIZE_HEIGHT / 3;
         private static int MID_GAME = Settings.SIZE_WIDTH* Settings.SIZE_HEIGHT * 2 / 3;
@@ -142,21 +143,21 @@ namespace IAOthelloMillenium
                 //Ended
                 if (GameBoard.GameEnded)
                 {
-                    return 1000 * DiscDiff(isWhite);
+                    return 100000 * DiscDiff(isWhite);
                 }
 
                 //Evaluation juste one
                 if (nbPawns < EARLY_GAME)
                 {
-                    evaluation = 2000 * NbCorner(player) + 0 * DiscDiff(isWhite) + 200 * Placement(player) + 500 * Mobility(isWhite);// + 200 * DiscDiffStable(isWhite);// + 500 * Mobility(isWhite);
+                    evaluation = 2000 * NbCorner(player) + 200 * Placement(player) + 600 * Mobility(isWhite);
                 }
                 else if (nbPawns < MID_GAME)
                 {
-                    evaluation = 2000 * NbCorner(player) + 50 * DiscDiff(isWhite) + 200 * Placement(player);// + 200 * DiscDiffStable(isWhite);// + 20 * Mobility(isWhite);
+                    evaluation = 2000 * NbCorner(player) + 100 * DiscDiffStable(isWhite) + 250 * Mobility(isWhite);
                 }
                 else
                 {
-                    evaluation = 2000 * NbCorner(player) + 100 * DiscDiff(isWhite) + 200 * DiscDiffStable(isWhite);
+                    evaluation = 2000 * NbCorner(player) + 50 * DiscDiff(isWhite) + 100 * DiscDiffStable(isWhite) + 100 * Mobility(isWhite);
                 }
             }
             return (int)evaluation;

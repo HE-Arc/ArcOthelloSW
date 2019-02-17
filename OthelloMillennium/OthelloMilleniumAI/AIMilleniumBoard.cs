@@ -105,14 +105,6 @@ namespace IAOthelloMillenium
         public Tuple<int, int> GetNextMove(int[,] game, int level, bool whiteTurn)
         {
             // Detect block move
-            foreach (var play in node.Children(whiteTurn))
-            {
-                if (play.Value.WhiteTurn == whiteTurn)
-                {
-                    //Console.WriteLine("Killer move skipped player !");
-                    return play.Key;
-                }
-            }
 
             // Search in alpha beta tree
             int bestScore = int.MinValue;
