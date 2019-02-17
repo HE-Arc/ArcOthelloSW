@@ -86,10 +86,10 @@ namespace IAOthelloMillenium
         /// </summary>
         /// <param name="player"></param>
         /// <returns></returns>
-        private int DiscDiffFinal(int player)
+        private int DiscDiffStable(bool isWhite)
         {
             //TODO Difference between stable discs
-            return 0;
+            return (GameBoard.GetNbStableToken(Settings.WHITE) - GameBoard.GetNbStableToken(Settings.BLACK)) * (isWhite ? 1 : -1);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace IAOthelloMillenium
         }
 
         /// <summary>
-        /// Calcl th number of corner in possession
+        /// Calc the number of corner in possession
         /// </summary>
         /// <param name="player"></param>
         /// <returns></returns>
@@ -145,24 +145,19 @@ namespace IAOthelloMillenium
                     return 1000 * DiscDiff(isWhite);
                 }
 
+                //Evaluation juste one
                 if (nbPawns < EARLY_GAME)
                 {
-                    evaluation = 2000 * NbCorner(player) + 0 * DiscDiff(isWhite) + 200 * Placement(player);// + 500 * Mobility(isWhite);
+                    evaluation = 2000 * NbCorner(player) + 0 * DiscDiff(isWhite) + 200 * Placement(player) + 500 * Mobility(isWhite);// + 200 * DiscDiffStable(isWhite);// + 500 * Mobility(isWhite);
                 }
                 else if (nbPawns < MID_GAME)
                 {
-                    evaluation = 2000 * NbCorner(player) + 50 * DiscDiff(isWhite) + 200 * Placement(player);// + 20 * Mobility(isWhite);
+                    evaluation = 2000 * NbCorner(player) + 50 * DiscDiff(isWhite) + 200 * Placement(player);// + 200 * DiscDiffStable(isWhite);// + 20 * Mobility(isWhite);
                 }
                 else
                 {
-                    evaluation = 2000 * NbCorner(player) + 100 * DiscDiff(isWhite);
+                    evaluation = 2000 * NbCorner(player) + 100 * DiscDiff(isWhite) + 200 * DiscDiffStable(isWhite);
                 }
-
-                //Evaluation juste one
-                //Evaluator.evaluate(this, isWhite);
-
-                //TODO Check if we pass the turn of the opponent
-                
             }
             return (int)evaluation;
         }

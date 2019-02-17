@@ -232,14 +232,13 @@ namespace IAOthelloMillenium
 
         /// <summary>
         /// Return the number of stable tokens
+        /// Detect those from the four corners
         /// </summary>
         /// <param name="player"></param>
-        /// <returns></returns>
+        /// <returns>Number of stable token for a given player</returns>
         public int GetNbStableToken(int player)
         {
             HashSet<Tuple<int, int>> stablePawns = new HashSet<Tuple<int, int>>();
-
-            //TODO
 
             int i = 0;
             int j = 0;

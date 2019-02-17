@@ -37,7 +37,7 @@ namespace IAOthelloMillenium
             if (node.WhiteTurn == isWhite)
             {
                 int score = int.MinValue;
-                foreach (TreeNode child in node.Children(!node.WhiteTurn).Values)
+                foreach (TreeNode child in node.Children(node.WhiteTurn).Values)
                 {
                     score = Math.Max(score, AlphaBeta(child, depth - 1, a, b, isWhite));
                     a = Math.Max(a, score);
@@ -51,7 +51,7 @@ namespace IAOthelloMillenium
             else
             {
                 int score = int.MaxValue;
-                foreach (TreeNode child in node.Children(!node.WhiteTurn).Values)
+                foreach (TreeNode child in node.Children(node.WhiteTurn).Values)
                 {
                     score = Math.Min(score, AlphaBeta(child, depth - 1, a, b, isWhite));
                     b = Math.Min(b, score);
@@ -109,23 +109,10 @@ namespace IAOthelloMillenium
             {
                 if (play.Value.WhiteTurn == whiteTurn)
                 {
-                    Console.WriteLine("Killer move skipped player !");
+                    //Console.WriteLine("Killer move skipped player !");
                     return play.Key;
                 }
             }
-
-            // Detect corner opportunities
-            //foreach (var play in node.Children(whiteTurn))
-            //{
-            //    foreach (Tuple<int,int> POINT in Settings.CORNERS)
-            //    {
-            //        if(POINT.Item1 == play.Key.Item1 && POINT.Item2 == play.Key.Item2)
-            //        {
-            //            Console.WriteLine("Killer move corner !");
-            //            return play.Key;
-            //        }
-            //    }
-            //}
 
             // Search in alpha beta tree
             int bestScore = int.MinValue;
