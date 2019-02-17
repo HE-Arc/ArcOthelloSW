@@ -75,6 +75,6 @@ Dans le cas ou le jeu est ternminé le score correspond à la différence de poi
 
 ## Liens utiles (Consulté le 17.02.2019)
 
-http://pressibus.org/ataxx/autre/minimax/node3.html
-http://www.samsoft.org.uk/reversi/strategy.htm#evaporate
-http://www.ffothello.org/strategie/livret-de-strategie/livret-5-tactique/
+- http://pressibus.org/ataxx/autre/minimax/node3.html
+- http://www.samsoft.org.uk/reversi/strategy.htm#evaporate
+- http://www.ffothello.org/strategie/livret-de-strategie/livret-5-tactique/
